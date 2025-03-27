@@ -3,3 +3,122 @@
 ---
 
 @import "minima";
+
+/* 默认浅色模式 */
+:root {
+  --bg-color: white;
+  --text-color: black;
+  --link-color: blue;
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --link-color: #bb86fc;
+}
+
+/* 让整个页面应用变量 */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+a {
+  color: var(--link-color);
+}
+
+/* 默认浅色模式下的按钮 */
+button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+/* 深色模式按钮 */
+[data-theme="dark"] button {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+/* 按钮悬停效果 */
+button:hover {
+  background-color: #ddd;
+}
+
+[data-theme="dark"] button:hover {
+  background-color: #444;
+}
+
+
+/* 默认浅色模式下的 input */
+input {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+/* 深色模式 input */
+[data-theme="dark"] input {
+  background-color: #222;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+/* 输入框聚焦效果 */
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* 深色模式下的输入框聚焦 */
+[data-theme="dark"] input:focus {
+  border-color: #bb86fc;
+}
+
+/* 默认浅色模式下的 select 和 option */
+select {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+  appearance: none; /* 去掉默认样式 */
+}
+
+/* 深色模式 select */
+[data-theme="dark"] select {
+  background-color: #222;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+/* option 的样式 */
+select option {
+  background-color: #fff;
+  color: #333;
+}
+
+/* 深色模式 option */
+[data-theme="dark"] select option {
+  background-color: #333;
+  color: #e0e0e0;
+}
+
+/* 鼠标悬停在 option 上 */
+select option:hover {
+  background-color: #ddd;
+}
+
+[data-theme="dark"] select option:hover {
+  background-color: #444;
+}

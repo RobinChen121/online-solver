@@ -16,7 +16,7 @@ layout: home
 <body>
 <p>
   <label for="numInput">Number of decision variables: </label><input type="number"
-                                                                     style="width: 4%;"
+                                                                     style="width: 5%;"
                                                                      id="numInput"
                                                                      value="2"
                                                                      min="1"

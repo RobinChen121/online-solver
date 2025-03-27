@@ -8,4 +8,32 @@
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
   {%- endif -%}
+
+<!--  检测主题-->
+  <script>
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+
+    // function initTheme() {
+    //   const savedTheme = localStorage.getItem('theme');
+    //   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    //   setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+    // }
+
+    function initTheme() {
+      setTheme(getPreferredTheme());
+
+      // 监听系统主题变化
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) { // 仅在未手动设置时自动变更
+          setTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    }
+
+    initTheme();
+  </script>
+
 </head>
