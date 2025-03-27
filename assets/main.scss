@@ -143,3 +143,47 @@ button:disabled:hover, select:disabled:hover {
   background-color: var(--disabled-bg);
   border-color: var(--disabled-border);
 }
+
+/* 深色模式下的 about 链接 */
+[data-theme="dark"] a[href*="about"] {
+  color: #bb86fc; /* 使用亮眼的紫色或其他你喜欢的颜色 */
+  transition: color 0.3s ease-in-out;
+}
+
+/* 深色模式下，悬停状态 */
+[data-theme="dark"] a[href*="about"]:hover {
+  color: #ffffff; /* 悬停时使用白色，增强对比 */
+}
+
+/* 深色模式下，已访问 about 链接的颜色 */
+[data-theme="dark"] a[href*="about"]:visited {
+  color: #9b59b6; /* 设置已访问链接的颜色（可选） */
+}
+
+/* 深色模式下的返回主页链接 */
+[data-theme="dark"] a[href*="/"] {
+  color: #bb86fc; /* 你可以选择其他亮色 */
+  transition: color 0.3s ease-in-out;
+}
+
+/* 深色模式下，悬停状态 */
+[data-theme="dark"] a[href*="/"]:hover {
+  color: #ffffff; /* 悬停时更亮 */
+}
+
+/* 深色模式下，已访问主页链接的颜色 */
+[data-theme="dark"] a[href*="/"]:visited {
+  color: #9b59b6; /* 已访问链接的颜色 */
+}
+
+/* 深色模式下，电子邮件链接悬停状态 */
+[data-theme="dark"] footer a[href^="mailto:"]:hover {
+  color: #ffffff; /* 悬停时变成白色，增强对比 */
+  text-decoration: underline; /* 可选：添加下划线增强交互感 */
+}
+
+/* 深色模式下，已访问电子邮件链接的颜色 */
+[data-theme="dark"] footer a[href^="mailto:"]:visited {
+  color: #9b59b6; /* 设置已访问链接的颜色（可选） */
+}
+
