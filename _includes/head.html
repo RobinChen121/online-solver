@@ -9,42 +9,20 @@
     {%- include google-analytics.html -%}
     {%- endif -%}
 
-    <!--  检测主题-->
-    <script>
-        (function () {
-            function setTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
-            }
-
-            function getPreferredTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme) {
-                    return savedTheme; // 使用本地存储的主题（用户手动设置）
-                }
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; // 使用系统主题
-            }
-
-            function applyTheme() {
-                const theme = getPreferredTheme();
-                setTheme(theme);
-            }
-
-            function initThemeListener() {
-                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-                mediaQuery.addEventListener('change', (e) => {
-                    if (!localStorage.getItem('theme')) { // 仅在用户未手动设置时变更
-                        setTheme(e.matches ? 'dark' : 'light');
-                    }
-                });
-            }
-
-            // **1. 页面加载时立即应用主题（防止闪烁）**
-            applyTheme();
-
-            // **2. 监听系统主题变化**
-            initThemeListener();
-        })();
-    </script>
-
+    <style>
+        /* 按钮样式 */
+        .top-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .top-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
