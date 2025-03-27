@@ -11,39 +11,40 @@
 
     <!--  检测主题-->
     <script>
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        }
-
-        function getPreferredTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                return savedTheme;
+        (function () {
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
             }
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
 
-        function initTheme() {
-            setTheme(getPreferredTheme());
-
-            // 监听系统主题变化
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            const updateTheme = (e) => {
-                if (!localStorage.getItem('theme')) { // 仅在未手动设置时自动变更
-                    setTheme(e.matches ? 'dark' : 'light');
+            function getPreferredTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    return savedTheme; // 使用本地存储的主题（用户手动设置）
                 }
-            };
-
-            if (mediaQuery.addEventListener) {
-                mediaQuery.addEventListener('change', updateTheme);
-            } else if (mediaQuery.addListener) { // 兼容旧版浏览器
-                mediaQuery.addListener(updateTheme);
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; // 使用系统主题
             }
-        }
 
-        initTheme();
+            function applyTheme() {
+                const theme = getPreferredTheme();
+                setTheme(theme);
+            }
+
+            function initThemeListener() {
+                const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                mediaQuery.addEventListener('change', (e) => {
+                    if (!localStorage.getItem('theme')) { // 仅在用户未手动设置时变更
+                        setTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+
+            // **1. 页面加载时立即应用主题（防止闪烁）**
+            applyTheme();
+
+            // **2. 监听系统主题变化**
+            initThemeListener();
+        })();
     </script>
-
 
 </head>

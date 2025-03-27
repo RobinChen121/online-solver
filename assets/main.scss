@@ -9,6 +9,9 @@
   --bg-color: white;
   --text-color: black;
   --link-color: blue;
+  --disabled-bg: #e8e8e8;
+  --disabled-text: #aaaaaa;
+  --disabled-border: #dddddd;
 }
 
 /* 深色模式 */
@@ -16,6 +19,9 @@
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --link-color: #bb86fc;
+  --disabled-bg: #252525; /* 失效时更接近背景 */
+  --disabled-text: #888888; /* 让文字变得更不明显 */
+  --disabled-border: #2d2d2d; /* 失效时边框更淡 */
 }
 
 /* 让整个页面应用变量 */
@@ -121,4 +127,19 @@ select option:hover {
 
 [data-theme="dark"] select option:hover {
   background-color: #444;
+}
+
+/* ✨ 让“失效”的按钮 & 选择框不明显 */
+button:disabled, input:disabled, select:disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text); /* 让文字变淡 */
+  border: 1px solid var(--disabled-border);
+  opacity: 1; /* 让整个元素更淡 */
+  cursor: not-allowed;
+}
+
+/* 失效时禁用 hover 效果 */
+button:disabled:hover, select:disabled:hover {
+  background-color: var(--disabled-bg);
+  border-color: var(--disabled-border);
 }
