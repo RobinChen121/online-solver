@@ -41,8 +41,9 @@ layout: home
 </p>
 
 
-
+<p>
 <button id="generate_obj" onclick="generateLatex()" disabled>Generate objective</button>
+</p>
 <p id="latexOutput">$$\min\quad z = x_1 + x_2$$</p>
 
 <p>
@@ -187,28 +188,31 @@ layout: home
             coeContainer.appendChild(label);
         }
 
-        // // 创建 select 元素
-        // const select = document.createElement("select");
-        //
-        // // 创建多个 option 元素
-        // const option1 = document.createElement("option");
-        // option1.value = "option1";  // 设置 option 的 value 属性
-        // option1.textContent = "选项 1";  // 设置 option 的显示文本
-        //
-        // var option2 = document.createElement("option");
-        // option2.value = "option2";
-        // option2.textContent = "选项 2";
-        //
-        // var option3 = document.createElement("option");
-        // option3.value = "option3";
-        // option3.textContent = "选项 3";
-        //
-        // // 将 option 元素添加到 select 元素中
-        // select.appendChild(option1);
-        // select.appendChild(option2);
-        // select.appendChild(option3);
-        //
-        // coeContainer.appendChild(select);
+        // 创建 select 元素
+        const select = document.createElement("select");
+
+        select.style.marginLeft = '0.5%';
+
+        // 创建多个 option 元素
+        const option1 = document.createElement("option");
+        option1.textContent = "&ge;";  // 设置 option 的显示文本
+        option1.selected = true;
+
+
+        var option2 = document.createElement("option");
+        option2.value = "option2";
+        option2.textContent = "=";
+
+        var option3 = document.createElement("option");
+        option3.value = "option3";
+        option3.textContent = "&le;";
+
+        // 将 option 元素添加到 select 元素中
+        select.appendChild(option1);
+        select.appendChild(option2);
+        select.appendChild(option3);
+
+        coeContainer.appendChild(select);
 
         // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
         MathJax.typeset();
