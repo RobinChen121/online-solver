@@ -47,7 +47,7 @@ layout: home
 <p id="latexOutput">$$\min\quad z = x_1 + x_2$$</p>
 
 <p>
-    <button id="input_constr" onclick="inputConstraint()" disabled>Input constraint</button>
+    <button id="input_constr" onclick="inputConstraint()" disabled>Input a constraint</button>
 <div id='constr_input_container'></div>
 </p>
 
@@ -61,6 +61,7 @@ layout: home
     });
 
     let obj_coefficients = ['0', '0']; // 创建一个空数组
+    let num_constraint = 0;
     function getNumVar() {
         let n = parseInt(document.getElementById("numInput").value);
         return n;
@@ -78,12 +79,12 @@ layout: home
             const label = document.createElement('label');
             const input = document.createElement('input');
             input.type = 'number'; // 设置输入框类型为文本
-            input.id = 'coe_input' + (i + 1); // 设置输入框 ID（可选）
+            input.id = 'coe_obj' + (i + 1); // 设置输入框 ID（可选）
             input.style.width = '50px';
             input.style.marginLeft = '0.3%';
             label.style.marginLeft = '0.3%';
             input.value = '0'; // 默认值
-            label.setAttribute('for', 'coe_input' + (i + 1));
+            label.setAttribute('for', 'coe_obj' + (i + 1));
             // 设置 LaTeX 内容
             let latexString = '';
             if (i < numVar - 1) {
@@ -121,7 +122,7 @@ layout: home
 
         // 得到输入框的系数
         for (let i = 0; i < n; i++) {
-            let input_id = 'coe_input' + (i + 1);
+            let input_id = 'coe_obj' + (i + 1);
             let coe = document.getElementById(input_id).value;
             obj_coefficients[i] = coe;
             console.log(obj_coefficients[i]);
