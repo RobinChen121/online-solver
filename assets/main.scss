@@ -187,3 +187,26 @@ button:disabled:hover, select:disabled:hover {
   color: #9b59b6; /* 设置已访问链接的颜色（可选） */
 }
 
+.site-nav {
+  position: relative; /* 确保按钮可以相对于导航栏定位 */
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 50%; /* 垂直居中 */
+  right: 20px; /* 右侧边距 */
+  transform: translateY(-50%); /* 调整为完全垂直居中 */
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+#theme-toggle:hover {
+  background-color: #444; /* 鼠标悬停时的背景色 */
+}
+
+

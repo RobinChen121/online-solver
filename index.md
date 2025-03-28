@@ -3,162 +3,221 @@ layout: home
 ---
 
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
-  <title>Welcome to use my solver</title>
+    <title>Welcome to use my solver</title>
 
-  <!-- 引入 MathJax -->
-  <script type="text/javascript" async
-          id="MathJax-script"
-          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- 引入 MathJax -->
+    <script type="text/javascript" async
+            id="MathJax-script"
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
 <p>
-  <label for="numInput">Number of decision variables: </label><input type="number"
-                                                                     style="width: 5%;"
-                                                                     id="numInput"
-                                                                     value="2"
-                                                                     min="1"
-                                                                     max="20" required>
-  <!--使用百分比来让输入框的宽度相对于其父容器的宽度进行调整。-->
+    <label for="numInput">Number of decision variables: </label><input type="number"
+                                                                       style="width: 5%;"
+                                                                       id="numInput"
+                                                                       value="2"
+                                                                       min="1"
+                                                                       max="20" required>
+    <!--使用百分比来让输入框的宽度相对于其父容器的宽度进行调整。-->
 
-  <label for="objSense" style="margin-left: 3%">Objective: </label>
-  <select id="objSense">
-    <option value=1 selected>Min</option>
-    <option value=0>Max</option>
-  </select>
+    <label for="objSense" style="margin-left: 3%">Objective: </label>
+    <select id="objSense">
+        <option value=1 selected>Min</option>
+        <option value=0>Max</option>
+    </select>
 
-  <button id="reset" style="position: relative; left: 20%;">Reset</button>
+    <button id="reset" style="position: relative; left: 20%;">Reset</button>
 </p>
 
-<div id='objContainer'>
-  <p>
-    <button id="input_obj_coe" onclick="inputCoefficients()">Input objective coefficients</button>
-    <!--<div> 是一个 HTML 元素，常用于分组和布局，不会直接显示任何内容，但可以用于包含其他 HTML 元素-->
-  <div id="objCoeContainer"></div>
-  </p>
-</div>
+<p>
+<button id="input_obj_coe" onclick="inputCoefficients()">Input objective coefficients
+</button>
+<!--<p id="ini_obj">$$x_1 + x_2$$</p>-->
+<!--<div> 是一个 HTML 元素，常用于分组和布局，不会直接显示任何内容，但可以用于包含其他 HTML 元素-->
+<div id="objCoeContainer"></div>
+</p>
+
+
 
 <button id="generate_obj" onclick="generateLatex()" disabled>Generate objective</button>
 <p id="latexOutput">$$\min\quad z = x_1 + x_2$$</p>
 
+<p>
+    <button id="input_constr" onclick="inputConstraint()" disabled>Input constraint</button>
+<div id='constr_input_container'></div>
+</p>
 
 </body>
 <script>
-  // 使用 disabled 属性来控制按钮的可用状态
-  // 在一个按钮（button1）被点击后，使另一个按钮（button2）变为可用（启用）
-  document.getElementById("input_obj_coe").addEventListener("click", function () {
-    document.getElementById("generate_obj").disabled = false; // 使按钮2可用
-  });
+    // 使用 disabled 属性来控制按钮的可用状态
+    // 在一个按钮（button1）被点击后，使另一个按钮（button2）变为可用（启用）
+    document.getElementById("input_obj_coe").addEventListener("click", function () {
+        document.getElementById("generate_obj").disabled = false; // 使按钮可用
+        document.getElementById("input_constr").disabled = false;
+    });
 
-  let obj_coefficients = ['0', '0']; // 创建一个空数组
-  function getNumVar() {
-    let n = parseInt(document.getElementById("numInput").value);
-    return n;
-  }
-
-  function inputCoefficients() {
-
-
-    let numVar = getNumVar();
-    obj_coefficients.length = numVar;  // 清空数组
-    let coeContainer = document.getElementById("objCoeContainer");
-    // 清空容器，确保每次点击按钮时重新生成输入框
-    coeContainer.innerHTML = '';
-    // 根据给定数目生成输入框
-    for (let i = 0; i < numVar; i++) {
-      // 创建新的 <input> 元素
-      const label = document.createElement('label');
-      const input = document.createElement('input');
-      input.type = 'number'; // 设置输入框类型为文本
-      input.id = 'coe_input' + (i + 1); // 设置输入框 ID（可选）
-      input.style.width = '50px';
-      input.style.marginLeft = '0.3%';
-      label.style.marginLeft = '0.3%';
-      input.value = '0'; // 默认值
-      label.setAttribute('for', 'coe_input' + (i + 1));
-      // 设置 LaTeX 内容
-      let latexString = '';
-      if (i < numVar - 1) {
-        latexString = `x_{${i + 1}}+ `;
-      } else
-        latexString = `x_{${i + 1}}`;
-      label.innerHTML = `\\(${latexString}\\)`;
-
-      // 将输入框添加到容器中
-      coeContainer.appendChild(input);
-      coeContainer.appendChild(label);
-    }
-    // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
-    MathJax.typeset();
-
-  }
-
-  let selectedSense = '';  // 用来存储用户选择的值
-  document.getElementById("objSense").addEventListener("change", function () {
-    selectedSense = this.value;
-  });
-
-  // 提供一个函数，用来返回用户选择的值
-  function getSelectedSense() {
-    return selectedSense;  // 返回当前的选中值
-  }
-
-  function generateLatex() {
-    // 让决策变量数量输入框实效
-    document.getElementById("numInput").disabled = true;
-    document.getElementById("objSense").disabled = true;
-
-    let n = document.getElementById("numInput").value; // 获取 id 为 numInput 的标签中的 value 值
-    n = Math.max(1, parseInt(n)); // parseInt() 是 JavaScript 用于将字符串转换为整数的内置函数
-
-    // 得到输入框的系数
-    for (let i = 0; i < n; i++) {
-      let input_id = 'coe_input' + (i + 1);
-      let coe = document.getElementById(input_id).value;
-      obj_coefficients[i] = coe;
-      console.log(obj_coefficients[i]);
+    let obj_coefficients = ['0', '0']; // 创建一个空数组
+    function getNumVar() {
+        let n = parseInt(document.getElementById("numInput").value);
+        return n;
     }
 
-    let objSense = getSelectedSense();
-    let objStr;
-    // 因为在 HTML 中，select 的 value 是字符串类型，所以应该与字符串 "1" 进行比较，而不是数字 1
-    if (objSense === "0") {
-      objStr = "\\max";
-    } else {
-      objStr = "\\min";
-    }
+    function inputCoefficients() {
+        let numVar = getNumVar();
+        obj_coefficients.length = numVar;  // 清空数组
+        let coeContainer = document.getElementById("objCoeContainer");
+        // 清空容器，确保每次点击按钮时重新生成输入框
+        coeContainer.innerHTML = '';
+        // 根据给定数目生成输入框
+        for (let i = 0; i < numVar; i++) {
+            // 创建新的 <input> 元素
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'number'; // 设置输入框类型为文本
+            input.id = 'coe_input' + (i + 1); // 设置输入框 ID（可选）
+            input.style.width = '50px';
+            input.style.marginLeft = '0.3%';
+            label.style.marginLeft = '0.3%';
+            input.value = '0'; // 默认值
+            label.setAttribute('for', 'coe_input' + (i + 1));
+            // 设置 LaTeX 内容
+            let latexString = '';
+            if (i < numVar - 1) {
+                latexString = `x_{${i + 1}}+ `;
+            } else
+                latexString = `x_{${i + 1}}`;
+            label.innerHTML = `\\(${latexString}\\)`;
 
-    let latexStartStr = "$$" + objStr + "\\quad z=";
-    let latexEndStr = "$$";
-    let latexBodyStr = "";
-    // ${} 用于 模板字符串（Template Literals），允许在字符串中嵌入变量或表达式
-    // 反引号 ``：用于 模板字符串，支持 ${} 变量插值
-    for (let i = 0; i < n; i++) {
-      if (parseFloat(obj_coefficients[i]) >= 0 && i > 0) {
-        latexBodyStr += '+';
-      }
-      if ( parseFloat(obj_coefficients[i]) != 1) {
-        if(parseFloat(obj_coefficients[i]) != -1)
-        {
-          latexBodyStr += obj_coefficients[i];
+            // 将输入框添加到容器中
+            coeContainer.appendChild(input);
+            coeContainer.appendChild(label);
         }
-        else{
-          latexBodyStr += '-';
-        }
-      }
-      latexBodyStr += `x_{${i + 1}}`;
-    }
-    let latexString = latexStartStr + latexBodyStr + latexEndStr;
-    console.log(latexString);
-    document.getElementById("latexOutput").innerHTML = latexString;
-    MathJax.typeset();
-  }
+        // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
+        MathJax.typeset();
 
-  document.getElementById("reset").addEventListener("click", function() {
-    document.getElementById("numInput").disabled = false; // 让按钮恢复可点击
-    document.getElementById("objSense").disabled = false;
-    document.getElementById("generate_obj").disabled = true;
-  });
+    }
+
+    let selectedSense = '';  // 用来存储用户选择的值
+    document.getElementById("objSense").addEventListener("change", function () {
+        selectedSense = this.value;
+    });
+
+    // 提供一个函数，用来返回用户选择的值
+    function getSelectedSense() {
+        return selectedSense;  // 返回当前的选中值
+    }
+
+    function generateLatex() {
+        // 让决策变量数量输入框实效
+        document.getElementById("numInput").disabled = true;
+        document.getElementById("objSense").disabled = true;
+
+        let n = document.getElementById("numInput").value; // 获取 id 为 numInput 的标签中的 value 值
+        n = Math.max(1, parseInt(n)); // parseInt() 是 JavaScript 用于将字符串转换为整数的内置函数
+
+        // 得到输入框的系数
+        for (let i = 0; i < n; i++) {
+            let input_id = 'coe_input' + (i + 1);
+            let coe = document.getElementById(input_id).value;
+            obj_coefficients[i] = coe;
+            console.log(obj_coefficients[i]);
+        }
+
+        let objSense = getSelectedSense();
+        let objStr;
+        // 因为在 HTML 中，select 的 value 是字符串类型，所以应该与字符串 "1" 进行比较，而不是数字 1
+        if (objSense === "0") {
+            objStr = "\\max";
+        } else {
+            objStr = "\\min";
+        }
+
+        let latexStartStr = "$$" + objStr + "\\quad z=";
+        let latexEndStr = "$$";
+        let latexBodyStr = "";
+        // ${} 用于 模板字符串（Template Literals），允许在字符串中嵌入变量或表达式
+        // 反引号 ``：用于 模板字符串，支持 ${} 变量插值
+        for (let i = 0; i < n; i++) {
+            if (parseFloat(obj_coefficients[i]) >= 0 && i > 0) {
+                latexBodyStr += '+';
+            }
+            if (parseFloat(obj_coefficients[i]) != 1) {
+                if (parseFloat(obj_coefficients[i]) != -1) {
+                    latexBodyStr += obj_coefficients[i];
+                } else {
+                    latexBodyStr += '-';
+                }
+            }
+            latexBodyStr += `x_{${i + 1}}`;
+        }
+        let latexString = latexStartStr + latexBodyStr + latexEndStr;
+        document.getElementById("latexOutput").innerHTML = latexString;
+        MathJax.typeset();
+    }
+
+    function inputConstraint() {
+        let numVar = getNumVar();
+        let coeContainer = document.getElementById("constr_input_container");
+        coeContainer.innerHTML = '';
+        // 根据给定数目生成输入框
+        for (let i = 0; i < numVar; i++) {
+            // 创建新的 <input> 元素
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'number'; // 设置输入框类型为文本
+            input.id = 'coe_input' + (i + 1); // 设置输入框 ID（可选）
+            input.style.width = '50px';
+            input.style.marginLeft = '0.3%';
+            label.style.marginLeft = '0.3%';
+            input.value = '0'; // 默认值
+            label.setAttribute('for', 'coe_input' + (i + 1));
+            // 设置 LaTeX 内容
+            let latexString = '';
+            if (i < numVar - 1) {
+                latexString = `x_{${i + 1}}+ `;
+            } else
+                latexString = `x_{${i + 1}}`;
+            label.innerHTML = `\\(${latexString}\\)`;
+
+            // 将输入框添加到容器中
+            coeContainer.appendChild(input);
+            coeContainer.appendChild(label);
+        }
+
+        // // 创建 select 元素
+        // const select = document.createElement("select");
+        //
+        // // 创建多个 option 元素
+        // const option1 = document.createElement("option");
+        // option1.value = "option1";  // 设置 option 的 value 属性
+        // option1.textContent = "选项 1";  // 设置 option 的显示文本
+        //
+        // var option2 = document.createElement("option");
+        // option2.value = "option2";
+        // option2.textContent = "选项 2";
+        //
+        // var option3 = document.createElement("option");
+        // option3.value = "option3";
+        // option3.textContent = "选项 3";
+        //
+        // // 将 option 元素添加到 select 元素中
+        // select.appendChild(option1);
+        // select.appendChild(option2);
+        // select.appendChild(option3);
+        //
+        // coeContainer.appendChild(select);
+
+        // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
+        MathJax.typeset();
+
+    }
+
+    document.getElementById("reset").addEventListener("click", function () {
+        document.getElementById("numInput").disabled = false; // 让按钮恢复可点击
+        document.getElementById("objSense").disabled = false;
+        document.getElementById("generate_obj").disabled = true;
+    });
 </script>
