@@ -195,17 +195,18 @@ layout: home
 
         // 创建多个 option 元素
         const option1 = document.createElement("option");
-        option1.textContent = "&ge;";  // 设置 option 的显示文本
+        // option1.value = "gte";
+        option1.textContent = "≥";
         option1.selected = true;
 
 
         var option2 = document.createElement("option");
-        option2.value = "option2";
+        option2.value = "eq";
         option2.textContent = "=";
 
         var option3 = document.createElement("option");
-        option3.value = "option3";
-        option3.textContent = "&le;";
+        // option3.value = "lte";
+        option3.textContent = "<=";
 
         // 将 option 元素添加到 select 元素中
         select.appendChild(option1);
@@ -213,6 +214,15 @@ layout: home
         select.appendChild(option3);
 
         coeContainer.appendChild(select);
+
+        const input_rhs = document.createElement('input');
+        input_rhs.type = 'number'; // 设置输入框类型为文本
+        input_rhs.id = 'input_rhs' + (i + 1); // 设置输入框 ID（可选）
+        input_rhs.style.width = '50px';
+        input_rhs.style.marginLeft = '0.3%';
+
+        coeContainer.appendChild(input_rhs);
+
 
         // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
         MathJax.typeset();
