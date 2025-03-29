@@ -17,7 +17,7 @@
 /* 深色模式 */
 [data-theme="dark"] {
   --bg-color: #121212;
-  --text-color: #e0e0e0;
+  --text-color: #e0e0e0 !important;
   --link-color: #bb86fc;
   --disabled-bg: #252525; /* 失效时更接近背景 */
   --disabled-text: #888888; /* 让文字变得更不明显 */
@@ -209,4 +209,40 @@ button:disabled:hover, select:disabled:hover {
   background-color: #444; /* 鼠标悬停时的背景色 */
 }
 
+// google
+.goog-te-gadget {
+  font-family: Roboto, "Open Sans", sans-serif !important;
+  //text-transform: uppercase;
+}
 
+.goog-te-gadget-simple {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(237, 230, 230, 0.5) !important;
+  padding: 8px !important;
+  border-radius: 4px !important;
+  font-size: 0.8rem !important;
+  line-height: 0.5rem !important;
+  display: inline-block;
+  cursor: pointer;
+  zoom: 1;
+}
+
+.goog-te-gadget-icon {
+  background-image: url(https://placehold.it/32) !important;
+  background-position: 0px 0px;
+  height: 0px !important;
+  width: 0px !important;
+  margin-right: 8px !important;
+  display: none;
+}
+
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  display: none; // add !important if required
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}

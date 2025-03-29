@@ -1,77 +1,97 @@
 <header class="site-header" role="banner">
 
-  <div class="wrapper">
-    {%- assign default_paths = site.pages | map: "path" -%}
-    {%- assign page_paths = site.header_pages | default: default_paths -%}
-    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
+    <div class="wrapper">
+        {%- assign default_paths = site.pages | map: "path" -%}
+        {%- assign page_paths = site.header_pages | default: default_paths -%}
+        <a class="site-title" rel="author" href="{{ "/" | relative_url }}">{{ site.title | escape
+        }}</a>
 
-    {%- if page_paths -%}
-      <nav class="site-nav">
-        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-        <label for="nav-trigger">
+        {%- if page_paths -%}
+        <nav class="site-nav">
+            <input type="checkbox" id="nav-trigger" class="nav-trigger"/>
+            <label for="nav-trigger">
           <span class="menu-icon">
             <svg viewBox="0 0 18 15" width="18px" height="15px">
               <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
             </svg>
           </span>
-        </label>
+            </label>
 
-        <div class="trigger">
-          {%- for path in page_paths -%}
-            {%- assign my_page = site.pages | where: "path", path | first -%}
-            {%- if my_page.title -%}
-            <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-      </nav>
-    {%- endif -%}
-  </div>
+            <div class="trigger" style="display: inline-block">
+                {%- for path in page_paths -%}
+                {%- assign my_page = site.pages | where: "path", path | first -%}
+                {%- if my_page.title -%}
+                <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title |
+                    escape }}</a>
+                {%- endif -%}
+                {%- endfor -%}
+            </div>
 
-  <!-- 主题切换按钮 -->
-  <button id="theme-toggle" style="padding: 10px; background-color: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
-    🌙/☀️
-  </button>
+            <!-- Toogle google translation -->
+            <div id="google_translate_element" style="display: inline-block; font-size: smaller; padding: 5px;"></div>
+            <script type="text/javascript">
+                function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({
+                        pageLanguage: 'en',
+                        includedLanguages: 'en,zh-CN,zh-TW,ja,ko,de,ru,fr,es,it,pt,hi,ar',
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    }, 'google_translate_element');
+                }
+            </script>
+            <script type="text/javascript"
+                    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+            ></script>
 
-  <!-- 主题切换脚本 -->
-  <script>
-    // 获取当前主题，默认浅色
-    function getPreferredTheme() {
-      const savedTheme = localStorage.getItem('theme');
-      // const the_theme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      // if (the_theme) {
-      //     return 'dark';
-      // }
-      // else{
-      //     return 'light';
-      // }
-      return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    }
+        </nav>
+        {%- endif -%}
 
-    // 设置主题
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-    }
+    </div>
 
-    // 初始化主题
-    function initTheme() {
-      const currentTheme = getPreferredTheme();
-      setTheme(currentTheme);
-    }
+    <!-- 主题切换按钮 -->
+    <button id="theme-toggle"
+            style="padding: 10px; background-color: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+        🌙/☀️
+    </button>
 
-    // 切换主题
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
-    }
+    <!-- 主题切换脚本 -->
+    <script>
+        // 获取当前主题，默认浅色
+        function getPreferredTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            // const the_theme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // if (the_theme) {
+            //     return 'dark';
+            // }
+            // else{
+            //     return 'light';
+            // }
+            return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        }
 
-    // 监听按钮点击事件
-    document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        // 设置主题
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
 
-    // 初始化页面时加载当前主题
-    initTheme();
-  </script>
+        // 初始化主题
+        function initTheme() {
+            const currentTheme = getPreferredTheme();
+            setTheme(currentTheme);
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        // 监听按钮点击事件
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+        // 初始化页面时加载当前主题
+        initTheme();
+    </script>
 
 </header>

@@ -33,7 +33,8 @@ layout: home
 </p>
 
 <p>
-    <button id="button_input_obj_coe" onclick="inputObjCoefficients()">Input objective coefficients
+    <button id="button_input_obj_coe" onclick="inputObjCoefficients()">Input objective
+        coefficients
     </button>
     <!--<p id="ini_obj">$$x_1 + x_2$$</p>-->
     <!--<div> 是一个 HTML 元素，常用于分组和布局，不会直接显示任何内容，但可以用于包含其他 HTML 元素-->
@@ -47,13 +48,16 @@ layout: home
 </p>
 
 <p>
-    <button id="button_input_constr" onclick="inputConstraint()" disabled>Input coefficients for a
+    <button id="button_input_constr" onclick="inputConstraint()" disabled>Input coefficients for
+        a
         constraint
     </button>
-    <button id="button_add_constr" style="margin-left:3%" onclick="addConstraint()" disabled>Add the
+    <button id="button_add_constr" style="margin-left:3%" onclick="addConstraint()" disabled>Add
+        the
         constraint in the model
     </button>
-    <button id="button_remove_constr" style="margin-left:3%" onclick="removeConstraint()" disabled>
+    <button id="button_remove_constr" style="margin-left:3%" onclick="removeConstraint()"
+            disabled>
         Remove the
         constraint
     </button>
@@ -62,7 +66,8 @@ layout: home
 <div id='constr_input_container'></div>
 </p>
 <p>
-    <button id="button_select_variable_type" onclick="selectVariableType()" disabled>Select Variable
+    <button id="button_select_variable_type" onclick="selectVariableType()" disabled>Select
+        Variable
         type
     </button>
 </p>
@@ -412,6 +417,7 @@ layout: home
 
     function generateFullModel() {
         num_var = getNumVar();
+        var_type_latex_str = '';
         for (let i = 0; i < num_var; i++) {
             let select_id = 'var_type' + (i + 1);
             let select = document.getElementById(select_id);
@@ -422,10 +428,12 @@ layout: home
             } else if (select.value === '3') {
                 var_type_latex_str += `x_{${i + 1}}\\in \\mathbb\{Z\}`;
             }
-            if (i < num_var - 1) {
-                var_type_latex_str += ',';
-            } else {
-                var_type_latex_str += '.';
+            if (select.value != '1') {
+                if (i < num_var - 1) {
+                    var_type_latex_str += ',';
+                } else {
+                    var_type_latex_str += '.';
+                }
             }
             if (i === num_var - 1 && select.value === '1') {
                 let len = var_type_latex_str.length;
