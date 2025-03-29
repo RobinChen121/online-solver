@@ -244,7 +244,7 @@ layout: home
             \\begin{aligned}
             ${obj_sense_str}\\quad &${obj_str}\\\\
             \\text{s.t.}\\quad&\\\\
-            ${con_body_str}\\\\
+            ${con_body_str}
             &${var_type_str}
             \\end{aligned}
             \\]
@@ -347,6 +347,7 @@ layout: home
         constraint_str = generateFormulaLatex(this_coes.slice(0, numVar), numVar);
         constraint_str += this_coes[numVar];
         constraint_str += ' ' + this_coes[numVar + 1];
+        constraint_str += '\\\\';
         con_latex_str.push(constraint_str);
         renderLatexModel(obj_latex_str, con_latex_str);
         document.getElementById('button_remove_constr').disabled = false;
