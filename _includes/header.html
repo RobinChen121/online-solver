@@ -28,7 +28,8 @@
             </div>
 
             <!-- Toogle google translation -->
-            <div id="google_translate_element" style="display: inline-block; font-size: smaller; padding: 5px;"></div>
+            <div id="google_translate_element"
+                 style="display: inline-block; font-size: smaller; padding: 5px;"></div>
             <script type="text/javascript">
                 function googleTranslateElementInit() {
                     new google.translate.TranslateElement({
@@ -41,6 +42,44 @@
             <script type="text/javascript"
                     src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
             ></script>
+            <script>
+                // 更改谷歌翻译的语言
+                setTimeout(() => {
+                    let langLink = document.querySelector('.VIpgJd-ZVi9od-xl07Ob-lTBxed'); // <a> 元素
+                    let langSpan = langLink ? langLink.querySelector('span') : null; // 获取第一个 <span>
+
+                    if (!langSpan) return;
+
+                    // 1️⃣ 读取 localStorage，恢复用户上次选择的语言
+                    let savedLang = localStorage.getItem('selectedLanguage') || 'EN'; // 默认 "En"
+                    langSpan.innerText = savedLang;
+
+                    // 2️⃣ 监听 <span> 的变化
+                    let observer = new MutationObserver((mutations) => {
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === "childList" || mutation.type === "characterData") {
+                                let newLang = langSpan.innerText.trim(); // 获取当前语言文本
+
+                                if (newLang && newLang !== "En") {
+                                    localStorage.setItem('selectedLanguage', newLang); // 存储用户选择的语言
+                                }
+                            }
+                        });
+                    });
+
+                    // 监听 <span> 内部的文本变化
+                    observer.observe(langSpan, { childList: true, subtree: true, characterData: true });
+
+                    // // 3️⃣ 定期检查语言是否被修改（防止 Google 翻译插件未更新 `span`）
+                    // setInterval(() => {
+                    //     let currentLang = langSpan.innerText.trim();
+                    //     if (!currentLang || currentLang === "") {
+                    //         langSpan.innerText = "En"; // 如果为空，则默认显示 "En"
+                    //     }
+                    // }, 2000); // 每 2 秒检测一次
+                }, 1000); // 延迟 1 秒，确保 Google 翻译插件加载完成
+
+            </script>
 
         </nav>
         {%- endif -%}

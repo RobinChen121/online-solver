@@ -371,6 +371,10 @@ layout: home
     }
 
     function selectVariableType() {
+        document.getElementById("button_input_constr").disabled = true;
+        document.getElementById("button_add_constr").disabled = true;
+        document.getElementById("button_remove_constr").disabled = true;
+
         document.getElementById('button_generate_full_model').disabled = false;
         let num_var = getNumVar();
         let type_container = document.getElementById("var_type_container");
@@ -416,6 +420,11 @@ layout: home
     }
 
     function generateFullModel() {
+        document.getElementById("button_input_constr").disabled = true;
+        document.getElementById("button_add_constr").disabled = true;
+        document.getElementById("button_remove_constr").disabled = true;
+        document.getElementById("button_select_variable_type").disabled = true;
+
         num_var = getNumVar();
         var_type_latex_str = '';
         for (let i = 0; i < num_var; i++) {
