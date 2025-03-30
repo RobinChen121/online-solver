@@ -11,6 +11,8 @@ layout: home
     <script type="text/javascript" async
             id="MathJax-script"
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 </head>
 
 <body>
@@ -77,9 +79,15 @@ layout: home
     <button id="button_generate_full_model" style="margin-top: 1%" onclick="generateFullModel()"
             disabled>Generate full model
     </button>
+
+    <button id="button_generate_full_model" style="margin-top: 1%; margin-left:3%" onclick="draw_picture()"
+            >Draw picture for 2D model
+    </button>
 </p>
 
-<hr>
+
+<!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
+<hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
 <p id="initial_model" style="margin-top: 1%">\[\begin{aligned}
     \max\quad &z = 2x_1 + 3x_2\\
     \text{s.t.}\quad&\\
@@ -87,18 +95,11 @@ layout: home
     &x_1 + 2x_2\leq 5\\
     &x_1\geq 0, x_2\geq 0.
     \end{aligned}\]</p>
-<hr>
+<hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
+<div id="calculator" style="width: 1200px; height: 1000px;"></div>
 
 </body>
 <script>
-    // 更改谷歌翻译的语言
-    setTimeout(() => {
-        let langSpan = document.querySelector('.VIpgJd-ZVi9od-xl07Ob-lTBxed span');
-        if (langSpan) {
-            langSpan.innerText = 'En';
-        }
-    }, 1000); // 1秒后执行，确保元素已加载
-
     let obj_coefficients = ['0', '0']; // 创建一个空数组
     let num_constraint = 0;
     let con_coefficients = [];
@@ -481,4 +482,36 @@ layout: home
         document.getElementById("initial_model").innerText = initial_model_latex;
         MathJax.typeset();
     });
+
+    function draw_picture() {
+        const elt = document.getElementById('calculator');
+        const calculator = Desmos.GraphingCalculator(elt);
+
+        // **添加约束边界线**
+        calculator.setExpression({ id: 'line1', latex: '2x + y = 4', color: 'blue', label: '2x + y = 4'});
+        calculator.setExpression({ id: 'line2', latex: 'x + 2y = 5', color: 'green' });
+        calculator.setExpression({ id: 'x_axis', latex: 'x = 0', color: 'black' });
+        calculator.setExpression({ id: 'y_axis', latex: 'y = 0', color: 'black' });
+
+        // **添加约束边界线**
+        calculator.setExpression({ id: 'area1', latex: '2x + y \\leq 4', color: 'blue', hidden: true });
+        calculator.setExpression({ id: 'area2', latex: 'x + 2y \\leq 5', color: 'green', hidden: true });
+        calculator.setExpression({ id: 'area3', latex: 'x \\geq 0', color: 'black', hidden: true });
+        calculator.setExpression({ id: 'area4', latex: 'y \\geq 0', color: 'black', hidden: true });
+
+        // **填充可行域（仅交集部分）**
+        calculator.setExpression({
+            id: 'feasible_region',
+            latex: '\\max(2x + y - 4, x + 2y - 5, -x, -y) \\leq 0',
+            color: 'rgba(15,161,15,0.8)' // 绿色半透明
+        });
+
+        // **目标函数等值线**
+        calculator.setExpression({
+            id: 'objective',
+            latex: '2x + 3y = c',
+            lineStyle: Desmos.Styles.DASHED,
+            color: 'red'
+        });
+    }
 </script>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二元不等式可行域</title>
+</head>
+<body>
+<canvas id="graphCanvas" width="500" height="500"></canvas>
+<script>
+  const canvas = document.getElementById("graphCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const width = canvas.width;
+  const height = canvas.height;
+  const scale = 50; // 缩放比例，每个单位长度对应50px
+
+  // 将数学坐标转换为画布坐标
+  function transformX(x) {
+    return width / 2 + x * scale;
+  }
+
+  function transformY(y) {
+    return height / 2 - y * scale;
+  }
+
+  // 画坐标轴
+  function drawAxes() {
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+
+    // x 轴
+    ctx.beginPath();
+    ctx.moveTo(0, height / 2);
+    ctx.lineTo(width, height / 2);
+    ctx.stroke();
+
+    // y 轴
+    ctx.beginPath();
+    ctx.moveTo(width / 2, 0);
+    ctx.lineTo(width / 2, height);
+    ctx.stroke();
+  }
+
+  // 画直线
+  function drawLine(m, b, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    const x1 = -width / (2 * scale);
+    const y1 = m * x1 + b;
+    const x2 = width / (2 * scale);
+    const y2 = m * x2 + b;
+
+    ctx.moveTo(transformX(x1), transformY(y1));
+    ctx.lineTo(transformX(x2), transformY(y2));
+    ctx.stroke();
+  }
+
+  // 填充可行区域
+  function fillFeasibleRegion() {
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const data = imgData.data;
+
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const realX = (x - width / 2) / scale;
+        const realY = (height / 2 - y) / scale;
+
+        // 约束条件（可行域判定）
+        if (
+                realY <= 2 * realX + 1 &&  // y ≤ 2x + 1
+                realY >= -realX + 3 &&  // y ≥ -x + 3
+                realX >= 0 &&          // x ≥ 0
+                realY >= 0             // y ≥ 0
+        ) {
+          const index = (y * width + x) * 4;
+          data[index] = 144;    // R
+          data[index + 1] = 238; // G
+          data[index + 2] = 144; // B
+          data[index + 3] = 100; // 透明度
+        }
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  // 绘图
+  drawAxes();
+  drawLine(2, 1, "red");   // y = 2x + 1
+  drawLine(-1, 3, "blue"); // y = -x + 3
+  fillFeasibleRegion();    // 填充可行域
+</script>
+</body>
+</html>

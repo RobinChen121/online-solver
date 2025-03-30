@@ -218,13 +218,12 @@ button:disabled:hover, select:disabled:hover {
 .goog-te-gadget-simple {
   background-color: rgba(255, 255, 255, 0.2) !important;
   border: 1px solid rgba(237, 230, 230, 0.5) !important;
-  padding: 8px !important;
+  padding: 0.5rem !important;
   border-radius: 4px !important;
-  font-size: 0.8rem !important;
+  font-size: 0.8rem !important; // rem（root em）是一种相对单位，表示相对于 根元素 (<html>) 的 font-size
   line-height: 0.5rem !important;
   display: inline-block;
-  cursor: pointer;
-  zoom: 1;
+  cursor: pointer; // 鼠标悬停时变成 手形（表示可点击）
 }
 
 // 文字在 class VIpgJd-ZVi9od-xl07Ob-lTBxed 下面的 span 标签下
