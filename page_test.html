@@ -485,7 +485,9 @@ layout: home
 
     function draw_picture() {
         const elt = document.getElementById('calculator');
-        const calculator = Desmos.GraphingCalculator(elt);
+        const calculator = Desmos.GraphingCalculator(elt,{
+            // expressionsCollapsed: true, // // 默认折叠表达式列表
+        });
 
         // **添加约束边界线**
         calculator.setExpression({ id: 'line1', latex: '2x + y = 4', color: 'blue', label: '2x + y = 4'});
