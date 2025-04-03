@@ -96,7 +96,7 @@ layout: home
     &x_1\geq 0, x_2\geq 0.
     \end{aligned}\]</p>
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
-<div id="calculator" style="width: 650px; height: 650px;"></div>
+<div id="calculator" style="width: 750px; height: 750px;"></div>
 
 </body>
 
