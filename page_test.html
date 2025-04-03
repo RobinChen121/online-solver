@@ -118,6 +118,12 @@ layout: home
         '&x_1\\geq 0, x_2\\geq 0.' +
         '\\end{aligned}\\]';
 
+    elt = document.getElementById('calculator');
+    const calculator = Desmos.GraphingCalculator(elt,{
+        // expressionsCollapsed: true, // // 默认折叠表达式列表
+    });
+    elt.style.display = 'none';
+
     // 使用 disabled 属性来控制按钮的可用状态
     // 在一个按钮（button1）被点击后，使另一个按钮（button2）变为可用（启用）
     document.getElementById("button_input_obj_coe").addEventListener("click", function () {
@@ -490,7 +496,7 @@ layout: home
         document.getElementById("var_type_container").innerHTML = '';
         document.getElementById("objCoeContainer").innerHTML = '';
 
-        const elt = document.getElementById('calculator').style.display = 'none';
+        elt.style.display = 'none';
 
         // innerHTML 会把 tag 也返回
         document.getElementById("initial_model").innerText = initial_model_latex;
@@ -498,11 +504,7 @@ layout: home
     }
 
     function draw_picture() {
-        const elt = document.getElementById('calculator');
-        elt.style.display = 'block';'
-        const calculator = Desmos.GraphingCalculator(elt,{
-            // expressionsCollapsed: true, // // 默认折叠表达式列表
-        });
+        elt.style.display = 'block';
 
         // **添加约束边界线**
         calculator.setExpression({ id: 'line1', latex: '2x + y = 4', color: 'blue',});
