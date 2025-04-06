@@ -27,11 +27,12 @@ layout: home
 
     <label for="select_obj_sense" style="margin-left: 3%">Objective: </label>
     <select id="select_obj_sense">
-        <option value=1 selected>Min</option>
-        <option value=0>Max</option>
+        <option value='\\min' selected>Min</option>
+        <option value='\\max'>Max</option>
     </select>
 
-    <button id="button_reset" onclick = "reset()" style="position: relative; left: 30%;">Reset</button>
+    <button id="button_reset" onclick="reset()" style="position: relative; left: 30%;">Reset
+    </button>
 </p>
 
 <p>
@@ -80,8 +81,8 @@ layout: home
             disabled>Generate full model
     </button>
 
-    <button id="button_draw_picture" style="margin-top: 1%; margin-left:3%" onclick="draw_picture()"
-            >Draw picture for 2D model
+    <button id="button_draw_picture" style="margin-top: 1%; margin-left:3%" onclick="drawPicture()"
+    >Draw picture for 2D model
     </button>
 </p>
 
@@ -96,17 +97,28 @@ layout: home
     &x_1\geq 0, x_2\geq 0.
     \end{aligned}\]</p>
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
-<div id="calculator" style="width: 750px; height: 750px;"></div>
+
+
+<div id="calculator" style="width: 750px; height: 750px;">
+    <p>
+        \( x_1 \) and \( x_2 \) of the model are replaced by \( x \) and \( y \) in the picture.
+    </p>
+    <p>
+        You may need to zoom in the picture to show the full feasible region.
+    </p>
+</div>
 
 </body>
 
 <script>
-    // store the model in numerical arrays
-    let obj_coefficients = ['0', '0']; // 创建一个空数组
-    let con_coefficients = [];
-    let var_types = [];
+    // store the model in str arrays
+    let obj_coefficients = ['\\min', '2', '3']; // 创建一个空数组
+    let con_coefficients = [['2', '1', '\\leq', '4'], ['1', '2', '\\leq', '5']];
+    let var_types = ['0', '0'];
 
-    let num_constraint = 0;
+    let selected_obj_sense = '\\min';  // 用来存储用户选择的值
+
+    let num_constraint = 2;
     let obj_latex_str = '';
     let con_latex_str = [];
     let var_type_latex_str = '';
@@ -119,7 +131,7 @@ layout: home
         '\\end{aligned}\\]';
 
     elt = document.getElementById('calculator');
-    const calculator = Desmos.GraphingCalculator(elt,{
+    const calculator = Desmos.GraphingCalculator(elt, {
         // expressionsCollapsed: true, // // 默认折叠表达式列表
     });
     elt.style.display = 'none';
@@ -138,14 +150,24 @@ layout: home
     }
 
     function inputObjCoefficients() {
+        elt.style.display = 'none';
+        // Remove all expressions
+        let arrs = calculator.getExpressions();
+        for (arr of arrs) {
+            let id_str = arr.id;
+            calculator.removeExpression({id: id_str});
+        }
+
+        document.getElementById('button_draw_picture').disabled = true;
+
         let num_var = getNumVar();
-        if (num_var != 2){
-            document.getElementById("button_draw_picture").disabled = true;
-        }
-        else{
-            document.getElementById("button_draw_picture").disabled = false;
-        }
-        obj_coefficients.length = num_var;  // 清空数组
+        // if (num_var != 2) {
+        //     document.getElementById("button_draw_picture").disabled = true;
+        // } else {
+        //     document.getElementById("button_draw_picture").disabled = false;
+        // }
+        obj_coefficients.length = num_var + 1;  // 清空数组
+        con_coefficients.length = 0;
         document.getElementById('initial_model').innerText = '';
         let coeContainer = document.getElementById("objCoeContainer");
         // 清空容器，确保每次点击按钮时重新生成输入框
@@ -179,11 +201,11 @@ layout: home
 
     }
 
-    let selected_obj_sense = '';  // 用来存储用户选择的值
-    selected_obj_sense = document.getElementById('selected_obj_sense').value;
-    // document.getElementById("select_obj_sense").addEventListener("change", function () {
-    //     selected_obj_sense = this.value;
-    // });
+
+    // selected_obj_sense = document.getElementById('selected_obj_sense').value;
+    document.getElementById("select_obj_sense").addEventListener("change", function () {
+        selected_obj_sense = this.value;
+    });
 
     // 提供一个函数，用来返回用户选择的值
     function getSelectedSense() {
@@ -214,29 +236,30 @@ layout: home
         // 让决策变量数量输入框实效
         document.getElementById("input_num").disabled = true;
         document.getElementById("select_obj_sense").disabled = true;
+        num_constraint = 0;
 
         let n = document.getElementById("input_num").value; // 获取 id 为 input_num 的标签中的 value 值
         n = Math.max(1, parseInt(n)); // parseInt() 是 JavaScript 用于将字符串转换为整数的内置函数
 
         // 得到输入框的系数
+        obj_coefficients[0] = selected_obj_sense;
         for (let i = 0; i < n; i++) {
             let input_id = 'coe_obj' + i;
             let coe = document.getElementById(input_id).value;
-            obj_coefficients[i] = coe;
+            obj_coefficients[i + 1] = coe;
         }
 
-        let select_obj_sense = getSelectedSense();
         let objStr = '';
-        objStr += generateFormulaLatex(obj_coefficients, n);
+        objStr += generateFormulaLatex(obj_coefficients.slice(1, n + 1), n);
         obj_latex_str = objStr;
         renderLatexModel(objStr);
     }
 
     function renderLatexModel(obj_str, con_str = '', var_type_str = '') {
-        let select_obj_sense = getSelectedSense();
+        let select_obj_sense = selected_obj_sense;
         let obj_sense_str;
         // 因为在 HTML 中，select 的 value 是字符串类型，所以应该与字符串 "1" 进行比较，而不是数字 1
-        if (select_obj_sense === "0") {
+        if (select_obj_sense === "\\\\max") {
             obj_sense_str = "\\max";
         } else {
             obj_sense_str = "\\min";
@@ -326,18 +349,19 @@ layout: home
 
         // 创建多个 option 元素
         const option1 = document.createElement("option");
-        option1.value = "\\geq";
-        option1.textContent = "≥";
+        option1.value = "\\leq";
+        option1.textContent = "≤";
         option1.selected = true;
 
 
         const option2 = document.createElement("option");
-        option2.value = "=";
-        option2.textContent = "=";
+        option2.value = "\\geq";
+        option2.textContent = "≥";
+
 
         const option3 = document.createElement("option");
-        option3.value = "\\leq";
-        option3.textContent = "<=";
+        option3.value = "===";
+        option3.textContent = "=";
 
         // 将 option 元素添加到 select 元素中
         select.appendChild(option1);
@@ -374,7 +398,7 @@ layout: home
         this_coes[num_var] = document.getElementById(sense_id).value;
         let rhs_id = 'constraint_rhs';
         this_coes[num_var + 1] = document.getElementById(rhs_id).value;
-        con_coefficients.push(this_coes.slice(0, num_var));
+        con_coefficients.push(this_coes);
         constraint_str = generateFormulaLatex(this_coes.slice(0, num_var), num_var);
         constraint_str += this_coes[num_var];
         constraint_str += ' ' + this_coes[num_var + 1];
@@ -397,8 +421,6 @@ layout: home
 
     function selectVariableType() {
         document.getElementById("button_input_constr").disabled = true;
-        document.getElementById("button_add_constr").disabled = true;
-        document.getElementById("button_remove_constr").disabled = true;
 
         document.getElementById('button_generate_full_model').disabled = false;
         let num_var = getNumVar();
@@ -449,8 +471,12 @@ layout: home
         document.getElementById("button_add_constr").disabled = true;
         document.getElementById("button_remove_constr").disabled = true;
         document.getElementById("button_select_variable_type").disabled = true;
-
         num_var = getNumVar();
+        if (num_var === 2) {
+            document.getElementById("button_draw_picture").disabled = false;
+        }
+
+        var_types.length = num_var;
         var_type_latex_str = '';
         for (let i = 0; i < num_var; i++) {
             let select_id = 'var_type' + (i + 1);
@@ -474,15 +500,17 @@ layout: home
                 let new_str = var_type_latex_str.slice(0, -2) + var_type_latex_str.slice(-1);
                 var_type_latex_str = new_str;
             }
+            var_types[i] = select.value;
         }
         renderLatexModel(obj_latex_str, con_latex_str, var_type_latex_str);
     }
 
-    function reset(){
+    function reset() {
         document.getElementById("input_num").disabled = false; // 让按钮恢复可点击
         document.getElementById("input_num").value = "2";
         document.getElementById("select_obj_sense").disabled = false;
         document.getElementById("button_input_obj_coe").disabled = false;
+        document.getElementById("button_draw_picture").disabled = false;
         document.getElementById("button_generate_obj").disabled = true;
         document.getElementById("button_input_constr").disabled = true;
         document.getElementById("button_add_constr").disabled = true;
@@ -496,41 +524,132 @@ layout: home
         document.getElementById("var_type_container").innerHTML = '';
         document.getElementById("objCoeContainer").innerHTML = '';
 
+        obj_coefficients = ['\\min', '2', '3']; // 创建一个空数组
+        con_coefficients = [['2', '1', '\\leq', '4'], ['1', '2', '\\leq', '5']];
+        var_types = ['0', '0'];
+        num_constraint = 2;
+
         elt.style.display = 'none';
+        // Remove all expressions
+        let arrs = calculator.getExpressions();
+        for (arr of arrs) {
+            let id_str = arr.id;
+            calculator.removeExpression({id: id_str});
+        }
 
         // innerHTML 会把 tag 也返回
         document.getElementById("initial_model").innerText = initial_model_latex;
         MathJax.typeset();
     }
 
-    function draw_picture() {
+    function drawPicture() {
+        MathJax.typeset();
+
         elt.style.display = 'block';
 
-        // **添加约束边界线**
-        calculator.setExpression({ id: 'line1', latex: '2x + y = 4', color: 'blue',});
-        calculator.setExpression({ id: 'line2', latex: 'x + 2y = 5', color: 'green' });
-        calculator.setExpression({ id: 'x_axis', latex: 'x = 0', color: 'black' });
-        calculator.setExpression({ id: 'y_axis', latex: 'y = 0', color: 'black' });
+        let num_var = getNumVar();
+        let latex_feasible = '\\max(';
+        // 添加约束边界线与约束区域
+        for (let i = 0; i < num_constraint; i++) {
+            let latex_str_left = '';
+            let var_str = 'x';
+            for (let j = 0; j < num_var; j++) {
+                if (j === 1) {
+                    var_str = 'y';
+                }
+                latex_str_left += con_coefficients[i][j] + var_str;
+                if (j == 0 && Number(con_coefficients[i][j + 1]) >= 0) {
+                    latex_str_left += '+';
+                }
+            }
+            // let mid_str = Number(con_coefficients[i].at(-1)) > 0 ? '-' : '';
+            // latex_feasible += latex_str_left + mid_str + con_coefficients[i].at(-1) + ',';
+            let latex_str_right = con_coefficients[i].at(-1);
+            let latex_line = latex_str_left + '=' + latex_str_right;
+            // let id_str = 'line' + String(i + 1);
+            calculator.setExpression({latex: latex_line});
+            let latex_str_sense = con_coefficients[i].at(-2) + ' ';
 
-        // **添加约束边界线**
-        calculator.setExpression({ id: 'area1', latex: '2x + y \\leq 4', color: 'blue', hidden: true });
-        calculator.setExpression({ id: 'area2', latex: 'x + 2y \\leq 5', color: 'green', hidden: true });
-        calculator.setExpression({ id: 'area3', latex: 'x \\geq 0', color: 'black', hidden: true });
-        calculator.setExpression({ id: 'area4', latex: 'y \\geq 0', color: 'black', hidden: true });
+            let latex_ueq = latex_str_left + latex_str_sense + latex_str_right;
+            // id_str = 'area' + String(i + 1);
+            calculator.setExpression({latex: latex_ueq, hidden: true});
+        }
+        for (let i = 0; i < num_constraint; i++) {
+            if (con_coefficients[i].at(-2) === '\\leq') {
+                latex_feasible += con_coefficients[i][0] + 'x';
+                if (Number(con_coefficients[i][1]) >= 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += con_coefficients[i][1] + 'y';
+                if (-Number(con_coefficients[i].at(-1)) > 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += String(-Number(con_coefficients[i].at(-1))) + ',';
+            }
+            if (con_coefficients[i].at(-2) === '\\geq') {
+                latex_feasible += String(-Number(con_coefficients[i][0])) + 'x';
+                if (-Number(con_coefficients[i][1]) >= 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += String(-Number(con_coefficients[i][1])) + 'y';
+                if (Number(con_coefficients[i].at(-1)) > 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += con_coefficients[i].at(-1) + ',';
+            }
+            if (con_coefficients[i].at(-2) === '=') {
+                latex_feasible += con_coefficients[i][0] + 'x';
+                if (Number(con_coefficients[i][1]) >= 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += con_coefficients[i][1] + 'y';
+                if (-Number(con_coefficients[i].at(-1)) > 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += String(Number(-con_coefficients[i].at(-1))) + ',';
 
+                latex_feasible += String(-Number(con_coefficients[i][0])) + 'x';
+                if (-Number(con_coefficients[i][1]) >= 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += String(-Number(con_coefficients[i][1])) + 'y';
+                if (Number(con_coefficients[i].at(-1)) > 0) {
+                    latex_feasible += '+';
+                }
+                latex_feasible += con_coefficients[i].at(-1) + ',';
+            }
+        }
+        for (let i = 0; i < num_var; i++) {
+            let var_str = i === 0 ? 'x' : 'y';
+            if (var_types[i] === '0') {
+                let latex_var_sense = var_str + '\\geq 0';
+                calculator.setExpression({latex: latex_var_sense, hidden: true});
+                latex_feasible += '-' + var_str;
+                if (i === 0) {
+                    latex_feasible += ',';
+                }
+            }
+        }
+        latex_feasible += ') \\leq 0';
         // **填充可行域（仅交集部分）**
         calculator.setExpression({
             id: 'feasible_region',
-            latex: '\\max(2x + y - 4, x + 2y - 5, -x, -y) \\leq 0',
-            color: 'rgba(15,161,15,0.8)' // 绿色半透明
+            latex: latex_feasible,
         });
 
         // **目标函数等值线**
+        let latex_sign = Number(obj_coefficients[2]) > 0 ? '+' : '';
+        let letex_obj = obj_coefficients[1] + 'x' + latex_sign + obj_coefficients[2] + 'y=c';
+
         calculator.setExpression({
             id: 'objective',
-            latex: '2x + 3y = c',
+            latex: letex_obj,
             lineStyle: Desmos.Styles.DASHED,
-            color: 'red'
+        });
+        // 设置变量 c 的初始值为 0（生成 slider）
+        calculator.setExpression({
+            id: 'slider-c',
+            latex: 'c = 0'
         });
     }
 </script>
