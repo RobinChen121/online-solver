@@ -581,7 +581,7 @@ layout: home
                     latex_feasible += '+';
                 }
                 latex_feasible += con_coefficients[i][1] + 'y';
-                if (-Number(con_coefficients[i].at(-1)) > 0) {
+                if (-Number(con_coefficients[i].at(-1)) >= 0) {
                     latex_feasible += '+';
                 }
                 latex_feasible += String(-Number(con_coefficients[i].at(-1))) + ',';
@@ -592,7 +592,7 @@ layout: home
                     latex_feasible += '+';
                 }
                 latex_feasible += String(-Number(con_coefficients[i][1])) + 'y';
-                if (Number(con_coefficients[i].at(-1)) > 0) {
+                if (Number(con_coefficients[i].at(-1)) >= 0) {
                     latex_feasible += '+';
                 }
                 latex_feasible += con_coefficients[i].at(-1) + ',';
@@ -603,7 +603,7 @@ layout: home
                     latex_feasible += '+';
                 }
                 latex_feasible += con_coefficients[i][1] + 'y';
-                if (-Number(con_coefficients[i].at(-1)) > 0) {
+                if (-Number(con_coefficients[i].at(-1)) >= 0) {
                     latex_feasible += '+';
                 }
                 latex_feasible += String(Number(-con_coefficients[i].at(-1))) + ',';
@@ -613,7 +613,7 @@ layout: home
                     latex_feasible += '+';
                 }
                 latex_feasible += String(-Number(con_coefficients[i][1])) + 'y';
-                if (Number(con_coefficients[i].at(-1)) > 0) {
+                if (Number(con_coefficients[i].at(-1)) >= 0) {
                     latex_feasible += '+';
                 }
                 latex_feasible += con_coefficients[i].at(-1) + ',';
