@@ -99,7 +99,7 @@ layout: home
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
 
 
-<div id="calculator" style="width: 750px; height: 750px;">
+<div id="calculator" style="width: 1000px; height: 1000px;">
     <p>
         \( x_1 \) and \( x_2 \) of the model are replaced by \( x \) and \( y \) in the picture.
     </p>

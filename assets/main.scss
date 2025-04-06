@@ -4,6 +4,12 @@
 
 @import "minima";
 
+// 修改页面主内容宽度
+.wrapper {
+  max-width: 1000px; // 改成你想要的宽度
+  padding: 0 20px;
+}
+
 /* 默认浅色模式 */
 :root {
   --bg-color: #f7fff7;
