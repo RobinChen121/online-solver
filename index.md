@@ -100,12 +100,14 @@ layout: home
 
 
 <div id="calculator" style="width: 1000px; height: 1000px;">
-    <p>
-        \( x_1 \) and \( x_2 \) of the model are replaced by \( x \) and \( y \) in the picture.
-    </p>
-    <p>
-        You may need to zoom in the picture to show the full feasible region.
-    </p>
+    <ul>
+        <li>
+            \( x_1 \) and \( x_2 \) of the model are replaced by \( x \) and \( y \) in the picture.
+        </li>
+        <li>
+            You may need to zoom in/out the picture to show the full feasible region.
+        </li>
+    </ul>
 </div>
 
 </body>
