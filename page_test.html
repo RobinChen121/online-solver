@@ -84,6 +84,16 @@ layout: home
     <button id="button_draw_picture" style="margin-top: 1%; margin-left:3%" onclick="drawPicture()"
     >Draw picture for 2D model
     </button>
+
+    <label for="select_obj_sense" style="margin-left: 3%">Solving method: </label>
+    <select id="select_solve">
+        <option value='\\min' selected>Simplex</option>
+        <option value='\\max'>Interior point</option>
+    </select>
+
+    <button id="solve" style="margin-top: 1%; margin-left:3%" onclick="drawPicture()"
+    >solve
+    </button>
 </p>
 
 
