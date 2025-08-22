@@ -2,7 +2,12 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 
-@import "minima";
+// 当你创建一个 SCSS 文件，前面加 _，比如 _base.scss，表示这是一个 partial（局部文件）
+// Sass 规定，引入 partial 时可以省略前面的 _ 和 .scss 后缀
+@use "../_sass/minima/variables";
+@use "../_sass/minima/base";
+@use "../_sass/minima/layout";
+@use "../_sass/minima/syntax-highlighting";
 
 // 修改页面主内容宽度
 .wrapper {
@@ -198,17 +203,10 @@ button:disabled:hover, select:disabled:hover {
 }
 
 #theme-toggle {
-  position: absolute;
-  top: 50%; /* 垂直居中 */
-  right: 20px; /* 右侧边距 */
-  transform: translateY(-50%); /* 调整为完全垂直居中 */
-  padding: 10px;
-  background-color: #333;
+  background-color:  #333;
   color: #fff;
-  border: none;
-  border-radius: 5px;
+  //border: 1px solid #333;
   cursor: pointer;
-  font-size: 18px;
 }
 
 #theme-toggle:hover {
@@ -231,6 +229,12 @@ button:disabled:hover, select:disabled:hover {
   display: inline-block;
   cursor: pointer; // 鼠标悬停时变成 手形（表示可点击）
 }
+
+#google_translate_element .goog-te-gadget {
+  display: inline-flex !important;
+  align-items: center;
+}
+
 
 // 文字在 class VIpgJd-ZVi9od-xl07Ob-lTBxed 下面的 span 标签下
 // :root 选择器等价于 html，表示文档的根元素
