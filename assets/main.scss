@@ -8,10 +8,12 @@
 @use "minima/layout";
 @use "minima/syntax-highlighting";
 
-// 修改页面主内容宽度
+/* 修改页面主内容宽度 */
 .wrapper {
-  max-width: 1000px; // 改成你想要的宽度
+  max-width: 1200px; /* 改成你想要的宽度 */
   padding: 0 20px;
+  width: 90%; /* 容器占父容器的百分比 */
+  margin: 0 auto; /* 自动水平居中 */
 }
 
 /* 默认浅色模式 */
@@ -263,10 +265,10 @@ select:disabled:hover {
   display: inline-flex !important;
 }
 
-// 文字在 class VIpgJd-ZVi9od-xl07Ob-lTBxed 下面的 span 标签下
-// :root 选择器等价于 html，表示文档的根元素
-// data-theme="dark" 是 属性选择器，它的作用是 只匹配那些 data-theme 属性值为 "dark" 的元素
-// 在 CSS 中，.（点号） 代表类名选择器
+//文字在 class VIpgJd-ZVi9od-xl07Ob-lTBxed 下面的 span 标签下
+//:root 选择器等价于 html，表示文档的根元素
+//data-theme="dark" 是 属性选择器，它的作用是 只匹配那些 data-theme 属性值为 "dark" 的元素
+//在 CSS 中，.（点号） 代表类名选择器
 [data-theme="dark"] .VIpgJd-ZVi9od-xl07Ob-lTBxed span {
   color: white !important; /* 深色模式下改为白色 */
 }
@@ -290,6 +292,7 @@ select:disabled:hover {
 
 body {
   top: 0px !important;
+  font-family: var(--base-font-family);
 }
 
 .footer-col footer-col-4 {
