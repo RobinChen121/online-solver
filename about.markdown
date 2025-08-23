@@ -5,7 +5,8 @@ permalink: /about/
 ---
 
 
-More information about me is in [my personal website](https://robinchen121.github.io).
+More information about me is in <a href="https://robinchen121.github.io" target="_blank" rel="noopener">my personal
+website</a>.
 
 Milestones for this online solver:
 
