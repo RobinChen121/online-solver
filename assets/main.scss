@@ -10,7 +10,7 @@
 
 body {
   top: 0 !important;
-  font-family: var(--base-font-family), serif;
+  font-family: var(--base-font-family), serif; /* 按顺序使用字体 */
 }
 
 /* 修改页面主内容宽度 */
@@ -54,7 +54,7 @@ body {
   ) !important; /* 使用 CSS 变量，随主题变化, !important 强制覆盖主题样式 */
   text-decoration: none; /* 可选，去掉下划线 */
   font-size: 2em !important;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 a {
