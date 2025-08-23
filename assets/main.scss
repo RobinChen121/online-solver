@@ -10,7 +10,16 @@
 @use "minima/syntax-highlighting";
 
 
+/*
+css中不同的类别：
+# —— ID 选择器
+. —— 类选择器
+无符号 —— 标签选择器,比如 header、footer、div、p 等
+: —— 表示一些伪类，比如鼠标悬停、选中、首个子元素等
+ */
+
 /* 默认浅色模式 */
+/* :root 等价于 <html> 标签，但它比直接用 html 更优先，常用于定义 CSS 变量 */
 :root {
   --bg-color: #f7fff7; /* 淡绿色 */
   --text-color: black;
@@ -76,6 +85,16 @@ a {
 a:hover {
   text-decoration: underline; // 鼠标悬停显示下划线
   color: var(--link-color);
+}
+
+/* 画图容器的设置 */
+/* margin :0 auto左右自动分配空间，相当于居中， padding-bottom 让下面不覆盖 footer */
+#calculator {
+  width: 80%;
+  max-width: 800px;
+  height: 600px;
+  padding-bottom: 100px;
+  margin: 0 auto;
 }
 
 /* 默认浅色模式下的按钮 */
