@@ -20,7 +20,7 @@ body {
   max-width: 1200px; /* 改成你想要的宽度 */
   padding: 0 20px;
   width: 80%; /* 容器占父容器的百分比 */
-  margin: 0 auto;
+  margin: 0 auto; /* 自动水平居中 */
 }
 
 
@@ -296,9 +296,4 @@ select:disabled:hover {
 
 .goog-te-banner-frame.skiptranslate {
   display: none !important;
-}
-
-
-.footer-col footer-col-4 {
-  color: var(--grey-color) !important;
 }
