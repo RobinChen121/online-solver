@@ -19,9 +19,10 @@
 
 
       <!-- Toogle google translation -->
-      <div id="google_translate_element"
-           style="display: inline-block; margin-left: auto; margin-right: auto; font-size: smaller; padding: 5px;"></div>
-
+      <div style="display: flex; justify-content: center; font-size: smaller; padding: 5px;">
+        <div id="google_translate_element"></div>
+      </div>
+      
       <! read all the markdown files -->
       <div class="trigger" style="display: inline-block">
         {%- for path in page_paths -%}
