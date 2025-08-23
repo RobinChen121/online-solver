@@ -9,8 +9,6 @@
 @use "minima/syntax-highlighting";
 
 body {
-  display: flex;
-  justify-content: center; /* 水平居中 */
   top: 0px !important;
   font-family: var(--base-font-family);
 }
