@@ -31,6 +31,7 @@ layout: home
 </p>
 <div id="objCoeContainer"></div>
 
+<p></p>
 <p>
     <button id="button_generate_obj" onclick="inputObj()" disabled>Generate objective
     </button>
