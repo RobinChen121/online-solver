@@ -41,7 +41,7 @@ body {
 }
 
 .site-title {
-  color: #1e90ff; /* 你想要的字体颜色 */
+  color: var(--text-color); // 用 -- 引入变量
 }
 
 a {
@@ -248,7 +248,6 @@ button:disabled:hover, select:disabled:hover {
 
 #google_translate_element .goog-te-gadget {
   display: inline-flex !important;
-  align-items: center;
 }
 
 
