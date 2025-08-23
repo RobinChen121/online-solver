@@ -8,13 +8,21 @@
 @use "minima/layout";
 @use "minima/syntax-highlighting";
 
+body {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  top: 0px !important;
+  font-family: var(--base-font-family);
+}
+
 /* 修改页面主内容宽度 */
 .wrapper {
   max-width: 1200px; /* 改成你想要的宽度 */
   padding: 0 20px;
-  width: 90%; /* 容器占父容器的百分比 */
-  margin: 0 auto; /* 自动水平居中 */
+  width: 80%; /* 容器占父容器的百分比 */
+  margin: 0 auto;
 }
+
 
 /* 默认浅色模式 */
 :root {
@@ -290,10 +298,6 @@ select:disabled:hover {
   display: none !important;
 }
 
-body {
-  top: 0px !important;
-  font-family: var(--base-font-family);
-}
 
 .footer-col footer-col-4 {
   color: var(--grey-color) !important;
