@@ -1,5 +1,9 @@
-//当你创建一个 SCSS 文件，前面加 _，比如 _base.scss，表示这是一个 partial（局部文件）
-//Sass 规定，引入 partial 时可以省略前面的 _ 和 .scss 后缀
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+/*当你创建一个 SCSS 文件，前面加 _，比如 _base.scss，表示这是一个 partial（局部文件）*/
+/* Sass 规定，引入 partial 时可以省略前面的 _ 和 .scss 后缀 */
 @use "minima/variables";
 @use "minima/base";
 @use "minima/layout";

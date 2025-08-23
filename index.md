@@ -2,8 +2,6 @@
 layout: home
 ---
 
-<hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
-
 <p>
     <label for="input_num">Number of decision variables: </label><input type="number"
                                                                         style="width: 5%;"
