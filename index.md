@@ -1,9 +1,6 @@
 ---
 layout: home
 ---
-<!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
-<hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
-
 <p>
     <label for="input_num">Number of decision variables: </label><input type="number"
                                                                         style="width: 5%;"
@@ -87,8 +84,8 @@ layout: home
     \end{aligned}\]</p>
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
 
-<!-- margin :0 auto左右自动分配空间 -->
-<div id="calculator" style="width: 800px; height: 600px; margin: 0 auto;">
+<!-- margin :0 auto左右自动分配空间，相当于居中， padding-bottom 让下面不覆盖 footer -->
+<div id="calculator" style="width: 80%; height: 600px; padding-bottom: 50px; margin: 0 auto;">
     <ul>
         <li>
             \( x_1 \) and \( x_2 \) of the model are replaced by \( x \) and \( y \) in the picture.

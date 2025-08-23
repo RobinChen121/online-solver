@@ -9,9 +9,16 @@
 @use "minima/layout";
 @use "minima/syntax-highlighting";
 
-//html {
-//  font-family: $base-font-family;
-//}
+
+/* 默认浅色模式 */
+:root {
+  --bg-color: #f7fff7; /* 淡绿色 */
+  --text-color: black;
+  --link-color: blue;
+  --disabled-bg: #e8e8e8;
+  --disabled-text: #aaaaaa;
+  --disabled-border: #dddddd;
+}
 
 body {
   background-color: var(--bg-color);
@@ -26,17 +33,6 @@ body {
   padding: 0 20px;
   width: 70%; /* 容器占父容器的百分比 */
   margin: 0 auto; /* 自动水平居中 */
-}
-
-
-/* 默认浅色模式 */
-:root {
-  --bg-color: #f7fff7;
-  --text-color: black;
-  --link-color: blue;
-  --disabled-bg: #e8e8e8;
-  --disabled-text: #aaaaaa;
-  --disabled-border: #dddddd;
 }
 
 /* 深色模式 */
