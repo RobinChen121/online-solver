@@ -1,45 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desmos 线性规划求解</title>
-  <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
-</head>
-<body>
-<div id="calculator" style="width: 1000px; height: 800px;"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desmos 线性规划求解</title>
+    <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  </head>
+  <body>
+    <div id="calculator" style="width: 1000px; height: 800px"></div>
 
-<script>
-  const elt = document.getElementById('calculator');
-  const calculator = Desmos.GraphingCalculator(elt);
+    <script>
+      const elt = document.getElementById("calculator");
+      const calculator = Desmos.GraphingCalculator(elt);
 
-  // **添加约束边界线**
-  calculator.setExpression({ id: 'line1', latex: '2x + y = 4', color: 'blue', label: '2x + y = 4'});
-  calculator.setExpression({ id: 'line2', latex: 'x + 2y = 5', color: 'green' });
-  calculator.setExpression({ id: 'x_axis', latex: 'x = 0', color: 'black' });
-  calculator.setExpression({ id: 'y_axis', latex: 'y = 0', color: 'black' });
+      // **添加约束边界线**
+      calculator.setExpression({
+        id: "line1",
+        latex: "2x + y = 4",
+        color: "blue",
+        label: "2x + y = 4",
+      });
+      calculator.setExpression({
+        id: "line2",
+        latex: "x + 2y = 5",
+        color: "green",
+      });
+      calculator.setExpression({
+        id: "x_axis",
+        latex: "x = 0",
+        color: "black",
+      });
+      calculator.setExpression({
+        id: "y_axis",
+        latex: "y = 0",
+        color: "black",
+      });
 
-  // **添加约束边界线**
-  calculator.setExpression({ id: 'area1', latex: '2x + y \\leq 4', color: 'blue', hidden: true });
-  calculator.setExpression({ id: 'area2', latex: 'x + 2y \\leq 5', color: 'green', hidden: true });
-  calculator.setExpression({ id: 'area3', latex: 'x \\geq 0', color: 'black', hidden: true });
-  calculator.setExpression({ id: 'area4', latex: 'y \\geq 0', color: 'black', hidden: true });
+      // **添加约束边界线**
+      calculator.setExpression({
+        id: "area1",
+        latex: "2x + y \\leq 4",
+        color: "blue",
+        hidden: true,
+      });
+      calculator.setExpression({
+        id: "area2",
+        latex: "x + 2y \\leq 5",
+        color: "green",
+        hidden: true,
+      });
+      calculator.setExpression({
+        id: "area3",
+        latex: "x \\geq 0",
+        color: "black",
+        hidden: true,
+      });
+      calculator.setExpression({
+        id: "area4",
+        latex: "y \\geq 0",
+        color: "black",
+        hidden: true,
+      });
 
-  // **填充可行域（仅交集部分）**
-  calculator.setExpression({
-    id: 'feasible_region',
-    latex: '\\max(2x + y - 4, x + 2y - 5, -x, -y) \\leq 0',
-    color: 'rgba(15,161,15,0.8)' // 绿色半透明
-  });
+      // **填充可行域（仅交集部分）**
+      calculator.setExpression({
+        id: "feasible_region",
+        latex: "\\max(2x + y - 4, x + 2y - 5, -x, -y) \\leq 0",
+        color: "rgba(15,161,15,0.8)", // 绿色半透明
+      });
 
-  // **目标函数等值线**
-  calculator.setExpression({
-    id: 'objective',
-    latex: '2x + 3y = c',
-    lineStyle: Desmos.Styles.DASHED,
-    color: 'red'
-  });
-
-</script>
-</body>
+      // **目标函数等值线**
+      calculator.setExpression({
+        id: "objective",
+        latex: "2x + 3y = c",
+        lineStyle: Desmos.Styles.DASHED,
+        color: "red",
+      });
+    </script>
+  </body>
 </html>

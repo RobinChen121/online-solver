@@ -2,10 +2,13 @@
   <data class="u-url" href="{{ '/' | relative_url }}"></data>
 
   <div class="wrapper">
-
     <!--    <h2 class="footer-heading">{{ site.title | escape }}</h2>-->
 
-    <div class="footer-col-wrapper" , style="display: flex; justify-content: space-between;">
+    <div
+      class="footer-col-wrapper"
+      ,
+      style="display: flex; justify-content: space-between"
+    >
       <div class="footer-col footer-col-1">
         <ul class="contact-list">
           {%- if site.email -%}
@@ -16,11 +19,9 @@
         </ul>
       </div>
 
-      <div class="footer-col footer-col-4" , style="font-color: grey-color;">
+      <div class="footer-col footer-col-4">
         <p>{{- site.description | escape -}}</p>
       </div>
     </div>
-
   </div>
-
 </footer>

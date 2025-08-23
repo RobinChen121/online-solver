@@ -1,114 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+  <head>
+    <meta charset="utf-8" />
 
-<head>
-  <meta charset="utf-8">
+    <title>Welcome to use my solver</title>
 
-  <title>Welcome to use my solver</title>
+    <!-- 引入 MathJax -->
+    <script
+      type="text/javascript"
+      async
+      id="MathJax-script"
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
 
-  <!-- 引入 MathJax -->
-  <script type="text/javascript" async
-          id="MathJax-script"
-          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- 引入 Desmos -->
+    <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  </head>
 
-  <!-- 引入 Desmos -->
-  <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  {%- include head.html -%}
 
-</head>
+  <body>
+    {%- include header.html -%}
 
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">{{ content }}</div>
+    </main>
 
-{%- include head.html -%}
+    {%- include footer.html -%}
 
-<body>
-
-{%- include header.html -%}
-
-<main class="page-content" aria-label="Content">
-  <div class="wrapper">
-    {{ content }}
-  </div>
-</main>
-
-{%- include footer.html -%}
-
-<script src="{{ '/assets/solver.js' | relative_url }}"></script>
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,zh-CN,zh-TW,ja,ko,de,ru,fr,es,it,pt,hi,ar',
+    <script src="{{ '/assets/solver.js' | relative_url }}"></script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,zh-CN,zh-TW,ja,ko,de,ru,fr,es,it,pt,hi,ar",
             layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        }, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript"
-        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-></script>
-<script>
-    // 更改谷歌翻译的语言
-    setTimeout(() => {
-        let langLink = document.querySelector('.VIpgJd-ZVi9od-xl07Ob-lTBxed'); // <a> 元素
-        let langSpan = langLink ? langLink.querySelector('span') : null; // 获取第一个 <span>
+          },
+          "google_translate_element",
+        );
+      }
+    </script>
+    <script
+      type="text/javascript"
+      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    ></script>
+    <script>
+      // 更改谷歌翻译的语言
+      setTimeout(() => {
+        let langLink = document.querySelector(".VIpgJd-ZVi9od-xl07Ob-lTBxed"); // <a> 元素
+        let langSpan = langLink ? langLink.querySelector("span") : null; // 获取第一个 <span>
 
         if (!langSpan) return;
 
         // 1️⃣ 读取 localStorage，恢复用户上次选择的语言
-        let savedLang = localStorage.getItem('selectedLanguage') || 'EN'; // 默认 "En"
+        let savedLang = localStorage.getItem("selectedLanguage") || "EN"; // 默认 "En"
         langSpan.innerText = savedLang;
 
         // 2️⃣ 监听 <span> 的变化
         let observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === "childList" || mutation.type === "characterData") {
-                    let newLang = langSpan.innerText.trim(); // 获取当前语言文本
+          mutations.forEach((mutation) => {
+            if (
+              mutation.type === "childList" ||
+              mutation.type === "characterData"
+            ) {
+              let newLang = langSpan.innerText.trim(); // 获取当前语言文本
 
-                    if (newLang && newLang !== "En") {
-                        localStorage.setItem('selectedLanguage', newLang); // 存储用户选择的语言
-                    }
-                }
-            });
+              if (newLang && newLang !== "En") {
+                localStorage.setItem("selectedLanguage", newLang); // 存储用户选择的语言
+              }
+            }
+          });
         });
 
         // 监听 <span> 内部的文本变化
-        observer.observe(langSpan, {childList: true, subtree: true, characterData: true});
-    }, 1000); // 延迟 1 秒，确保 Google 翻译插件加载完成
+        observer.observe(langSpan, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+        });
+      }, 1000); // 延迟 1 秒，确保 Google 翻译插件加载完成
+    </script>
 
-</script>
+    <!-- 主题切换脚本 -->
+    <script>
+      // 获取当前主题，默认浅色
+      function getPreferredTheme() {
+        const savedTheme = localStorage.getItem("theme");
+        return (
+          savedTheme ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light")
+        );
+      }
 
-<!-- 主题切换脚本 -->
-<script>
-    // 获取当前主题，默认浅色
-    function getPreferredTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    }
+      // 设置主题
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+      }
 
-    // 设置主题
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-    }
-
-    // 初始化主题
-    function initTheme() {
+      // 初始化主题
+      function initTheme() {
         const currentTheme = getPreferredTheme();
         setTheme(currentTheme);
-    }
+      }
 
-    // 切换主题
-    function toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      // 切换主题
+      function toggleTheme() {
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
         setTheme(newTheme);
-    }
+      }
 
-    // 监听按钮点击事件
-    document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+      // 监听按钮点击事件
+      document
+        .getElementById("theme-toggle")
+        .addEventListener("click", toggleTheme);
 
-    // 初始化页面时加载当前主题
-    initTheme();
-</script>
-
-</body>
-
+      // 初始化页面时加载当前主题
+      initTheme();
+    </script>
+  </body>
 </html>

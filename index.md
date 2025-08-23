@@ -2,7 +2,6 @@
 layout: home
 ---
 
-
 <p>
     <label for="input_num">Number of decision variables: </label><input type="number"
                                                                         style="width: 5%;"
@@ -31,7 +30,6 @@ layout: home
     <!--<div> 是一个 HTML 元素，常用于分组和布局，不会直接显示任何内容，但可以用于包含其他 HTML 元素-->
 </p>
 <div id="objCoeContainer"></div>
-
 
 <p>
     <button id="button_generate_obj" onclick="inputObj()" disabled>Generate objective
@@ -75,7 +73,6 @@ layout: home
 
 </p>
 
-
 <!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
 <p id="initial_model" style="margin-top: 1%">\[\begin{aligned}
@@ -98,5 +95,3 @@ layout: home
         </li>
     </ul>
 </div>
-
-

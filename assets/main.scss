@@ -40,9 +40,10 @@ body {
   color: var(--text-color); // 用 -- 引入变量
 }
 
-
 .site-title {
-  color: var(--text-color) !important; /* 使用 CSS 变量，随主题变化, !important 强制覆盖主题样式 */
+  color: var(
+                  --text-color
+  ) !important; /* 使用 CSS 变量，随主题变化, !important 强制覆盖主题样式 */
   text-decoration: none; /* 可选，去掉下划线 */
 }
 
@@ -58,7 +59,9 @@ button {
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s, color 0.3s, border 0.3s;
+  transition: background 0.3s,
+  color 0.3s,
+  border 0.3s;
 }
 
 /* 深色模式按钮 */
@@ -77,7 +80,6 @@ button:hover {
   background-color: #444;
 }
 
-
 /* 默认浅色模式下的 input */
 input {
   background-color: #fff;
@@ -85,7 +87,9 @@ input {
   border: 1px solid #ccc;
   padding: 8px;
   border-radius: 5px;
-  transition: background 0.3s, color 0.3s, border 0.3s;
+  transition: background 0.3s,
+  color 0.3s,
+  border 0.3s;
 }
 
 /* 深色模式 input */
@@ -113,7 +117,9 @@ select {
   border: 1px solid #ccc;
   padding: 8px;
   border-radius: 5px;
-  transition: background 0.3s, color 0.3s, border 0.3s;
+  transition: background 0.3s,
+  color 0.3s,
+  border 0.3s;
   appearance: none; /* 去掉默认样式 */
 }
 
@@ -146,7 +152,9 @@ select option:hover {
 }
 
 /* ✨ 让“失效”的按钮 & 选择框不明显 */
-button:disabled, input:disabled, select:disabled {
+button:disabled,
+input:disabled,
+select:disabled {
   background-color: var(--disabled-bg);
   color: var(--disabled-text); /* 让文字变淡 */
   border: 1px solid var(--disabled-border);
@@ -155,7 +163,8 @@ button:disabled, input:disabled, select:disabled {
 }
 
 /* 失效时禁用 hover 效果 */
-button:disabled:hover, select:disabled:hover {
+button:disabled:hover,
+select:disabled:hover {
   background-color: var(--disabled-bg);
   border-color: var(--disabled-border);
 }
@@ -252,7 +261,6 @@ button:disabled:hover, select:disabled:hover {
   display: inline-flex !important;
 }
 
-
 // 文字在 class VIpgJd-ZVi9od-xl07Ob-lTBxed 下面的 span 标签下
 // :root 选择器等价于 html，表示文档的根元素
 // data-theme="dark" 是 属性选择器，它的作用是 只匹配那些 data-theme 属性值为 "dark" 的元素
@@ -280,4 +288,8 @@ button:disabled:hover, select:disabled:hover {
 
 body {
   top: 0px !important;
+}
+
+.footer-col-4 {
+  color: var(--grey-color);
 }
