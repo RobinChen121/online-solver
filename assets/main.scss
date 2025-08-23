@@ -46,6 +46,7 @@ body {
   ) !important; /* 使用 CSS 变量，随主题变化, !important 强制覆盖主题样式 */
   text-decoration: none; /* 可选，去掉下划线 */
   font-size: 2em !important;
+  cursor: pointer;
 }
 
 a {
