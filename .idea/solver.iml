@@ -8,5 +8,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="mathjax" level="application" />
+    <orderEntry type="library" name="@types/desmos" level="application" />
+    <orderEntry type="library" name="@types/mathjax" level="application" />
   </component>
 </module>
