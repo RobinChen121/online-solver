@@ -9,8 +9,15 @@
 @use "minima/layout";
 @use "minima/syntax-highlighting";
 
-html {
-  font-family: var(--base-font-family);
+//html {
+//  font-family: $base-font-family;
+//}
+
+body {
+  background-color: var(--bg-color);
+  top: 0 !important;
+  //font-family: var(--base-font-family); /* 按顺序使用字体 */
+  font-family: system-ui !important;
 }
 
 /* 修改页面主内容宽度 */
@@ -42,11 +49,6 @@ html {
   --disabled-border: #2d2d2d; /* 失效时边框更淡 */
 }
 
-/* 让整个页面应用变量 */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color); // 用 -- 引入变量
-}
 
 .site-title {
   color: var(

@@ -1,6 +1,8 @@
 ---
 layout: home
 ---
+<!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
+<hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
 
 <p>
     <label for="input_num">Number of decision variables: </label><input type="number"
