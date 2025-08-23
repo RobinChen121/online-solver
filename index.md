@@ -87,8 +87,8 @@ layout: home
     \end{aligned}\]</p>
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">
 
-
-<div id="calculator" style="width: 1000px; height: 1000px;">s
+<!-- margin :0 auto左右自动分配空间 -->
+<div id="calculator" style="width: 800px; height: 600px; margin: 0 auto;">
     <ul>
         <li>
             \( x_1 \) and \( x_2 \) of the model are replaced by \( x \) and \( y \) in the picture.
