@@ -6,7 +6,7 @@ let con_coefficients = [
 ];
 let var_types = ["0", "0"];
 
-let selected_obj_sense = "\\min"; // 用来存储用户选择的值
+let selected_obj_sense = "\\min"; // 也可以用来存储用户选择的值
 
 let num_constraint = 2;
 let obj_latex_str = "";
