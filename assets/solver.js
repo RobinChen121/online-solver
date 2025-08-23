@@ -90,7 +90,6 @@ function inputObjCoefficients() {
   MathJax.typeset();
 }
 
-// selected_obj_sense = document.getElementById('selected_obj_sense').value;
 document
   .getElementById("select_obj_sense")
   .addEventListener("change", function () {
