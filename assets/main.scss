@@ -9,8 +9,8 @@
 @use "minima/syntax-highlighting";
 
 body {
-  top: 0px !important;
-  font-family: var(--base-font-family);
+  top: 0 !important;
+  font-family: var(--base-font-family), serif;
 }
 
 /* 修改页面主内容宽度 */
@@ -281,9 +281,9 @@ select:disabled:hover {
 
 .goog-te-gadget-icon {
   background-image: url(https://placehold.it/32) !important;
-  background-position: 0px 0px;
-  height: 0px !important;
-  width: 0px !important;
+  background-position: 0 0;
+  height: 0 !important;
+  width: 0 !important;
   margin-right: 8px !important;
   display: none;
 }
