@@ -17,7 +17,7 @@ layout: home
         <option value='\\max'>Max</option>
     </select>
 
-    <button id="button_reset" onclick="reset()" style="position: relative; margin-left: 5%;">Reset
+    <button id="button_reset" onclick="reset()" style="position: relative; float: right;">Reset
     </button>
 
 </p>
