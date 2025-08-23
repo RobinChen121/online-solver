@@ -1,5 +1,5 @@
 ---
-# Only the main Sass file needs front matter (the dashes are enough)
+# 双 --- 的作用是告诉 Jekyll 需要编译这个 SCSS 文件
 ---
 
 /*当你创建一个 SCSS 文件，前面加 _，比如 _base.scss，表示这是一个 partial（局部文件）*/
@@ -9,9 +9,8 @@
 @use "minima/layout";
 @use "minima/syntax-highlighting";
 
-body {
-  top: 0 !important;
-  font-family: var(--base-font-family), serif; /* 按顺序使用字体 */
+html {
+  font-family: var(--base-font-family);
 }
 
 /* 修改页面主内容宽度 */

@@ -1,8 +1,9 @@
 @use "sass:color";
 // Define defaults for each variable.
 // !default 是一个 可选值标记，用来声明变量只有在 还没有被赋值 的情况下才会生效
-$base-font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji",
-"Segoe UI Symbol", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif !default;
+$base-font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+
 
 $base-font-size: 16px !default;
 $base-font-weight: 400 !default;
