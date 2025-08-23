@@ -2,25 +2,24 @@
 layout: home
 ---
 
-<p>
-    <label for="input_num">Number of decision variables: </label><input type="number"
-                                                                        style="width: 5%;"
-                                                                        id="input_num"
-                                                                        value="2"
-                                                                        min="2"
-                                                                        max="20" required>
-    <!--使用百分比来让输入框的宽度相对于其父容器的宽度进行调整。-->
+<div style="display: flex; align-items: center;">
+  <div>
+    <!-- 左边内容，比如输入框、标签 -->
+    <label for="input_num">Number of decision variables:</label>
+    <input type="number" id="input_num" value="2" min="2" max="20" required>
 
-    <label for="select_obj_sense" style="margin-left: 3%">Objective: </label>
+    <label for="select_obj_sense">Objective:</label>
     <select id="select_obj_sense">
-        <option value='\\min' selected>Min</option>
-        <option value='\\max'>Max</option>
+      <option value='\\min' selected>Min</option>
+      <option value='\\max'>Max</option>
     </select>
 
-    <button id="button_reset" onclick="reset()" style="position: relative; margin-left: 5%;">Reset
-    </button>
+  </div>
 
-</p>
+  <!-- 右侧按钮 -->
+<button id="button_reset" onclick="reset()" style="margin-left: auto;">Reset</button>
+</div>
+<p></p>
 
 <p>
     <button id="button_input_obj_coe" onclick="inputObjCoefficients()">Input objective
@@ -31,6 +30,7 @@ layout: home
 </p>
 <div id="objCoeContainer"></div>
 
+<p></p>
 <p>
     <button id="button_generate_obj" onclick="inputObj()" disabled>Generate objective
     </button>
