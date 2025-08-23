@@ -2,17 +2,17 @@
 <html lang="{{ page.lang | default: site.lang | default: 'en' }}">
 
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <title>Welcome to use my solver</title>
+  <title>Welcome to use my solver</title>
 
-    <!-- 引入 MathJax -->
-    <script type="text/javascript" async
-            id="MathJax-script"
-            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- 引入 MathJax -->
+  <script type="text/javascript" async
+          id="MathJax-script"
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <!-- 引入 Desmos -->
-    <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <!-- 引入 Desmos -->
+  <script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 
 </head>
 
@@ -24,9 +24,9 @@
 {%- include header.html -%}
 
 <main class="page-content" aria-label="Content">
-    <div class="wrapper">
-        {{ content }}
-    </div>
+  <div class="wrapper">
+    {{ content }}
+  </div>
 </main>
 
 {%- include footer.html -%}
@@ -71,14 +71,6 @@
 
         // 监听 <span> 内部的文本变化
         observer.observe(langSpan, {childList: true, subtree: true, characterData: true});
-
-        // // 3️⃣ 定期检查语言是否被修改（防止 Google 翻译插件未更新 `span`）
-        // setInterval(() => {
-        //     let currentLang = langSpan.innerText.trim();
-        //     if (!currentLang || currentLang === "") {
-        //         langSpan.innerText = "En"; // 如果为空，则默认显示 "En"
-        //     }
-        // }, 2000); // 每 2 秒检测一次
     }, 1000); // 延迟 1 秒，确保 Google 翻译插件加载完成
 
 </script>
@@ -88,13 +80,6 @@
     // 获取当前主题，默认浅色
     function getPreferredTheme() {
         const savedTheme = localStorage.getItem('theme');
-        // const the_theme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // if (the_theme) {
-        //     return 'dark';
-        // }
-        // else{
-        //     return 'light';
-        // }
         return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     }
 
