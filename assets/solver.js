@@ -1,5 +1,3 @@
-/* global MathJax */
-
 // store the model in str arrays
 let obj_coefficients = ["2", "3"]; // 创建一个空数组
 let obj_sense = "\\min"; // 也可以用来存储用户选择的值
@@ -12,14 +10,6 @@ let con_rhs = [
     ["4"], ["5"],
 ];
 let var_types = ["non-negative-continuous", "non-negative-continuous"];
-
-let con_coefficients = [
-    ["2", "1", "\\leq", "4"],
-    ["1", "2", "\\leq", "5"],
-];
-
-
-
 
 let num_constraint = 2;
 let obj_latex_str = "";
@@ -69,6 +59,9 @@ function inputObjCoefficients() {
 
     let num_var = getNumVar();
     obj_coefficients.length = num_var; // js 数组的 length 可以动态变化
+    con_lhs.length = 0;
+    con_sense.length = 0;
+    con_rhs.length = 0;
     document.getElementById("initial_model").innerText = "";
     let coeContainer = document.getElementById("objCoeContainer");
     // 清空容器，确保每次点击按钮时重新生成输入框
@@ -99,6 +92,7 @@ function inputObjCoefficients() {
         coeContainer.appendChild(label);
     }
     // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
+    /* global MathJax */
     MathJax.typeset();
 }
 
@@ -108,6 +102,9 @@ document
         obj_sense = this.value;
     });
 
+/*
+将一个约束条件的lhs转化为latex代码
+ */
 function generateFormulaLatex(arr, n) {
     let latexBodyStr = "";
     // ${} 用于 模板字符串（Template Literals），允许在字符串中嵌入变量或表达式
@@ -213,7 +210,9 @@ function inputConstraint() {
     // 根据给定数目生成输入框
     for (let i = 0; i < num_var; i++) {
         // 创建新的 <input> 元素
+        /**@type {HTMLElement} */
         const label = document.createElement("label");
+        /**@type {HTMLElement} */
         const input = document.createElement("input");
         input.type = "number"; // 设置输入框类型为文本
         input.id = "constraint_coe" + i; // 设置输入框 ID（可选）
@@ -235,6 +234,7 @@ function inputConstraint() {
     }
 
     // 创建 select 元素
+    /**@type {HTMLElement} */
     const select = document.createElement("select");
     select.id = "constraint_sense";
 
@@ -261,6 +261,7 @@ function inputConstraint() {
 
     coeContainer.appendChild(select);
 
+    /**@type {HTMLElement} */
     const input_rhs = document.createElement("input");
     input_rhs.type = "number"; // 设置输入框类型为文本
     input_rhs.id = "constraint_rhs";
@@ -277,29 +278,24 @@ function inputConstraint() {
 
 function addConstraint() {
     let num_var = getNumVar();
-    let this_coes = new Array(num_var + 2);
     let this_lhs = new Array(num_var);
     document.getElementById("button_select_variable_type").disabled = false;
 
     for (let i = 0; i < num_var; i++) {
         let input_id = "constraint_coe" + i;
-        this_coes[i] = document.getElementById(input_id).value;
         this_lhs[i] = document.getElementById(input_id).value;
     }
     let sense_id = "constraint_sense";
-    this_coes[num_var] = document.getElementById(sense_id).value;
     let this_sense = document.getElementById(sense_id).value;
     let rhs_id = "constraint_rhs";
-    this_coes[num_var + 1] = document.getElementById(rhs_id).value;
     let this_rhs = document.getElementById(rhs_id).value;
-    con_coefficients.push(this_coes);
     con_lhs.push(this_lhs);
     con_sense.push(this_sense);
     con_rhs.push(this_rhs);
 
-    let constraint_str = generateFormulaLatex(this_coes.slice(0, num_var), num_var);
-    constraint_str += this_coes[num_var];
-    constraint_str += " " + this_coes[num_var + 1];
+    let constraint_str = generateFormulaLatex(this_lhs.slice(0, num_var), num_var);
+    constraint_str += this_sense;
+    constraint_str += " " + this_rhs;
     con_latex_str.push(constraint_str);
     renderLatexModel(obj_latex_str, con_latex_str);
     document.getElementById("button_remove_constr").disabled = false;
@@ -325,7 +321,9 @@ function selectVariableType() {
     let type_container = document.getElementById("var_type_container");
     type_container.innerHTML = "";
     for (let i = 0; i < num_var; i++) {
+        /**@type {HTMLElement} */
         let label = document.createElement("label");
+        /**@type {HTMLElement} */
         let select = document.createElement("select");
         select.id = "var_type" + (i + 1);
         select.style.marginLeft = "0.4%";
@@ -377,22 +375,23 @@ function generateFullModel() {
     var_type_latex_str = "";
     for (let i = 0; i < num_var; i++) {
         let select_id = "var_type" + (i + 1);
+        /**@type {HTMLElement} */
         let select = document.getElementById(select_id);
-        if (select.value === "0") {
+        if (select.value === "non-negative-continuous") {
             var_type_latex_str += `x_{${i + 1}}\\geq 0`;
-        } else if (select.value === "2") {
+        } else if (select.value === "binary") {
             var_type_latex_str += `x_{${i + 1}}\\in \\{0,1\\}`;
-        } else if (select.value === "3") {
+        } else if (select.value === "integer") {
             var_type_latex_str += `x_{${i + 1}}\\in \\mathbb\{Z\}`;
         }
-        if (select.value !== "1") {
+        if (select.value !== "continuous") {
             if (i < num_var - 1) {
                 var_type_latex_str += ",";
             } else {
                 var_type_latex_str += ".";
             }
         }
-        if (i === num_var - 1 && select.value === "1") {
+        if (i === num_var - 1 && select.value === "continuous") {
             var_type_latex_str = var_type_latex_str.slice(0, -2) + var_type_latex_str.slice(-1);
         }
         var_types[i] = select.value;
@@ -420,9 +419,18 @@ function reset() {
     document.getElementById("objCoeContainer").innerHTML = "";
 
     obj_coefficients = ["2", "3"]; // 创建一个空数组
-    con_coefficients = [
-        ["2", "1", "\\leq", "4"],
-        ["1", "2", "\\leq", "5"],
+    // con_coefficients = [
+    //     ["2", "1", "\\leq", "4"],
+    //     ["1", "2", "\\leq", "5"],
+    // ];
+    obj_sense = "\\min"; // 也可以用来存储用户选择的值
+    con_lhs = [
+        ["2", "1"],
+        ["1", "2"],
+    ];
+    con_sense = ["\\leq", "\\leq"];
+    con_rhs = [
+        ["4"], ["5"],
     ];
     var_types = ["non-negative-continuous", "non-negative-continuous"];
     num_constraint = 2;
@@ -430,7 +438,7 @@ function reset() {
     elt.style.display = "none";
     // Remove all expressions
     let arrs = calculator.getExpressions();
-    for (arr of arrs) {
+    for (let arr of arrs) {
         let id_str = arr.id;
         calculator.removeExpression({id: id_str});
     }
@@ -446,8 +454,7 @@ function drawPicture() {
     elt.style.display = "block";
 
     let num_var = getNumVar();
-    let latex_feasible = "\\max(";
-    // 添加约束边界线与约束区域
+    // 添加约束边界线
     for (let i = 0; i < num_constraint; i++) {
         let latex_str_left = "";
         let var_str = "x";
@@ -455,68 +462,71 @@ function drawPicture() {
             if (j === 1) {
                 var_str = "y";
             }
-            latex_str_left += con_coefficients[i][j] + var_str;
-            if (j === 0 && Number(con_coefficients[i][j + 1]) >= 0) {
+            latex_str_left += con_lhs[i][j] + var_str;
+            if (j === 0 && Number(con_lhs[i][j + 1]) >= 0) {
                 latex_str_left += "+";
             }
         }
-        // let mid_str = Number(con_coefficients[i].at(-1)) > 0 ? '-' : '';
-        // latex_feasible += latex_str_left + mid_str + con_coefficients[i].at(-1) + ',';
-        let latex_str_right = con_coefficients[i].at(-1);
+
+        let latex_str_right = con_rhs[i];
         let latex_line = latex_str_left + "=" + latex_str_right;
-        // let id_str = 'line' + String(i + 1);
-        calculator.setExpression({latex: latex_line});
-        let latex_str_sense = con_coefficients[i].at(-2) + " ";
+        calculator.setExpression({latex: latex_line}); // 约束条件的等式
+        let latex_str_sense = con_sense[i];
 
         let latex_ueq = latex_str_left + latex_str_sense + latex_str_right;
         // id_str = 'area' + String(i + 1);
         calculator.setExpression({latex: latex_ueq, hidden: true});
     }
-    for (let i = 0; i < num_constraint; i++) {
-        if (con_coefficients[i].at(-2) === "\\leq") {
-            latex_feasible += con_coefficients[i][0] + "x";
-            if (Number(con_coefficients[i][1]) >= 0) {
-                latex_feasible += "+";
-            }
-            latex_feasible += con_coefficients[i][1] + "y";
-            if (-Number(con_coefficients[i].at(-1)) >= 0) {
-                latex_feasible += "+";
-            }
-            latex_feasible += String(-Number(con_coefficients[i].at(-1))) + ",";
-        }
-        if (con_coefficients[i].at(-2) === "\\geq") {
-            latex_feasible += String(-Number(con_coefficients[i][0])) + "x";
-            if (-Number(con_coefficients[i][1]) >= 0) {
-                latex_feasible += "+";
-            }
-            latex_feasible += String(-Number(con_coefficients[i][1])) + "y";
-            if (Number(con_coefficients[i].at(-1)) >= 0) {
-                latex_feasible += "+";
-            }
-            latex_feasible += con_coefficients[i].at(-1) + ",";
-        }
-        if (con_coefficients[i].at(-2) === "=") {
-            latex_feasible += con_coefficients[i][0] + "x";
-            if (Number(con_coefficients[i][1]) >= 0) {
-                latex_feasible += "+";
-            }
-            latex_feasible += con_coefficients[i][1] + "y";
-            if (-Number(con_coefficients[i].at(-1)) >= 0) {
-                latex_feasible += "+";
-            }
-            latex_feasible += String(Number(-con_coefficients[i].at(-1))) + ",";
 
-            latex_feasible += String(-Number(con_coefficients[i][0])) + "x";
-            if (-Number(con_coefficients[i][1]) >= 0) {
+    // 可行域：约束条件
+    let latex_feasible = "\\max("; // 默认里面都是小于等于0的不等式
+    for (let i = 0; i < num_constraint; i++) {
+        if (con_sense[i] === "\\leq") {
+            latex_feasible += con_lhs[i][0] + "x";
+            if (Number(con_lhs[i][1]) >= 0) {
                 latex_feasible += "+";
             }
-            latex_feasible += String(-Number(con_coefficients[i][1])) + "y";
-            if (Number(con_coefficients[i].at(-1)) >= 0) {
+            latex_feasible += con_lhs[i][1] + "y";
+            if (-Number(con_rhs[i]) >= 0) {
                 latex_feasible += "+";
             }
-            latex_feasible += con_coefficients[i].at(-1) + ",";
+            latex_feasible += String(-Number(con_rhs[i])) + ",";
+        }
+        if (con_sense[i] === "\\geq") {
+            latex_feasible += String(-Number(con_lhs[i][0])) + "x";
+            if (-Number(con_lhs[i][1]) >= 0) {
+                latex_feasible += "+";
+            }
+            latex_feasible += String(-Number(con_lhs[i][1])) + "y";
+            if (Number(con_rhs[i]) >= 0) {
+                latex_feasible += "+";
+            }
+            latex_feasible += con_rhs[i] + ",";
+        }
+        if (con_sense[i] === "=") { // 等于 0 时两个不等式
+            latex_feasible += con_lhs[i][0] + "x";
+            if (Number(con_lhs[i][1]) >= 0) {
+                latex_feasible += "+";
+            }
+            latex_feasible += con_lhs[i][1] + "y";
+            if (-Number(con_rhs[i]) >= 0) {
+                latex_feasible += "+";
+            }
+            latex_feasible += String(Number(-con_rhs[i])) + ",";
+
+            latex_feasible += String(-Number(con_lhs[i][0])) + "x";
+            if (-Number(con_lhs[i][1]) >= 0) {
+                latex_feasible += "+";
+            }
+            latex_feasible += String(-Number(con_lhs[i][1])) + "y";
+            if (Number(con_rhs[i]) >= 0) {
+                latex_feasible += "+";
+            }
+            latex_feasible += con_rhs[i] + ",";
         }
     }
+
+    // 可行域：自变量
     for (let i = 0; i < num_var; i++) {
         let var_str = i === 0 ? "x" : "y";
         if (var_types[i] === "non-negative-continuous") {
@@ -536,13 +546,13 @@ function drawPicture() {
     });
 
     // **目标函数等值线**
-    let latex_sign = Number(obj_coefficients[1]) > 0 ? "+" : "";
-    let letex_obj =
+    let latex_sign = Number(obj_coefficients[1]) >= 0 ? "+" : "";
+    let latex_obj =
         obj_coefficients[0] + "x" + latex_sign + obj_coefficients[1] + "y=c";
 
     calculator.setExpression({
         id: "objective",
-        latex: letex_obj,
+        latex: latex_obj,
         lineStyle: Desmos.Styles.DASHED,
     });
     // 设置变量 c 的初始值为 0（生成 slider）
