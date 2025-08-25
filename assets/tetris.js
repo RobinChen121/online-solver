@@ -5,7 +5,7 @@
   const NUM_COLS = 10;
   const NUM_ROWS = 20;
   const CELL_SIZE = 25; // canvas sized 250x500 accordingly
-  const TICK_MS_BASE = 900; // base fall speed at level 1
+      const TICK_MS_BASE = 800; // base fall speed at level 1
   const LEVEL_DROP_FACTOR = 0.85; // each level speeds up
 
   // 闪烁动画配置
@@ -706,7 +706,7 @@
   }
 
   function finishLineClear() {
-    // 实际删除闪烁的行
+    // 删除闪烁的行
     for (let i = flashingRows.length - 1; i >= 0; i--) {
       const rowIndex = flashingRows[i];
       board.splice(rowIndex, 1);
@@ -877,10 +877,11 @@
             const currentTime = performance.now();
             const elapsed = currentTime - flashStartTime;
             const flashPhase = Math.floor(elapsed / FLASH_INTERVAL) % 2;
-            const alpha = flashPhase === 0 ? 0.3 : 1.0;
+            const alpha = flashPhase === 0 ? 0.7 : 1.0; // 提高最小透明度，让冰晶特效更明显
 
             ctx.save();
             ctx.globalAlpha = alpha;
+            // 闪烁期间显示冰晶特效
             drawCell(ctx, c * CELL_SIZE, r * CELL_SIZE, COLOR_MAP[cell], CELL_SIZE, true);
             ctx.restore();
           } else {
@@ -1089,13 +1090,14 @@
     if (cleared > 0) {
       // 如果清除了线条，只播放线条清除音效
       handleLineClear(cleared);
-      // 闪烁期间仍然生成新方块，让游戏继续
+      // 闪烁期间不生成新方块，等待闪烁结束后再生成
+      return;
     } else {
       // 如果没有清除线条，播放方块固定音效
       playLockSound();
     }
 
-    // 无论是否清除线条，都生成新方块
+    // 只有在没有清除线条时才生成新方块
     current = spawnPiece();
     renderSidePanels();
   }
@@ -1203,6 +1205,14 @@
 
   function loop(ts) {
     if (isPaused || !isStarted) return;
+    
+    // 在闪烁期间，不进行方块下落逻辑
+    if (isFlashing) {
+      draw();
+      animationHandle = requestAnimationFrame(loop);
+      return;
+    }
+    
     const delta = ts - lastTickAt;
     if (delta >= dropInterval) {
       if (canPlace(board, current.matrix, current.x, current.y + 1)) {
