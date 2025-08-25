@@ -30,7 +30,7 @@ permalink: /tetris.html
         <button id="btn-pause">Start/Pause</button>
         <button id="btn-restart" style="margin-left: 15px;">Restart</button>
       </div>
-      <canvas id="tetris" width="250" height="500" style="background:#2a3a2a; border:1px solid #4a5a4a"></canvas>
+      <canvas id="tetris" width="250" height="500" style="background:#2a3a2a; border:1px solid #4a5a4a; max-width: 100%; height: auto;"></canvas>
       <div id="mobile-controls" style="display:flex; justify-content: space-around; width: 250px; margin-top:10px;">
         <button id="btn-left" style="width: auto; padding: 6px 8px; font-size: 0.9em;">Left</button>
         <button id="btn-rotate" style="width: auto; padding: 6px 8px; font-size: 0.9em;">Rotate</button>
@@ -62,5 +62,63 @@ permalink: /tetris.html
   </div>
 
   <script src="{{ '/assets/tetris.js' | relative_url }}"></script>
+
+  <style>
+    /* 响应式设计 - 手机优化 */
+    @media (max-width: 768px) {
+      #tetris-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      #tetris {
+        width: 320px !important;
+        height: 640px !important;
+        max-width: 90vw;
+        height: auto;
+      }
+      
+      #mobile-controls {
+        width: 320px !important;
+        justify-content: space-between;
+      }
+      
+      #mobile-controls button {
+        padding: 10px 15px !important;
+        font-size: 1em !important;
+        min-width: 70px;
+      }
+      
+      .tetris-page h1 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+      }
+      
+      .tetris-page ul {
+        font-size: 0.9em;
+        padding-left: 20px;
+      }
+    }
+    
+    /* 超小屏幕优化 */
+    @media (max-width: 480px) {
+      #tetris {
+        width: 280px !important;
+        height: 560px !important;
+        max-width: 95vw;
+      }
+      
+      #mobile-controls {
+        width: 280px !important;
+      }
+      
+      #mobile-controls button {
+        padding: 8px 12px !important;
+        font-size: 0.9em !important;
+        min-width: 60px;
+      }
+    }
+  </style>
 
 </div>

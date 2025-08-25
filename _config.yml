@@ -34,7 +34,7 @@ plugins:
   
 header_pages:
   - index.md
-  - junior_practices/tetris.html
+  - tetris.html
   - about.markdown
 # Exclude from processing.
 # The following items will not be processed, by default.

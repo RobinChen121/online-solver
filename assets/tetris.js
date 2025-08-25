@@ -738,6 +738,42 @@
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const nextCtx = nextCanvas.getContext("2d");
+  
+  // 响应式canvas大小调整
+  function resizeCanvas() {
+    const container = canvas.parentElement;
+    const containerWidth = container.offsetWidth;
+    
+    // 在手机上使用更大的尺寸
+    if (window.innerWidth <= 768) {
+      const mobileWidth = Math.min(320, containerWidth * 0.9);
+      const mobileHeight = mobileWidth * 2; // 保持2:1的比例
+      
+      canvas.style.width = mobileWidth + 'px';
+      canvas.style.height = mobileHeight + 'px';
+      
+      // 调整控制按钮宽度
+      const mobileControls = document.getElementById('mobile-controls');
+      if (mobileControls) {
+        mobileControls.style.width = mobileWidth + 'px';
+      }
+    } else {
+      // 桌面版本保持原始尺寸
+      canvas.style.width = '250px';
+      canvas.style.height = '500px';
+      
+      const mobileControls = document.getElementById('mobile-controls');
+      if (mobileControls) {
+        mobileControls.style.width = '250px';
+      }
+    }
+  }
+  
+  // 监听窗口大小变化
+  window.addEventListener('resize', resizeCanvas);
+  
+  // 初始化时调整大小
+  resizeCanvas();
 
   function drawCell(context, x, y, color, size, isLocked = false) {
     if (isLocked) {
