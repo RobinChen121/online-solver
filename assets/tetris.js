@@ -4,7 +4,7 @@
   // ---- Configuration ----
   const NUM_COLS = 10;
   const NUM_ROWS = 20;
-  const CELL_SIZE = 30; // canvas sized 300x600 accordingly
+  const CELL_SIZE = 25; // canvas sized 250x500 accordingly
   const TICK_MS_BASE = 900; // base fall speed at level 1
   const LEVEL_DROP_FACTOR = 0.85; // each level speeds up
 
@@ -741,19 +741,49 @@
 
   function drawCell(context, x, y, color, size, isLocked = false) {
     if (isLocked) {
-      // 砖砌效果：深色填充 + 亮色边框
-      context.fillStyle = color;
+      // 结冰效果：使用冰蓝色调
+      const iceColor = makeColorLighter(color, 0.4); // 让颜色更亮，像冰一样
+      context.fillStyle = iceColor;
       context.fillRect(x, y, size, size);
 
-      // 添加砖砌纹理
-      context.strokeStyle = "#000000";
-      context.lineWidth = 1;
+      // 添加冰晶边框效果
+      context.strokeStyle = "#87CEEB"; // 天蓝色边框
+      context.lineWidth = 2;
       context.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1);
 
-      // 添加砖砌高光效果
-      context.strokeStyle = makeColorLighter(color, 0.3);
+      // 添加冰晶高光效果
+      context.strokeStyle = "#E0FFFF"; // 更亮的冰蓝色高光
       context.lineWidth = 1;
       context.strokeRect(x + 1, y + 1, size - 2, size - 2);
+
+      // 添加冰晶纹理效果
+      context.strokeStyle = "#B0E0E6"; // 中等亮度的冰蓝色
+      context.lineWidth = 1;
+      
+      // 绘制冰晶纹理线条
+      const textureSpacing = size / 4;
+      for (let i = 1; i < 4; i++) {
+        const pos = i * textureSpacing;
+        // 水平冰晶线
+        context.beginPath();
+        context.moveTo(x + 1, y + pos);
+        context.lineTo(x + size - 1, y + pos);
+        context.stroke();
+        
+        // 垂直冰晶线
+        context.beginPath();
+        context.moveTo(x + pos, y + 1);
+        context.lineTo(x + pos, y + size - 1);
+        context.stroke();
+      }
+
+      // 添加冰晶反光点
+      context.fillStyle = "#FFFFFF";
+      context.globalAlpha = 0.6;
+      const dotSize = size / 8;
+      context.fillRect(x + size * 0.2, y + size * 0.2, dotSize, dotSize);
+      context.fillRect(x + size * 0.7, y + size * 0.7, dotSize, dotSize);
+      context.globalAlpha = 1.0;
     } else {
       // 普通方块效果
       context.fillStyle = color;
