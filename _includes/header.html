@@ -1,41 +1,41 @@
 <header class="site-header" role="banner">
   <div class="wrapper" style="display: flex; align-items: center; justify-content: space-between;">
-    {%- assign default_paths = site.pages | map: "path" -%} {%- assign
-    page_paths = site.header_pages | default: default_paths -%}
-    <a class="site-title" rel="author" href="{{ '/' | relative_url }}"
-    >{{ site.title | escape }}</a
-    >
+    <!-- 在 Jekyll 里，一个文件是否会被识别为 site.pages，取决于 文件的位置和是否包含 YAML front matter （---开头结尾） -->
+    <!-- 双大括号以及大括号跟百分号 为常用的 liquid 命令，常结合 for、if、assign 使用 -->
+    <!--  | map 是过滤器，过滤出来所有的 path，这个path 就是文件的名字  -->
+    {%- assign default_paths = site.pages | map: "path" -%}
+    <!-- default 过滤器会检查左边的值：非空 → 返回左边的值，如果空 → 返回 default_paths；
+    所以相当于在做“如果有配置就用它，否则用默认值” -->
+    {%- assign page_paths = site.header_pages | default: default_paths -%}
+    <!-- 双大括号为 liquid 命令，表示输出变量或表达式的值'/' | relative_url } |为过滤器，将路径转换为相对于站点根的 URL -->
+    <a class="site-title" rel="author" href="{{ '/' | relative_url }}">{{ site.title | escape }}</a>
 
     {%- if page_paths -%}
     <!-- align-items: 让各元素垂直居中对齐-->
     <nav class="site-nav" style="display: flex; align-items: center">
       <!-- Toogle google translation -->
-      <div
-        style="
+      <div style="
           display: flex;
           justify-content: center;
           font-size: smaller;
           padding: 5px;
-        "
-      >
+        ">
         <div id="google_translate_element"></div>
       </div>
 
       <! read all the markdown files -->
-      <div class="trigger" style="display: inline-block">
-        {%- for path in page_paths -%} {%- assign my_page = site.pages | where:
-        "path", path | first -%} {%- if my_page.title -%}
-        <a class="page-link" href="{{ my_page.url | relative_url }}"
-        >{{ my_page.title | escape }}</a
-        >
-        {%- endif -%} {%- endfor -%}
-      </div>
+        <div class="trigger" style="display: inline-block">
+          {%- for path in page_paths -%} {%- assign my_page = site.pages | where:
+          "path", path | first -%} {%- if my_page.title -%}
+          <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
+          {%- endif -%} {%- endfor -%}
+        </div>
 
-      <!-- 主题切换按钮 -->
-      <button id="theme-toggle">
-        <i class="fa-solid fa-moon"></i>
-        <i class="fa-solid fa-sun"></i>
-      </button>
+        <!-- 主题切换按钮 -->
+        <button id="theme-toggle">
+          <i class="fa-solid fa-moon"></i>
+          <i class="fa-solid fa-sun"></i>
+        </button>
     </nav>
     {%- endif -%}
   </div>

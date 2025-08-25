@@ -1,0 +1,67 @@
+---
+layout: default
+title: Game Tetris
+permalink: /tetris.html
+---
+
+<div class="tetris-page">
+
+  <div style="text-align: center;">
+
+    <h1>Play Tetris for relaxing </h1>
+
+  </div>
+
+  <!-- span 为行内元素，不会换行，用来标记文档中的一小段内容 -->
+
+  <!-- ul 为定义无序列表的容器。li 为列表中的单个项目 -->
+  <ul>
+    <li><strong>Keyboard users</strong>: press <span class="keyboard-key">←</span><span class="keyboard-key">→</span> to
+                                       move, press <span class="keyboard-key">↑</span> to rotate, press <span
+        class="keyboard-key">Space</span> to hard drop, press <span class="keyboard-key">P</span> to start/pause.
+    </li>
+    <li><strong>Mobile users</strong> can use on-screen buttons.</li>
+  </ul>
+
+
+  <div id="tetris-container" style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+    <div>
+      <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+        <button id="btn-pause">Start/Pause</button>
+        <button id="btn-restart" style="margin-left: 15px;">Restart</button>
+      </div>
+      <canvas id="tetris" width="300" height="600" style="background:#2a3a2a; border:1px solid #4a5a4a"></canvas>
+      <div id="mobile-controls" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+        <button id="btn-left">Left</button>
+        <button id="btn-rotate">Rotate</button>
+        <button id="btn-right">Right</button>
+        <button id="btn-drop">Hard Drop</button>
+
+      </div>
+
+    </div>
+    <div style="min-width:180px; text-align: left; margin-top: 50px;">
+      <div style="padding-left: 0; padding-bottom: 10px;"><strong>Highest Score: </strong><span id="high-score">0</span></div>
+      <div style="padding-left: 0;"><strong>Score: </strong><span id="score">0</span></div>
+      <div style="padding-left: 0;"><strong>Level: </strong><span id="level">1</span></div>
+      <div style="padding-left: 0;"><strong>Lines: </strong><span id="lines">0</span></div>
+      <div style="margin-top:10px;">
+        <strong>Next: </strong>
+        <canvas id="next" width="120" height="120"
+                style="background:#2a3a2a; border:1px solid #4a5a4a; display:block; margin-top:6px;"></canvas>
+      </div>
+
+      <div style="margin-top:10px;">
+        <button id="btn-music">🔊 Music ON</button>
+      </div>
+      <div style="margin-top:10px;">
+        <button id="btn-ghost">🎯 Land Hint ON</button>
+      </div>
+      
+
+    </div>
+  </div>
+
+  <script src="{{ '/assets/tetris.js' | relative_url }}"></script>
+
+</div>

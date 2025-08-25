@@ -71,7 +71,12 @@ layout: home
     >Draw picture for 2D model
     </button>
 
+    <button id="standardize_model" style="margin-top: 1%; margin-left:3%" onclick="standardizeModel()"
+    >Standardize the model
+    </button>
+
 </p>
+
 
 <!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
 <hr style="border: 1px solid rgba(0, 0, 0, 0.1);">

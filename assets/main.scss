@@ -34,6 +34,7 @@ body {
   top: 0 !important;
   //font-family: var(--base-font-family); /* 按顺序使用字体 */
   font-family: system-ui !important;
+  color: var(--text-color);
 }
 
 /* 修改页面主内容宽度 */
@@ -60,6 +61,67 @@ body {
   --disabled-bg: #252525; /* 失效时更接近背景 */
   --disabled-text: #888888; /* 让文字变得更不明显 */
   --disabled-border: #2d2d2d; /* 失效时边框更淡 */
+}
+
+/* Keyboard key styling - 键盘按键样式 */
+.keyboard-key {
+  display: inline-block;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin: 0 2px;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #333;
+}
+
+/* 深色模式下的键盘按键样式 */
+[data-theme="dark"] .keyboard-key {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  color: #ffffff;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Tetris page styling - 俄罗斯方块页面样式 */
+#tetris-container {
+  color: var(--text-color);
+  margin: 0 auto;
+}
+
+#tetris-container strong,
+#tetris-container small {
+  color: var(--text-color);
+}
+
+.tetris-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.tetris-page h1,
+.tetris-page p,
+.tetris-page li {
+  color: var(--text-color);
+}
+
+.tetris-page ul {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Home page (index.md) styling - 主页样式 */
+p, label, div, li {
+  color: var(--text-color);
+}
+
+/* 确保所有文字元素都使用主题颜色 */
+#calculator ul li {
+  color: var(--text-color);
 }
 
 

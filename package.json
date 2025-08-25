@@ -1,8 +1,6 @@
 {
   "dependencies": {
-    "mathjax": "^4.0.0"
   },
   "devDependencies": {
-    "@types/mathjax": "^0.0.40"
   }
 }

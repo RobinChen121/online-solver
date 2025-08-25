@@ -1,15 +1,18 @@
-// store the model in str arrays
+// globe variables
 let obj_coefficients = ["2", "3"]; // 创建一个空数组
 let obj_sense = "\\min"; // 也可以用来存储用户选择的值
+let obj_sense_num = 0; // 0 表示 min，1 表示 max
 let con_lhs = [
     ["2", "1"],
     ["1", "2"],
 ];
 let con_sense = ["\\leq", "\\leq"];
+let con_sense_num = [0, 0]; // 0 表示 <=, 1 表示 >=, 2 表示 =
 let con_rhs = [
     ["4"], ["5"],
 ];
 let var_types = ["non-negative-continuous", "non-negative-continuous"];
+let var_type_num = [0, 0]; // 0 表示非负连续，1 表示连续，2 表示 0-1 变量，3 表示整数变量
 
 let num_constraint = 2;
 let obj_latex_str = "";
@@ -123,6 +126,10 @@ function generateFormulaLatex(arr, n) {
         latexBodyStr += `x_{${i + 1}}`;
     }
     return latexBodyStr;
+}
+
+function standardizeModel() {
+
 }
 
 function inputObj() {

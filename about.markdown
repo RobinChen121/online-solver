@@ -13,3 +13,4 @@ Milestones for this online solver:
   use [Desmos](https://www.desmos.com/) to generate the 2D picture.
 - 2025/04/06: add the graphic method.
 - 2025/08/23: improve the theme toggle switching.
+- 2025/08/25: develop the online tetris game with the help of [Cursor](https://cursor.com/home).
