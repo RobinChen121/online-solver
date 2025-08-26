@@ -598,11 +598,16 @@
   function updateSliderTrack(volumePercent) {
     const volumeSlider = document.getElementById("volume-slider");
     if (volumeSlider) {
-      // 直接更新滑块的背景渐变，显示填充区域
-      if (volumePercent > 0) {
-        volumeSlider.style.background = `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${volumePercent}%, #4a5a4a ${volumePercent}%, #4a5a4a 100%)`;
-      } else {
-        volumeSlider.style.background = '#4a5a4a';
+      try {
+        // 直接更新滑块的背景渐变，显示填充区域
+        if (volumePercent > 0) {
+          volumeSlider.style.background = `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${volumePercent}%, #4a5a4a ${volumePercent}%, #4a5a4a 100%)`;
+        } else {
+          volumeSlider.style.background = '#4a5a4a';
+        }
+        console.log('Slider track updated to:', volumePercent + '%'); // 调试信息
+      } catch (error) {
+        console.error('Error updating slider track:', error); // 错误处理
       }
     }
   }
@@ -633,6 +638,7 @@
     }
     
     const newVolume = parseInt(event.target.value) / 100;
+    console.log('Volume changed to:', newVolume); // 调试信息
     setMusicVolume(newVolume);
   }
 
