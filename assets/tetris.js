@@ -576,6 +576,38 @@
     if (backgroundMusic) {
       backgroundMusic.volume = musicVolume;
     }
+    
+    // 更新音量按钮显示
+    updateVolumeButtonDisplay();
+  }
+
+  function updateVolumeDisplay() {
+    const volumeSlider = document.getElementById("volume-slider");
+    if (volumeSlider) {
+      const volumePercent = Math.round(musicVolume * 100);
+      volumeSlider.value = volumePercent;
+      
+      // 更新滑块轨道的渐变背景，显示当前音量
+      updateSliderTrack(volumePercent);
+    }
+  }
+
+  function updateSliderTrack(volumePercent) {
+    const volumeSlider = document.getElementById("volume-slider");
+    if (volumeSlider) {
+      // 创建CSS变量来动态更新滑块轨道的渐变
+      const track = volumeSlider.style;
+      if (volumePercent > 0) {
+        track.setProperty('--volume-percent', `${volumePercent}%`);
+      } else {
+        track.setProperty('--volume-percent', '0%');
+      }
+    }
+  }
+
+  function handleVolumeChange(event) {
+    const newVolume = parseInt(event.target.value) / 100;
+    setMusicVolume(newVolume);
   }
 
   function playRotateSound() {
@@ -967,7 +999,7 @@
   let lockSound = null;
   let lineClearSound = null;
   let isMusicEnabled = true;
-  let musicVolume = 0.3; // 30% volume
+  let musicVolume = 0.2; // 20% volume
   let soundVolume = 0.4; // 40% volume for sound effects
 
   // 闪烁动画状态
@@ -1381,6 +1413,12 @@
   bindButton("btn-music", () => toggleMusic());
   bindButton("btn-ghost", () => toggleGhost());
 
+  // 音量滑块控制
+  const volumeSlider = document.getElementById("volume-slider");
+  if (volumeSlider) {
+    volumeSlider.addEventListener("input", handleVolumeChange);
+  }
+
 
 
   // ---- Boot ----
@@ -1424,6 +1462,9 @@
   // 初始化 ghost 按钮状态
   const ghostBtn = document.getElementById("btn-ghost");
   if (ghostBtn) ghostBtn.textContent = "🎯 Land Hint OFF";
+
+  // 初始化音量滑块显示
+  updateVolumeDisplay();
 
   // 初始化按钮状态
   updateButtonStates();
