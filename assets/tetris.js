@@ -569,6 +569,9 @@
     if (musicBtn) {
       musicBtn.textContent = isMusicEnabled ? "🔊 Music ON" : "🔇 Music OFF";
     }
+
+    // 更新音量滑块状态
+    updateVolumeSliderState();
   }
 
   function setMusicVolume(volume) {
@@ -577,8 +580,8 @@
       backgroundMusic.volume = musicVolume;
     }
     
-    // 更新音量按钮显示
-    updateVolumeButtonDisplay();
+    // 更新音量滑块显示和填充区域
+    updateVolumeDisplay();
   }
 
   function updateVolumeDisplay() {
@@ -587,7 +590,7 @@
       const volumePercent = Math.round(musicVolume * 100);
       volumeSlider.value = volumePercent;
       
-      // 更新滑块轨道的渐变背景，显示当前音量
+      // 更新滑块轨道的填充区域
       updateSliderTrack(volumePercent);
     }
   }
@@ -595,17 +598,40 @@
   function updateSliderTrack(volumePercent) {
     const volumeSlider = document.getElementById("volume-slider");
     if (volumeSlider) {
-      // 创建CSS变量来动态更新滑块轨道的渐变
-      const track = volumeSlider.style;
+      // 直接更新滑块的背景渐变，显示填充区域
       if (volumePercent > 0) {
-        track.setProperty('--volume-percent', `${volumePercent}%`);
+        volumeSlider.style.background = `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${volumePercent}%, #4a5a4a ${volumePercent}%, #4a5a4a 100%)`;
       } else {
-        track.setProperty('--volume-percent', '0%');
+        volumeSlider.style.background = '#4a5a4a';
       }
     }
   }
 
+  function updateVolumeSliderState() {
+    const volumeSlider = document.getElementById("volume-slider");
+    if (volumeSlider) {
+      if (isMusicEnabled) {
+        // 音乐开启时，启用滑块
+        volumeSlider.disabled = false;
+        volumeSlider.style.opacity = "1";
+        volumeSlider.style.cursor = "pointer";
+      } else {
+        // 音乐关闭时，禁用滑块
+        volumeSlider.disabled = true;
+        volumeSlider.style.opacity = "0.5";
+        volumeSlider.style.cursor = "not-allowed";
+      }
+    }
+  }
+
+
+
   function handleVolumeChange(event) {
+    // 如果音乐关闭，阻止音量调整
+    if (!isMusicEnabled) {
+      return;
+    }
+    
     const newVolume = parseInt(event.target.value) / 100;
     setMusicVolume(newVolume);
   }
@@ -1463,8 +1489,9 @@
   const ghostBtn = document.getElementById("btn-ghost");
   if (ghostBtn) ghostBtn.textContent = "🎯 Land Hint OFF";
 
-  // 初始化音量滑块显示
+  // 初始化音量滑块显示和状态
   updateVolumeDisplay();
+  updateVolumeSliderState();
 
   // 初始化按钮状态
   updateButtonStates();

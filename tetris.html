@@ -142,15 +142,18 @@ permalink: /tetris.html
     /* 音量滑块样式 */
     .volume-slider {
       flex: 1;
-      height: 6px;
-      border-radius: 3px;
-      background: #ddd;
+      height: 16px; /* 增加高度以容纳渐变效果 */
+      border-radius: 8px;
+      background: #4a5a4a; /* 深色主题背景色 */
       outline: none;
       cursor: pointer;
       -webkit-appearance: none;
       appearance: none;
       min-width: 80px; /* 减少滑块的最小宽度 */
       max-width: 95px; /* 限制滑块的最大宽度 */
+      position: relative;
+      /* 动态背景色 - 通过JavaScript控制填充效果 */
+      background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20%, #4a5a4a 20%, #4a5a4a 100%);
     }
 
     .volume-slider::-webkit-slider-thumb {
@@ -161,8 +164,8 @@ permalink: /tetris.html
       border-radius: 50%;
       background: #4CAF50;
       cursor: pointer;
-      border: 2px solid #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      border: 2px solid #2a3a2a; /* 深色边框，与游戏背景色匹配 */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4); /* 增强阴影效果 */
     }
 
     .volume-slider::-moz-range-thumb {
@@ -171,20 +174,41 @@ permalink: /tetris.html
       border-radius: 50%;
       background: #4CAF50;
       cursor: pointer;
-      border: 2px solid #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      border: 2px solid #2a3a2a; /* 深色边框，与游戏背景色匹配 */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4); /* 增强阴影效果 */
     }
 
-    .volume-slider::-webkit-slider-track {
-      background: linear-gradient(to right, #4CAF50 0%, #4CAF50 var(--volume-percent, 30%), #ddd var(--volume-percent, 30%), #ddd 100%);
-      height: 6px;
-      border-radius: 3px;
+    /* 滑块悬停效果 */
+    .volume-slider:hover::-webkit-slider-thumb {
+      background: #66bb6a; /* 悬停时稍微亮一点的绿色 */
+      transform: scale(1.1);
+      transition: all 0.2s ease;
     }
 
-    .volume-slider::-moz-range-track {
-      background: linear-gradient(to right, #4CAF50 0%, #4CAF50 var(--volume-percent, 30%), #ddd var(--volume-percent, 30%), #ddd 100%);
-      height: 6px;
-      border-radius: 3px;
+    .volume-slider:hover::-moz-range-thumb {
+      background: #66bb6a; /* 悬停时稍微亮一点的绿色 */
+      transform: scale(1.1);
+      transition: all 0.2s ease;
+    }
+
+
+
+    /* 禁用状态的滑块样式 */
+    .volume-slider:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .volume-slider:disabled::-webkit-slider-thumb {
+      background: #666 !important;
+      border-color: #444 !important;
+      cursor: not-allowed;
+    }
+
+    .volume-slider:disabled::-moz-range-thumb {
+      background: #666 !important;
+      border-color: #444 !important;
+      cursor: not-allowed;
     }
   </style>
 
