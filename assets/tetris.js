@@ -422,7 +422,7 @@
           console.log('High score loaded from server:', highScore);
         }
       })
-      .catch(error => {
+      .catch(() => {
         console.log('No existing high score file found, starting with 0');
         // 如果文件不存在或加载失败，使用默认值0
         highScore = 0;
@@ -492,7 +492,7 @@
       z-index: 1000;
       animation: fadeInOut 2s ease-in-out;
     `;
-    notification.textContent = '🎉 新纪录！🎉';
+    notification.textContent = '🎉 New record！🎉';
 
     // 添加动画样式
     const style = document.createElement('style');
@@ -516,53 +516,7 @@
     }, 2000);
   }
 
-
-
-  // 显示通知消息
-  function showNotification(message, type = 'info') {
-    // 创建通知元素
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${type === 'success' ? 'linear-gradient(135deg, #4CAF50, #45a049)' :
-        type === 'error' ? 'linear-gradient(135deg, #f44336, #d32f2f)' :
-          'linear-gradient(135deg, #2196F3, #1976D2)'};
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: bold;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      z-index: 1000;
-      animation: slideInRight 0.3s ease-out;
-      max-width: 300px;
-      word-wrap: break-word;
-    `;
-    notification.textContent = message;
-
-    // 添加动画样式
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
-
-    document.body.appendChild(notification);
-
-    // 3秒后自动移除
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification);
-      }
-    }, 3000);
-  }
-
-  // ---- Audio Functions ----
+// ---- Audio Functions ----
   function initAudio() {
     try {
       // 初始化背景音乐
@@ -777,24 +731,24 @@
 
   function drawCell(context, x, y, color, size, isLocked = false) {
     if (isLocked) {
-      // 结冰效果：使用冰蓝色调
-      const iceColor = makeColorLighter(color, 0.4); // 让颜色更亮，像冰一样
+      // 结冰效果：使用更暗的冰蓝色调
+      const iceColor = makeColorLighter(color, 0.2); // 让颜色稍微亮一点，但不要太亮
       context.fillStyle = iceColor;
       context.fillRect(x, y, size, size);
 
-      // 添加冰晶边框效果
-      context.strokeStyle = "#87CEEB"; // 天蓝色边框
-      context.lineWidth = 2;
+      // 添加冰晶边框效果 - 更暗的边框
+      context.strokeStyle = "#5F9EA0"; // 更暗的天蓝色边框
+      context.lineWidth = 1.5;
       context.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1);
 
-      // 添加冰晶高光效果
-      context.strokeStyle = "#E0FFFF"; // 更亮的冰蓝色高光
+      // 添加冰晶高光效果 - 更暗的高光
+      context.strokeStyle = "#B0C4DE"; // 更暗的冰蓝色高光
       context.lineWidth = 1;
       context.strokeRect(x + 1, y + 1, size - 2, size - 2);
 
-      // 添加冰晶纹理效果
-      context.strokeStyle = "#B0E0E6"; // 中等亮度的冰蓝色
-      context.lineWidth = 1;
+      // 添加冰晶纹理效果 - 更暗的纹理
+      context.strokeStyle = "#8FBC8F"; // 更暗的冰蓝色
+      context.lineWidth = 0.8;
       
       // 绘制冰晶纹理线条
       const textureSpacing = size / 4;
@@ -813,9 +767,9 @@
         context.stroke();
       }
 
-      // 添加冰晶反光点
-      context.fillStyle = "#FFFFFF";
-      context.globalAlpha = 0.6;
+      // 添加冰晶反光点 - 更暗的反光
+      context.fillStyle = "#C0C0C0";
+      context.globalAlpha = 0.4;
       const dotSize = size / 8;
       context.fillRect(x + size * 0.2, y + size * 0.2, dotSize, dotSize);
       context.fillRect(x + size * 0.7, y + size * 0.7, dotSize, dotSize);
@@ -824,9 +778,43 @@
       // 普通方块效果
       context.fillStyle = color;
       context.fillRect(x, y, size, size);
-      context.strokeStyle = "#000000";
+      
+      // 解析当前方块颜色
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      
+      // 左上边框调亮50%
+      const lighterR = Math.min(255, r + (255 - r) * 0.5);
+      const lighterG = Math.min(255, g + (255 - g) * 0.5);
+      const lighterB = Math.min(255, b + (255 - b) * 0.5);
+      const lighterColor = `#${Math.round(lighterR).toString(16).padStart(2, '0')}${Math.round(lighterG).toString(16).padStart(2, '0')}${Math.round(lighterB).toString(16).padStart(2, '0')}`;
+      
+      // 右下边框调暗50%
+      const darkerR = Math.max(0, r * 0.5);
+      const darkerG = Math.max(0, g * 0.5);
+      const darkerB = Math.max(0, b * 0.5);
+      const darkerColor = `#${Math.round(darkerR).toString(16).padStart(2, '0')}${Math.round(darkerG).toString(16).padStart(2, '0')}${Math.round(darkerB).toString(16).padStart(2, '0')}`;
+      
+      // 绘制左上边框（亮色）
+      context.strokeStyle = lighterColor;
       context.lineWidth = 1;
-      context.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1);
+      context.beginPath();
+      context.moveTo(x + 0.5, y + 0.5);
+      context.lineTo(x + size - 0.5, y + 0.5);
+      context.moveTo(x + 0.5, y + 0.5);
+      context.lineTo(x + 0.5, y + size - 0.5);
+      context.stroke();
+      
+      // 绘制右下边框（暗色）
+      context.strokeStyle = darkerColor;
+      context.beginPath();
+      context.moveTo(x + size - 0.5, y + 0.5);
+      context.lineTo(x + size - 0.5, y + size - 0.5);
+      context.moveTo(x + 0.5, y + size - 0.5);
+      context.lineTo(x + size - 0.5, y + size - 0.5);
+      context.stroke();
     }
   }
 
