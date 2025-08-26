@@ -153,6 +153,32 @@ a:hover {
   height: 600px;
   padding-bottom: 80px;
   margin: 0 auto;
+  /* 确保calculator容器中的文本颜色不受深色主题影响 */
+  color: #333 !important;
+}
+
+/* 深色模式下calculator容器的文本颜色 */
+[data-theme="dark"] #calculator {
+  color: #333 !important;
+}
+
+/* 确保calculator容器内的文本元素保持原有颜色，但li元素跟随主题 */
+#calculator p,
+#calculator label,
+#calculator div,
+#calculator span,
+#calculator strong,
+#calculator em {
+  color: #333 !important;
+}
+
+[data-theme="dark"] #calculator p,
+[data-theme="dark"] #calculator label,
+[data-theme="dark"] #calculator div,
+[data-theme="dark"] #calculator span,
+[data-theme="dark"] #calculator strong,
+[data-theme="dark"] #calculator em {
+  color: #333 !important;
 }
 
 /* 默认浅色模式下的按钮 */
