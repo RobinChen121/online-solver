@@ -809,12 +809,12 @@
       
       // 绘制右下边框（暗色）
       context.strokeStyle = darkerColor;
-      context.beginPath();
-      context.moveTo(x + size - 0.5, y + 0.5);
-      context.lineTo(x + size - 0.5, y + size - 0.5);
+      context.beginPath(); //  拿起笔，准备画新的路径
+      context.moveTo(x + size - 0.5, y + 0.5); //  把笔移动到某个位置（不画线）
+      context.lineTo(x + size - 0.5, y + size - 0.5); // 从当前位置画直线到指定位置
       context.moveTo(x + 0.5, y + size - 0.5);
       context.lineTo(x + size - 0.5, y + size - 0.5);
-      context.stroke();
+      context.stroke(); // 用当前的笔触样式画出路径
     }
   }
 
