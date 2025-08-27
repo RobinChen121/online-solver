@@ -4,8 +4,8 @@
   // ---- Configuration ----
   const NUM_COLS = 10;
   const NUM_ROWS = 20;
-  const CELL_SIZE = 25; // canvas sized 250x500 accordingly
-      const TICK_MS_BASE = 800; // base fall speed at level 1
+  const CELL_SIZE = 30; // canvas sized 250x500 accordingly
+  const TICK_MS_BASE = 800; // base fall speed at level 1
   const LEVEL_DROP_FACTOR = 0.85; // each level speeds up
 
   // 闪烁动画配置

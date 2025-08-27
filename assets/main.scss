@@ -24,6 +24,7 @@ css中不同的类别：
   --bg-color: #f7fff7; /* 淡绿色 */
   --text-color: black;
   --link-color: blue;
+  --lay-bg:rgba(0,0,0,0.3);
   --disabled-bg: #e8e8e8;
   --disabled-text: #aaaaaa;
   --disabled-border: #dddddd;
@@ -53,12 +54,50 @@ body {
   border-top: 1px solid #ccc; /* 上边界线 */
 }
 
+#my_alert{
+  display: none;
+  position: fixed;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 表示向左或向上移动自身宽度/高度的 50% */
+  padding: 20px;
+  z-index: 1000; /* 堆叠顺序很高 */
+
+  background: var(--bg-color);
+
+  /* 边框 & 圆角 */
+  border: 2px solid #555555;    /* 深灰边框，柔和 */
+  border-radius: 12px;             /* 圆角边框 */
+
+  /* 阴影效果，更柔和 */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 4px 6px rgba(0, 0, 0, 0.1); /* 向右、下偏移量，阴阳半径与颜色*/
+
+  /* 字体和文字居中 */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+/* 遮罩层 */
+#overlay {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width: 100%;
+  height: 100%;
+  background: var(--lay-bg);
+  z-index: 999;
+}
+
 /* 深色模式 */
 [data-theme="dark"] {
   --bg-color: #121212;
   --text-color: #e0e0e0 !important;
   --link-color: #bb86fc;
   --disabled-bg: #252525; /* 失效时更接近背景 */
+  --lay-bg: rgba(255,255,255,0.1); /* 浅色半透明 */;
   --disabled-text: #888888; /* 让文字变得更不明显 */
   --disabled-border: #2d2d2d; /* 失效时边框更淡 */
 }
@@ -389,6 +428,7 @@ select:disabled:hover {
 
 #google_translate_element .goog-te-gadget {
   display: inline-flex !important;
+  margin-right: 20px;
 }
 
 //文字在 class VIpgJd-ZVi9od-xl07Ob-lTBxed 下面的 span 标签下
@@ -404,7 +444,6 @@ select:disabled:hover {
   background-position: 0 0;
   height: 0 !important;
   width: 0 !important;
-  margin-right: 8px !important;
   display: none;
 }
 
@@ -414,4 +453,223 @@ select:disabled:hover {
 
 .goog-te-banner-frame.skiptranslate {
   display: none !important;
+}
+
+/* ===== Tetris Game Styles ===== */
+
+/* Tetris container layout */
+#tetris-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* Tetris game controls */
+#tetris-container > div:first-child {
+  /* First div contains the game canvas and controls */
+}
+
+#tetris-container > div:first-child > div:first-child {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#btn-restart {
+  margin-left: 15px;
+}
+
+/* Tetris canvas styling */
+#tetris {
+  background: #2a3a2a;
+  border: 1px solid #4a5a4a;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile controls */
+#mobile-controls {
+  display: flex;
+  justify-content: space-around;
+  width: 250px;
+  margin-top: 10px;
+}
+
+#mobile-controls button {
+  width: auto;
+  padding: 6px 8px;
+  font-size: 0.9em;
+}
+
+#btn-drop {
+  padding: 8px 12px;
+}
+
+/* Side panel styling */
+#tetris-container > div:last-child {
+  min-width: 180px;
+  text-align: left;
+  margin-top: 50px;
+}
+
+#tetris-container > div:last-child > div {
+  padding-left: 0;
+  padding-bottom: 10px;
+}
+
+#tetris-container > div:last-child > div:last-child {
+  padding-bottom: 0;
+}
+
+/* Score display */
+#tetris-container > div:last-child > div:first-child {
+  padding-bottom: 10px;
+}
+
+/* Next piece canvas */
+#next {
+  background: #2a3a2a;
+  border: 1px solid #4a5a4a;
+  display: block;
+  margin-top: 6px;
+}
+
+/* Music and controls section */
+#tetris-container > div:last-child > div:nth-child(n+5) {
+  margin-top: 10px;
+}
+
+/* Volume control area */
+#volume-icon {
+  font-size: 1.2em;
+  color: #666;
+  min-width: 20px;
+  text-align: center;
+  margin-right: 0px;
+}
+
+/* Volume slider styling */
+.volume-slider {
+  flex: 1;
+  height: 16px;
+  border-radius: 8px;
+  background: #4a5a4a;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 80px;
+  max-width: 95px;
+  position: relative;
+  background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20%, #4a5a4a 20%, #4a5a4a 100%);
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: 2px solid #2a3a2a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+  border: 2px solid #2a3a2a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Slider hover effects */
+.volume-slider:hover::-webkit-slider-thumb {
+  background: #66bb6a;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+.volume-slider:hover::-moz-range-thumb {
+  background: #66bb6a;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+/* Disabled slider state */
+.volume-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.volume-slider:disabled::-webkit-slider-thumb {
+  background: #666 !important;
+  border-color: #444 !important;
+  cursor: not-allowed;
+}
+
+.volume-slider:disabled::-moz-range-thumb {
+  background: #666 !important;
+  border-color: #444 !important;
+  cursor: not-allowed;
+}
+
+/* Responsive design - mobile optimization */
+@media (max-width: 768px) {
+  #tetris-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  #tetris {
+    width: 320px !important;
+    height: 640px !important;
+    max-width: 90vw;
+    height: auto;
+  }
+  
+  #mobile-controls {
+    width: 320px !important;
+    justify-content: space-between;
+  }
+  
+  #mobile-controls button {
+    padding: 10px 15px !important;
+    font-size: 1em !important;
+    min-width: 70px;
+  }
+  
+  .tetris-page h1 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+  
+  .tetris-page ul {
+    font-size: 0.9em;
+    padding-left: 20px;
+  }
+}
+
+/* Extra small screen optimization */
+@media (max-width: 480px) {
+  #tetris {
+    width: 280px !important;
+    height: 560px !important;
+    max-width: 95vw;
+  }
+  
+  #mobile-controls {
+    width: 280px !important;
+  }
+  
+  #mobile-controls button {
+    padding: 8px 12px !important;
+    font-size: 0.9em !important;
+    min-width: 60px;
+  }
 }

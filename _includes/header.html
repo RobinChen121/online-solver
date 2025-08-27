@@ -12,18 +12,18 @@
 
     {%- if page_paths -%}
     <!-- align-items: 让各元素垂直居中对齐-->
-    <nav class="site-nav" style="display: flex; align-items: center">
+    <nav class="site-nav" style="display: flex; align-items: center; justify-content: space-between;">
       <!-- Toogle google translation -->
       <div style="
           display: flex;
           justify-content: center;
           font-size: smaller;
-          padding: 5px;
+          padding: 4px;
         ">
         <div id="google_translate_element"></div>
       </div>
 
-              <!-- read all the markdown files -->
+        <!-- read all the font matter files (file with double --- in the front) -->
         <div class="trigger" style="display: flex; gap: 20px; align-items: center;">
           <!-- 先显示非about页面 -->
           {%- for path in page_paths -%} 

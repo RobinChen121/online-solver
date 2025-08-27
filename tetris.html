@@ -24,48 +24,47 @@ permalink: /tetris.html
   </ul>
 
 
-  <div id="tetris-container" style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+  <div id="tetris-container">
     <div>
-      <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+              <div>
         <button id="btn-pause">Start/Pause</button>
-        <button id="btn-restart" style="margin-left: 15px;">Restart</button>
+        <button id="btn-restart">Restart</button>
       </div>
-      <canvas id="tetris" width="250" height="500" style="background:#2a3a2a; border:1px solid #4a5a4a; max-width: 100%; height: auto;"></canvas>
-      <div id="mobile-controls" style="display:flex; justify-content: space-around; width: 250px; margin-top:10px;">
-        <button id="btn-left" style="width: auto; padding: 6px 8px; font-size: 0.9em;">Left</button>
-        <button id="btn-rotate" style="width: auto; padding: 6px 8px; font-size: 0.9em;">Rotate</button>
-        <button id="btn-right" style="width: auto; padding: 6px 8px; font-size: 0.9em;">Right</button>
-        <button id="btn-drop" style="width: auto; padding: 8px 12px;">Hard Drop</button>
+              <canvas id="tetris" width="300" height="600"></canvas>
+              <div id="mobile-controls">
+        <button id="btn-left">Left</button>
+        <button id="btn-rotate">Rotate</button>
+        <button id="btn-right">Right</button>
+        <button id="btn-drop">Hard Drop</button>
       </div>
 
     </div>
-    <div style="min-width:180px; text-align: left; margin-top: 50px;">
-      <div style="padding-left: 0; padding-bottom: 10px;"><strong>Highest Score: </strong><span id="high-score">0</span></div>
-      <div style="padding-left: 0;"><strong>Score: </strong><span id="score">0</span></div>
-      <div style="padding-left: 0;"><strong>Level: </strong><span id="level">1</span></div>
-      <div style="padding-left: 0;"><strong>Lines: </strong><span id="lines">0</span></div>
-      <div style="margin-top:10px;">
-        <strong>Next: </strong>
-        <canvas id="next" width="100" height="100"
-                style="background:#2a3a2a; border:1px solid #4a5a4a; display:block; margin-top:6px;"></canvas>
-      </div>
-
-      <div style="margin-top:10px;">
-        <button id="btn-music">🔊 Music ON</button>
-      </div>
-      <div style="margin-top:10px;">
-        <div style="display: flex; align-items: center; gap: 4px; width: 100%; max-width: 140px;">
-          <span id="volume-icon" style="font-size: 1.2em; color: #666; min-width: 20px; text-align: center;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z"/>
-            </svg>
-          </span>
-          <input type="range" id="volume-slider" min="0" max="100" value="20" class="volume-slider">
+    <div>
+              <div><strong>Highest Score: </strong><span id="high-score">0</span></div>
+        <div><strong>Score: </strong><span id="score">0</span></div>
+        <div><strong>Level: </strong><span id="level">1</span></div>
+        <div><strong>Lines: </strong><span id="lines">0</span></div>
+              <div>
+          <strong>Next: </strong>
+          <canvas id="next" width="100" height="100"></canvas>
         </div>
-      </div>
-      <div style="margin-top:10px;">
-        <button id="btn-ghost">🎯 Land Hint ON</button>
-      </div>
+
+              <div>
+          <button id="btn-music">🔊 Music ON</button>
+        </div>
+        <div>
+          <div>
+            <span id="volume-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.74 2.5-2.26 2.5-4.02z"/>
+              </svg>
+            </span>
+            <input type="range" id="volume-slider" min="0" max="100" value="20" class="volume-slider">
+          </div>
+        </div>
+        <div>
+          <button id="btn-ghost">🎯 Land Hint ON</button>
+        </div>
       
 
     </div>
@@ -73,143 +72,6 @@ permalink: /tetris.html
 
   <script src="{{ site.baseurl }}/assets/tetris.js"></script>
 
-  <style>
-    /* 响应式设计 - 手机优化 */
-    @media (max-width: 768px) {
-      #tetris-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-      }
-      
-      #tetris {
-        width: 320px !important;
-        height: 640px !important;
-        max-width: 90vw;
-        height: auto;
-      }
-      
-      #mobile-controls {
-        width: 320px !important;
-        justify-content: space-between;
-      }
-      
-      #mobile-controls button {
-        padding: 10px 15px !important;
-        font-size: 1em !important;
-        min-width: 70px;
-      }
-      
-      .tetris-page h1 {
-        font-size: 1.5em;
-        margin-bottom: 15px;
-      }
-      
-      .tetris-page ul {
-        font-size: 0.9em;
-        padding-left: 20px;
-      }
-    }
-    
-    /* 超小屏幕优化 */
-    @media (max-width: 480px) {
-      #tetris {
-        width: 280px !important;
-        height: 560px !important;
-        max-width: 95vw;
-      }
-      
-      #mobile-controls {
-        width: 280px !important;
-      }
-      
-      #mobile-controls button {
-        padding: 8px 12px !important;
-        font-size: 0.9em !important;
-        min-width: 60px;
-      }
-    }
 
-    /* 音量控制区域样式 */
-    #volume-icon {
-      font-size: 1.2em;
-      color: #666;
-      min-width: 20px;
-      text-align: center;
-      margin-right: 0px; /* 减少与滑块的右边距 */
-    }
-
-    /* 音量滑块样式 */
-    .volume-slider {
-      flex: 1;
-      height: 16px; /* 增加高度以容纳渐变效果 */
-      border-radius: 8px;
-      background: #4a5a4a; /* 深色主题背景色 */
-      outline: none;
-      cursor: pointer;
-      -webkit-appearance: none;
-      appearance: none;
-      min-width: 80px; /* 减少滑块的最小宽度 */
-      max-width: 95px; /* 限制滑块的最大宽度 */
-      position: relative;
-      /* 动态背景色 - 通过JavaScript控制填充效果 */
-      background: linear-gradient(to right, #4CAF50 0%, #4CAF50 20%, #4a5a4a 20%, #4a5a4a 100%);
-    }
-
-    .volume-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #4CAF50;
-      cursor: pointer;
-      border: 2px solid #2a3a2a; /* 深色边框，与游戏背景色匹配 */
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4); /* 增强阴影效果 */
-    }
-
-    .volume-slider::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #4CAF50;
-      cursor: pointer;
-      border: 2px solid #2a3a2a; /* 深色边框，与游戏背景色匹配 */
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4); /* 增强阴影效果 */
-    }
-
-    /* 滑块悬停效果 */
-    .volume-slider:hover::-webkit-slider-thumb {
-      background: #66bb6a; /* 悬停时稍微亮一点的绿色 */
-      transform: scale(1.1);
-      transition: all 0.2s ease;
-    }
-
-    .volume-slider:hover::-moz-range-thumb {
-      background: #66bb6a; /* 悬停时稍微亮一点的绿色 */
-      transform: scale(1.1);
-      transition: all 0.2s ease;
-    }
-
-
-
-    /* 禁用状态的滑块样式 */
-    .volume-slider:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .volume-slider:disabled::-webkit-slider-thumb {
-      background: #666 !important;
-      border-color: #444 !important;
-      cursor: not-allowed;
-    }
-
-    .volume-slider:disabled::-moz-range-thumb {
-      background: #666 !important;
-      border-color: #444 !important;
-      cursor: not-allowed;
-    }
-  </style>
 
 </div>
