@@ -12,14 +12,15 @@ let con_lhs = [[2, 1], [1, 2]];
 let con_rhs = [4, 5];
 let con_sense = [0, 0]; // 0 表示 <=, 1 表示 >=, 2 表示 =
 let var_type = [0, 0]; // 0 表示非负连续，1 表示连续，2 表示 0-1 变量，3 表示整数变量
-let stand_obj_coe = obj_coe;
-let stand_con_lhs = con_lhs;
+let stand_obj_coe = obj_coe.slice(); // 深拷贝
+let stand_con_lhs = con_lhs.map(row => row.slice());
 
 let num_constraint = con_lhs.length;
 let num_var = obj_coe.length;
 
-let var_is_slack = [];
-let var_is_artificial = [];
+let con_var_slack = [];
+let con_var_artificial = [];
+let standardized = false;
 
 let initial_model_latex =
     "\\[\\begin{aligned}\n" +
@@ -132,6 +133,9 @@ function closeAlert() {
 }
 
 function standardizeModel() {
+    let element = document.getElementById("stand_latex");
+    element.innerHTML = "";
+
     var_type.length = num_var;
     for (let i = 0; i < num_var; i++) {
         let select_id = "select_var_type" + (i + 1);
@@ -143,7 +147,7 @@ function standardizeModel() {
         }
     }
 
-    if (obj_sense === 1) {
+    if (obj_sense !== 0) {
         obj_coe = obj_coe.map(num => -num);
         obj_sense = 0;
     }
@@ -156,35 +160,66 @@ function standardizeModel() {
             else if (con_sense[i] === 2)
                 con_sense[i] = 0;
         }
-        if (con_sense[i] === 0) {
-            var_is_slack.push(1);
-            var_is_artificial.push(0);
-        } else {
-            var_is_slack.push(-1);
-            var_is_artificial.push(1);
+        if (!standardized) {
+            if (con_sense[i] === 0) {
+                con_var_slack.push(1);
+                con_var_artificial.push(0);
+            } else {
+                con_var_slack.push(-1);
+                con_var_artificial.push(1);
+            }
         }
     }
 
-    stand_obj_coe = obj_coe;
-    stand_con_lhs = con_lhs;
+    stand_obj_coe = obj_coe.slice(); // 深拷贝
+    stand_con_lhs = con_lhs.map(row => row.slice()); // 深拷贝二维数组
 
     const n = var_type.length;
     for (let i = 0; i < n; i++) {
         if (var_type[i] === 2 || var_type[i] === 3) {
             showAlert();
-            break;
-        } else {
-            let for_stand = true;
-            renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_type, for_stand);
-            if (var_type[i] === 1) {
-                stand_obj_coe.splice(i, 0, -obj_coe[i])
-            }
-            for (let j = 0; j < num_constraint; j++) {
-                stand_con_lhs[j].splice(i, 0, -con_lhs[j][i]);
-            }
-            break;
+            return;
         }
     }
+    let for_stand = true;
+    renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_type, for_stand);
+
+    for (let i = 0; i < n; i++) {
+        if (var_type[i] === 1) {
+            stand_obj_coe.splice(i + 1, 0, -obj_coe[i])
+            for (let j = 0; j < num_constraint; j++) {
+                let value = -con_lhs[j][i];
+                stand_con_lhs[j].splice(i + 1, 0, value);
+            }
+        }
+    }
+    for (let i = 0; i < con_var_slack.length; i++) {
+        if (con_var_slack[i] !== 0) {
+            stand_obj_coe.push(0);
+            for (let j = 0; j < num_constraint; j++) {
+                if (j === i)
+                    stand_con_lhs[j].push(con_var_slack[i]);
+                else
+                    stand_con_lhs[j].push(0);
+            }
+        }
+    }
+    for (let i = 0; i < con_var_artificial.length; i++) {
+        if (con_var_artificial[i] !== 0) {
+            stand_obj_coe.push(0);
+            for (let j = 0; j < num_constraint; j++) {
+                if (j === i)
+                    stand_con_lhs[j].push(con_var_artificial[i]);
+                else
+                    stand_con_lhs[j].push(0);
+            }
+        }
+    }
+
+    standardized = true;
+    // console.log(stand_obj_coe);
+    // console.log("test");
+    // console.table(stand_con_lhs);
 }
 
 function inputObj() {
@@ -202,6 +237,8 @@ function inputObj() {
         let input = document.getElementById(input_id);
         obj_coe[i] = Number(input.value);
     }
+    let {value: sense} = document.getElementById("select_obj_sense");
+    obj_sense = Number(sense);
 
     renderLatexModel(obj_sense, obj_coe);
 }
@@ -248,29 +285,29 @@ function formulaToLatex(arr, for_stand = false, for_obj = false, constraint_inde
     let a_count = 0;
     if (for_stand && for_obj) {
         for (let j = 0; j < num_constraint; j++) {
-            if (var_is_slack[j] !== 0) {
+            if (con_var_slack[j] !== 0) {
                 latex_str += `+0s_{${s_count + 1}}`;
                 s_count++;
             }
-            if (var_is_artificial[j] !== 0) {
+            if (con_var_artificial[j] !== 0) {
                 latex_str += `+0a_{${a_count + 1}}`;
                 a_count++;
             }
         }
     }
     if (for_stand && !for_obj) {
-        if (var_is_slack[constraint_index] === 1) {
-            let count = var_is_slack.slice(0, constraint_index + 1).filter(x => x !== 0).length;
+        if (con_var_slack[constraint_index] === 1) {
+            let count = con_var_slack.slice(0, constraint_index + 1).filter(x => x !== 0).length;
             latex_str += `+s_{${count}}`;
-        } else if (var_is_slack[constraint_index] === -1) {
-            let count = var_is_slack.slice(0, constraint_index + 1).filter(x => x !== 0).length;
+        } else if (con_var_slack[constraint_index] === -1) {
+            let count = con_var_slack.slice(0, constraint_index + 1).filter(x => x !== 0).length;
             latex_str += `-s_{${count}}`;
         }
-        if (var_is_artificial[constraint_index] === 1) {
-            let count = var_is_artificial.slice(0, constraint_index + 1).filter(x => x !== 0).length;
+        if (con_var_artificial[constraint_index] === 1) {
+            let count = con_var_artificial.slice(0, constraint_index + 1).filter(x => x !== 0).length;
             latex_str += `+a_{${count}}`;
-        } else if (var_is_artificial[constraint_index] === -1) {
-            let count = var_is_artificial.slice(0, constraint_index+1).filter(x => x !== 0).length;
+        } else if (con_var_artificial[constraint_index] === -1) {
+            let count = con_var_artificial.slice(0, constraint_index + 1).filter(x => x !== 0).length;
             latex_str += `-a_{${count}}`;
         }
     }
@@ -330,11 +367,11 @@ function varTypeToLatex(for_stand = false) {
         let slack_count = 0;
         let artificial_count = 0;
         for (let j = 0; j < num_constraint; j++) {
-            if (var_is_slack[j] !== 0) {
+            if (con_var_slack[j] !== 0) {
                 var_type_latex += `s_{${slack_count + 1}}\\geq 0,`;
                 slack_count++;
             }
-            if (var_is_artificial[j] !== 0) {
+            if (con_var_artificial[j] !== 0) {
                 var_type_latex += `a_{${artificial_count + 1}}\\geq 0,`;
                 artificial_count++;
             }
@@ -355,10 +392,10 @@ function varTypeToLatex(for_stand = false) {
  * @param for_stand{boolean}
  */
 function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_rhs = [], var_type = [], for_stand = false) {
+    let latexModel = "";
     let obj_sense_str = obj_sense === 1 ? "\\max" : "\\min";
     let for_obj = for_stand === true ? true : false;
     let obj_str = formulaToLatex(obj_coe, for_stand, for_obj);
-    let latexModel = "";
     if (con_lhs.every(row => row.length === 0)) {
         // 反单引号可以创建模板字符串，即字符串里包含变量或表达式
         latexModel += `
@@ -398,9 +435,9 @@ function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_
             `;
     }
 
-    if (!for_stand)
+    if (!for_stand) {
         document.getElementById("model_latex").innerHTML = latexModel;
-    else {
+    } else {
         /**@type {HTMLInputElement} */
         let element = document.getElementById("stand_model_container");
         element.style.display = "block";
@@ -628,10 +665,11 @@ function reset() {
     var_type = [0, 0];
     num_constraint = 2;
     num_var = 2;
-    stand_obj_coe = obj_coe;
-    stand_con_lhs = con_lhs;
-    var_is_slack = [];
-    var_is_artificial = [];
+    stand_obj_coe = obj_coe.slice(); // 深拷贝
+    stand_con_lhs = con_lhs.map(row => row.slice());
+    con_var_slack = [];
+    con_var_artificial = [];
+    standardized = false;
 
     elt.style.display = "none";
     // Remove all expressions

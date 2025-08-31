@@ -14,3 +14,4 @@ Milestones for this online solver:
 - 2025/04/06: add the graphic method.
 - 2025/08/23: improve the theme toggle switching.
 - 2025/08/25: develop the online tetris game with the help of [Cursor](https://cursor.com/home).
+- 2025/08/31: add the function and button of standardizing the model.
