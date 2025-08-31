@@ -156,16 +156,20 @@ function standardizeModel() {
             con_rhs[i] = -con_rhs[i];
             con_lhs[i] = con_lhs[i].map(num => -num);
             if (con_sense[i] === 0)
-                con_sense[i] = 2;
-            else if (con_sense[i] === 2)
+                con_sense[i] = 1;
+            else if (con_sense[i] === 1)
                 con_sense[i] = 0;
         }
         if (!standardized) {
             if (con_sense[i] === 0) {
                 con_var_slack.push(1);
                 con_var_artificial.push(0);
-            } else {
+            } else if (con_sense[i] === 1){
                 con_var_slack.push(-1);
+                con_var_artificial.push(1);
+            }
+            else{
+                con_var_slack.push(0);
                 con_var_artificial.push(1);
             }
         }
