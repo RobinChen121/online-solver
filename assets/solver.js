@@ -5,19 +5,22 @@
  * @property {function(Array<string|Element>=):void} typesetClear
  */
 
-// globe variables
+    // globe variables
 let obj_sense = 0; // 0 表示 min，1 表示 max
 let obj_coe = [2, 3];
 let con_lhs = [[2, 1], [1, 2]];
 let con_rhs = [4, 5];
 let con_sense = [0, 0]; // 0 表示 <=, 1 表示 >=, 2 表示 =
 let var_type = [0, 0]; // 0 表示非负连续，1 表示连续，2 表示 0-1 变量，3 表示整数变量
+let stand_obj_coe = obj_coe;
+let stand_con_lhs = con_lhs;
 
-let num_constraint = 2;
+let num_constraint = con_lhs.length;
+let num_var = obj_coe.length;
 
-// let obj_latex_str = "";
-// let con_latex_str = [];
-// let var_type_latex_str = "";
+let var_is_slack = [];
+let var_is_artificial = [];
+
 let initial_model_latex =
     "\\[\\begin{aligned}\n" +
     "\\max\\quad &z = 2x_1 + 3x_2\\\\\n" +
@@ -62,12 +65,13 @@ function inputObjCoefficients() {
     document.getElementById("button_draw_picture").disabled = true;
     document.getElementById("button_standardize_model").disabled = true;
 
-    let num_var = getNumVar();
+    num_var = getNumVar();
     obj_coe.length = num_var; // js 数组的 length 可以动态变化
     con_lhs.length = 0;
     con_sense.length = 0;
     con_rhs.length = 0;
-    var_type.length = 0;
+    var_type.length = num_var;
+
     document.getElementById("model_latex").innerText = "";
     let coeContainer = document.getElementById("objCoeContainer");
     // 清空容器，确保每次点击按钮时重新生成输入框
@@ -128,21 +132,56 @@ function closeAlert() {
 }
 
 function standardizeModel() {
-    const n = var_type.length;
-    for (let i = 0; i < n; i++) {
-        const select = document.getElementById("select_var_type" + (i + 1));
+    var_type.length = num_var;
+    for (let i = 0; i < num_var; i++) {
+        let select_id = "select_var_type" + (i + 1);
+        /**@type {HTMLElement} */
+        let select = document.getElementById(select_id);
         if (select !== null) {
-            select.addEventListener("change", function () {
-                var_type[i] = Number(this.value);
-            });
+            const {value} = select;
+            var_type[i] = Number(value);
         }
     }
 
-    for (let i = 0; i < n; i++) {
-        if (var_type[i] === 0 || var_type[i] === 1) {
-            console.log(var_type[i]);
+    if (obj_sense === 1) {
+        obj_coe = obj_coe.map(num => -num);
+        obj_sense = 0;
+    }
+    for (let i = 0; i < num_constraint; i++) {
+        if (con_rhs[i] < 0) {
+            con_rhs[i] = -con_rhs[i];
+            con_lhs[i] = con_lhs[i].map(num => -num);
+            if (con_sense[i] === 0)
+                con_sense[i] = 2;
+            else if (con_sense[i] === 2)
+                con_sense[i] = 0;
+        }
+        if (con_sense[i] === 0) {
+            var_is_slack.push(1);
+            var_is_artificial.push(0);
         } else {
+            var_is_slack.push(-1);
+            var_is_artificial.push(1);
+        }
+    }
+
+    stand_obj_coe = obj_coe;
+    stand_con_lhs = con_lhs;
+
+    const n = var_type.length;
+    for (let i = 0; i < n; i++) {
+        if (var_type[i] === 2 || var_type[i] === 3) {
             showAlert();
+            break;
+        } else {
+            let for_stand = true;
+            renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_type, for_stand);
+            if (var_type[i] === 1) {
+                stand_obj_coe.splice(i, 0, -obj_coe[i])
+            }
+            for (let j = 0; j < num_constraint; j++) {
+                stand_con_lhs[j].splice(i, 0, -con_lhs[j][i]);
+            }
             break;
         }
     }
@@ -164,17 +203,15 @@ function inputObj() {
         obj_coe[i] = Number(input.value);
     }
 
-    // let obj_str = "";
-    // obj_str += formulaToLatex(obj_coe);
-    // obj_latex_str = obj_str;
     renderLatexModel(obj_sense, obj_coe);
 }
 
 /**
- * 将一个约束条件lhs或目标函数系数的数值型数组转化为 latex代码
+ *
  * @param arr{number[]}
+ * @returns {string}
  */
-function formulaToLatex(arr) {
+function formulaToLatex(arr, for_stand = false, for_obj = false, constraint_index = 0) {
     let latex_str = "";
     let n = arr.length;
     for (let i = 0; i < n; i++) {
@@ -191,8 +228,53 @@ function formulaToLatex(arr) {
         }
         // ${} 用于 模板字符串（Template Literals），允许在字符串中嵌入变量或表达式
         // 反引号 ``：用于 模板字符串，支持 ${} 变量和表达式
-        latex_str += `x_{${i + 1}}`;
+        if (var_type[i] === 1) {
+            if (for_stand) {
+                if (arr[i] === 1) {
+                    latex_str += `x^+_{${i + 1}}-x^-_{${i + 1}}`;
+                } else if (arr[i] === -1) {
+                    latex_str += `x^+_{${i + 1}}+x^-_{${i + 1}}`;
+                } else if (arr[i] < 0) {
+                    latex_str += `x^+_{${i + 1}}+${-arr[i]}x^-_{${i + 1}}`;
+                } else
+                    latex_str += `x^+_{${i + 1}}-${arr[i]}x^-_{${i + 1}}`;
+            } else
+                latex_str += `x_{${i + 1}}`;
+        } else
+            latex_str += `x_{${i + 1}}`;
+
     }
+    let s_count = 0;
+    let a_count = 0;
+    if (for_stand && for_obj) {
+        for (let j = 0; j < num_constraint; j++) {
+            if (var_is_slack[j] !== 0) {
+                latex_str += `+0s_{${s_count + 1}}`;
+                s_count++;
+            }
+            if (var_is_artificial[j] !== 0) {
+                latex_str += `+0a_{${a_count + 1}}`;
+                a_count++;
+            }
+        }
+    }
+    if (for_stand && !for_obj) {
+        if (var_is_slack[constraint_index] === 1) {
+            let count = var_is_slack.slice(0, constraint_index + 1).filter(x => x !== 0).length;
+            latex_str += `+s_{${count}}`;
+        } else if (var_is_slack[constraint_index] === -1) {
+            let count = var_is_slack.slice(0, constraint_index + 1).filter(x => x !== 0).length;
+            latex_str += `-s_{${count}}`;
+        }
+        if (var_is_artificial[constraint_index] === 1) {
+            let count = var_is_artificial.slice(0, constraint_index + 1).filter(x => x !== 0).length;
+            latex_str += `+a_{${count}}`;
+        } else if (var_is_artificial[constraint_index] === -1) {
+            let count = var_is_artificial.slice(0, constraint_index+1).filter(x => x !== 0).length;
+            latex_str += `-a_{${count}}`;
+        }
+    }
+
     return latex_str;
 }
 
@@ -203,70 +285,64 @@ function formulaToLatex(arr) {
  * @param rhs{number}
  * @returns {string}
  */
-function constraintToLatex(arr, sense, rhs) {
-    let latex_str = formulaToLatex(arr);
+function constraintToLatex(arr, sense, rhs, for_stand = false, constraint_index = 0) {
+    let latex_str = formulaToLatex(arr, for_stand, false, constraint_index);
     let sense_str = sense === 0 ? "\\leq" : sense === 1 ? "\\geq" : "=";
+    if (for_stand)
+        sense_str = "=";
     return latex_str + sense_str + String(rhs);
 }
 
 /**
  *
- * @param var_type {number[]}
+ * @param for_stand{boolean}
  * @returns {string}
  */
-function varTypeToLatex(var_type) {
+function varTypeToLatex(for_stand = false) {
     let n = var_type.length;
     let var_type_latex = "";
     for (let i = 0; i < n; i++) {
         let value = var_type[i];
         if (value === 0) {
-            var_type_latex += `x_{${i + 1}}\\geq 0`;
+            var_type_latex += `x_{${i + 1}}\\geq 0,`;
         } else if (value === 2) {
-            var_type_latex += `x_{${i + 1}}\\in \\{0,1\\}`;
+            var_type_latex += `x_{${i + 1}}\\in \\{0,1\\},`;
         } else if (value === 3) {
-            var_type_latex += `x_{${i + 1}}\\in \\mathbb\\{Z\\}`;
+            var_type_latex += `x_{${i + 1}}\\in \\mathbb\\{Z\\},`;
         }
-
-        if (value !== 1) {
-            if (i < n - 1) {
-                var_type_latex += ",";
-            } else {
-                var_type_latex += ".";
-            }
-        }
-
-        if (i === n - 1 && value === 1) {
-            var_type_latex = var_type_latex.slice(0, -1) + ".";
+        // if (value !== 1) {
+        //     if (i < n - 1) {
+        //         var_type_latex += ",";
+        //     } else {
+        //         var_type_latex += ".";
+        //     }
+        // }
+        if (for_stand) {
+            if (value === 1)
+                var_type_latex += `x^+_{${i + 1}}\\geq 0, x^-_{${i + 1}}\\geq 0,`;
+            // if (i === n - 1) {
+            //     var_type_latex += '.';
+            // } else
+            //     var_type_latex += ',';
         }
     }
+    if (for_stand) {
+        let slack_count = 0;
+        let artificial_count = 0;
+        for (let j = 0; j < num_constraint; j++) {
+            if (var_is_slack[j] !== 0) {
+                var_type_latex += `s_{${slack_count + 1}}\\geq 0,`;
+                slack_count++;
+            }
+            if (var_is_artificial[j] !== 0) {
+                var_type_latex += `a_{${artificial_count + 1}}\\geq 0,`;
+                artificial_count++;
+            }
+        }
+    }
+    var_type_latex = var_type_latex.slice(0, -1) + ".";
     return var_type_latex;
 }
-
-// /**
-//  * 将一个约束条件的lhs或目标函数表达式的字符串转化为 latex代码
-//  * @param arr{string[]}
-//  * @returns {string}
-//  */
-// function formulaToLatex2(arr) {
-//     let latex_str = "";
-//     let n = arr.length;
-//     // ${} 用于 模板字符串（Template Literals），允许在字符串中嵌入变量或表达式
-//     // 反引号 ``：用于 模板字符串，支持 ${} 变量插值
-//     for (let i = 0; i < n; i++) {
-//         if (parseFloat(arr[i]) >= 0 && i > 0) {
-//             latex_str += "+";
-//         }
-//         if (parseFloat(arr[i]) !== 1) {
-//             if (parseFloat(arr[i]) !== -1) {
-//                 latex_str += arr[i];
-//             } else {
-//                 latex_str += "-";
-//             }
-//         }
-//         latex_str += `x_{${i + 1}}`;
-//     }
-//     return latex_str;
-// }
 
 /**
  *
@@ -276,10 +352,12 @@ function varTypeToLatex(var_type) {
  * @param con_sense{number[]}
  * @param con_rhs{number[]}
  * @param var_type{number[]}
+ * @param for_stand{boolean}
  */
-function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_rhs = [], var_type = []) {
+function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_rhs = [], var_type = [], for_stand = false) {
     let obj_sense_str = obj_sense === 1 ? "\\max" : "\\min";
-    let obj_str = formulaToLatex(obj_coe);
+    let for_obj = for_stand === true ? true : false;
+    let obj_str = formulaToLatex(obj_coe, for_stand, for_obj);
     let latexModel = "";
     if (con_lhs.every(row => row.length === 0)) {
         // 反单引号可以创建模板字符串，即字符串里包含变量或表达式
@@ -289,31 +367,29 @@ function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_
             \\]
             `;
     } else if (var_type.length === 0) {
-        let num_con = con_lhs.length;
         let con_body_str = "";
-        for (let i = 0; i < num_con; i++) {
-            con_body_str += "&" + constraintToLatex(con_lhs[i], con_sense[i], con_rhs[i]) + "\\\\";
+        for (let i = 0; i < con_lhs.length; i++) {
+            con_body_str += "&" + constraintToLatex(con_lhs[i], con_sense[i], con_rhs[i], for_stand, i) + "\\\\";
         }
         latexModel += `
             \\[
             \\begin{aligned}
-            ${obj_sense_str}\\quad &${obj_str}\\\\
+            ${obj_sense_str}\\quad &z=${obj_str}\\\\
             \\text{s.t.}\\quad&\\\\
             ${con_body_str}
             \\end{aligned}
             \\]
             `;
     } else {
-        let num_con = con_lhs.length;
-        let var_type_str = varTypeToLatex(var_type);
+        let var_type_str = varTypeToLatex(for_stand);
         let con_body_str = "";
-        for (let i = 0; i < num_con; i++) {
-            con_body_str += "&" + constraintToLatex(con_lhs[i], con_sense[i], con_rhs[i]) + "\\\\";
+        for (let i = 0; i < num_constraint; i++) {
+            con_body_str += "&" + constraintToLatex(con_lhs[i], con_sense[i], con_rhs[i], for_stand, i) + "\\\\";
         }
         latexModel += `
             \\[
             \\begin{aligned}
-            ${obj_sense_str}\\quad &${obj_str}\\\\
+            ${obj_sense_str}\\quad &z=${obj_str}\\\\
             \\text{s.t.}\\quad&\\\\
             ${con_body_str}
             &${var_type_str}
@@ -322,66 +398,20 @@ function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_
             `;
     }
 
-    document.getElementById("model_latex").innerHTML = latexModel;
+    if (!for_stand)
+        document.getElementById("model_latex").innerHTML = latexModel;
+    else {
+        /**@type {HTMLInputElement} */
+        let element = document.getElementById("stand_model_container");
+        element.style.display = "block";
+        document.getElementById("stand_latex").innerHTML = latexModel;
+    }
     MathJax.typeset(); // typeset 适用于小型公式更新，局部重新渲染, typesetPromise适合大规模更新
 }
 
-// function renderLatexModel2(obj_str, con_str = "", var_type_str = "") {
-//     let select_obj_sense = obj_sense;
-//     let obj_sense_str;
-//     // 因为在 HTML 中，select 的 value 是字符串类型，所以应该与字符串 "1" 进行比较，而不是数字 1
-//     if (select_obj_sense === 1) {
-//         obj_sense_str = "\\max";
-//     } else {
-//         obj_sense_str = "\\min";
-//     }
-//
-//     let latexModel = "";
-//     if (con_str === "") {
-//         latexModel += `
-//             \\[
-//             ${obj_sense_str}\\quad z=${obj_str}
-//             \\]
-//             `;
-//     } else if (var_type_str === "") {
-//         let num_con = con_str.length;
-//         let con_body_str = "";
-//         for (let i = 0; i < num_con; i++) {
-//             con_body_str += "&" + con_str[i] + "\\\\";
-//         }
-//         latexModel += `
-//             \\[
-//             \\begin{aligned}
-//             ${obj_sense_str}\\quad &${obj_str}\\\\
-//             \\text{s.t.}\\quad&\\\\
-//             ${con_body_str}
-//             \\end{aligned}
-//             \\]
-//             `;
-//     } else {
-//         let num_con = con_str.length;
-//         let con_body_str = "";
-//         for (let i = 0; i < num_con; i++) {
-//             con_body_str += "&" + con_str[i] + "\\\\";
-//         }
-//         latexModel += `
-//             \\[
-//             \\begin{aligned}
-//             ${obj_sense_str}\\quad &${obj_str}\\\\
-//             \\text{s.t.}\\quad&\\\\
-//             ${con_body_str}
-//             &${var_type_str}
-//             \\end{aligned}
-//             \\]
-//             `;
-//     }
-//
-//     document.getElementById("model_latex").innerHTML = latexModel;
-//     MathJax.typeset(); // typeset 适用于小型公式更新，局部重新渲染, typesetPromise适合大规模更新
-// }
 
 function inputConstraint() {
-    let num_var = getNumVar();
+    num_var = getNumVar();
     document.getElementById("button_input_obj_coe").disabled = true;
     document.getElementById("button_generate_obj").disabled = true;
 
@@ -458,7 +488,7 @@ function inputConstraint() {
 }
 
 function addConstraint() {
-    let num_var = getNumVar();
+    num_var = getNumVar();
     let this_lhs = new Array(num_var).fill(0);
     document.getElementById("button_select_variable_type").disabled = false;
 
@@ -474,13 +504,7 @@ function addConstraint() {
     let {value: this_rhs} = document.getElementById(rhs_id);
     con_lhs.push(this_lhs);
     con_sense.push(Number(this_sense));
-    con_rhs.push(this_rhs);
-
-    // let constraint_str = formulaToLatex(this_lhs);
-    // constraint_str += this_sense;
-    // constraint_str += " " + this_rhs;
-    // con_latex_str.push(constraint_str);
-    // renderLatexModel(obj_latex_str, con_latex_str);
+    con_rhs.push(Number(this_rhs));
 
     renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs);
     document.getElementById("button_remove_constr").disabled = false;
@@ -505,7 +529,6 @@ function selectVariableType() {
     document.getElementById("button_input_constr").disabled = true;
 
     document.getElementById("button_generate_full_model").disabled = false;
-    let num_var = getNumVar();
     let type_container = document.getElementById("var_type_container");
     type_container.innerHTML = "";
     for (let i = 0; i < num_var; i++) {
@@ -567,6 +590,7 @@ function generateFullModel() {
         let select = document.getElementById(select_id);
         const {value} = select;
         var_type[i] = Number(value);
+        select.disabled = true;
     }
     renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_type);
 }
@@ -584,6 +608,7 @@ function reset() {
     document.getElementById("button_select_variable_type").disabled = true;
     document.getElementById("button_generate_full_model").disabled = true;
     document.getElementById("button_standardize_model").disabled = false;
+    document.getElementById("stand_model_container")["style"].display = "none";
 
     // con_latex_str = [];
     // obj_latex_str = "";
@@ -602,6 +627,11 @@ function reset() {
     con_rhs = [4, 5];
     var_type = [0, 0];
     num_constraint = 2;
+    num_var = 2;
+    stand_obj_coe = obj_coe;
+    stand_con_lhs = con_lhs;
+    var_is_slack = [];
+    var_is_artificial = [];
 
     elt.style.display = "none";
     // Remove all expressions
@@ -618,10 +648,8 @@ function reset() {
 
 function drawPicture() {
     MathJax.typeset();
-
     elt.style.display = "block";
 
-    let num_var = getNumVar();
     // 添加约束边界线
     for (let i = 0; i < num_constraint; i++) {
         let latex_str_left = "";
@@ -710,9 +738,9 @@ function drawPicture() {
     latex_feasible += ") \\leq 0";
     // **填充可行域（仅交集部分）**
     calculator.setExpression({
-        id: "feasible_region",
-        latex: latex_feasible,
-    });
+                                 id: "feasible_region",
+                                 latex: latex_feasible,
+                             });
 
     // **目标函数等值线**
     let latex_sign = obj_coe[1] >= 0 ? "+" : "";
@@ -720,13 +748,13 @@ function drawPicture() {
         String(obj_coe[0]) + "x" + latex_sign + String(obj_coe[1]) + "y=c";
 
     calculator.setExpression({
-        id: "objective",
-        latex: latex_obj,
-        lineStyle: Desmos.Styles.DASHED,
-    });
+                                 id: "objective",
+                                 latex: latex_obj,
+                                 lineStyle: Desmos.Styles.DASHED,
+                             });
     // 设置变量 c 的初始值为 0（生成 slider）
     calculator.setExpression({
-        id: "slider-c",
-        latex: "c = 0",
-    });
+                                 id: "slider-c",
+                                 latex: "c = 0",
+                             });
 }
