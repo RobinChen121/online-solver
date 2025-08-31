@@ -657,6 +657,9 @@ function reset() {
     document.getElementById("constr_input_container").innerHTML = "";
     document.getElementById("var_type_container").innerHTML = "";
     document.getElementById("objCoeContainer").innerHTML = "";
+    /**@type {HTMLInputElement} */
+    let element = document.getElementById("picture_border_line");
+    element.style.display = "none";
 
     obj_coe = [2, 3];
     obj_sense = 1;
@@ -691,6 +694,9 @@ function reset() {
 function drawPicture() {
     MathJax.typeset();
     elt.style.display = "block";
+    /**@type {HTMLInputElement} */
+    let element = document.getElementById("picture_border_line");
+    element.style.display = "block";
 
     // 添加约束边界线
     for (let i = 0; i < num_constraint; i++) {
