@@ -6,7 +6,7 @@
  */
 
     // globe variables
-let obj_sense = 0; // 0 表示 min，1 表示 max
+let obj_sense = 1; // 0 表示 min，1 表示 max
 let obj_coe = [2, 3];
 let con_lhs = [[2, 1], [1, 2]];
 let con_rhs = [4, 5];
@@ -659,7 +659,7 @@ function reset() {
     document.getElementById("objCoeContainer").innerHTML = "";
 
     obj_coe = [2, 3];
-    obj_sense = 0;
+    obj_sense = 1;
     con_lhs = [
         [2, 1],
         [1, 2],
