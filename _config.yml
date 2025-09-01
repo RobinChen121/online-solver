@@ -36,6 +36,12 @@ header_pages:
   - index.md
   - tetris.html
   - about.markdown
+
+# 强制指定和 GitHub Pages 一致的引擎版本
+markdown: kramdown
+highlighter: rouge
+
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
