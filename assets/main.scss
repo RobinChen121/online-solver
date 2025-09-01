@@ -54,7 +54,7 @@ body {
 }
 
 .site-footer {
-  margin-top: 20px; /* 让边界线和内容之间有空间 */
+  margin-top: 50px; /* 让边界线和内容之间有空间 */
   border-top: 1px solid #ccc; /* 元素的上边界线 */
 }
 
@@ -194,7 +194,7 @@ a:hover {
   width: 80%;
   max-width: 800px;
   height: 600px;
-  padding-bottom: 100px;
+  padding-bottom: 120px;
   margin: 0 auto 0px; /* 上，左右，下间距 */
   /* 确保calculator容器中的文本颜色不受深色主题影响 */
   color: #333 !important;
