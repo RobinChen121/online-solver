@@ -191,7 +191,7 @@ a:hover {
   max-width: 800px;
   height: 600px;
   padding-bottom: 80px;
-  margin: 0 auto 10px;
+  margin: 0 auto 30px; /* 上，左右，下间距 */
   /* 确保calculator容器中的文本颜色不受深色主题影响 */
   color: #333 !important;
 }
