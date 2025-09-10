@@ -11,7 +11,7 @@ let obj_coe = [2, 3];
 let con_lhs = [[2, 1], [1, 2]];
 let con_rhs = [4, 5];
 let con_sense = [0, 0]; // 0 表示 <=, 1 表示 >=, 2 表示 =
-let var_type = [0, 0]; // 0 表示非负连续，1 表示连续，2 表示 0-1 变量，3 表示整数变量
+let var_type = [0, 0]; // 0 表示非负连续，1 表示非正连续，2 表示连续，3 表示 0-1 变量，4 表示整数变量
 let stand_obj_coe = obj_coe.slice(); // 深拷贝
 let stand_con_lhs = con_lhs.map(row => row.slice());
 
@@ -180,7 +180,7 @@ function standardizeModel() {
 
     const n = var_type.length;
     for (let i = 0; i < n; i++) {
-        if (var_type[i] === 2 || var_type[i] === 3) {
+        if (var_type[i] === 3 || var_type[i] === 4) {
             showAlert();
             return;
         }
@@ -189,7 +189,7 @@ function standardizeModel() {
     renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_type, for_stand);
 
     for (let i = 0; i < n; i++) {
-        if (var_type[i] === 1) {
+        if (var_type[i] === 2) {
             stand_obj_coe.splice(i + 1, 0, -obj_coe[i])
             for (let j = 0; j < num_constraint; j++) {
                 let value = -con_lhs[j][i];
@@ -269,7 +269,7 @@ function formulaToLatex(arr, for_stand = false, for_obj = false, constraint_inde
         }
         // ${} 用于 模板字符串（Template Literals），允许在字符串中嵌入变量或表达式
         // 反引号 ``：用于 模板字符串，支持 ${} 变量和表达式
-        if (var_type[i] === 1) {
+        if (var_type[i] === 2) {
             if (for_stand) {
                 if (arr[i] === 1) {
                     latex_str += `x^+_{${i + 1}}-x^-_{${i + 1}}`;
@@ -346,9 +346,9 @@ function varTypeToLatex(for_stand = false) {
         let value = var_type[i];
         if (value === 0) {
             var_type_latex += `x_{${i + 1}}\\geq 0,`;
-        } else if (value === 2) {
-            var_type_latex += `x_{${i + 1}}\\in \\{0,1\\},`;
         } else if (value === 3) {
+            var_type_latex += `x_{${i + 1}}\\in \\{0,1\\},`;
+        } else if (value === 4) {
             var_type_latex += `x_{${i + 1}}\\in \\mathbb\\{Z\\},`;
         }
         // if (value !== 1) {
@@ -359,7 +359,7 @@ function varTypeToLatex(for_stand = false) {
         //     }
         // }
         if (for_stand) {
-            if (value === 1)
+            if (value === 2)
                 var_type_latex += `x^+_{${i + 1}}\\geq 0, x^-_{${i + 1}}\\geq 0,`;
             // if (i === n - 1) {
             //     var_type_latex += '.';
@@ -592,14 +592,14 @@ function selectVariableType() {
         option1.value = "0";
         option1.selected = true;
         let option2 = document.createElement("option");
-        option2.value = "1";
+        option2.value = "2";
         option2.textContent = "continuous";
         let option3 = document.createElement("option");
         option3.textContent = "binary";
-        option3.value = "2";
+        option3.value = "3";
         let option4 = document.createElement("option");
         option4.textContent = "integer";
-        option4.value = "3";
+        option4.value = "4";
 
         select.appendChild(option1);
         select.appendChild(option2);
