@@ -155,7 +155,7 @@ function standardizeModel() {
         if (con_rhs[i] < 0) {
             con_rhs[i] = -con_rhs[i];
             con_lhs[i] = con_lhs[i].map(num => -num);
-            if (con_sense[i] === 0)
+            if (con_sense[i] === 0) // 0 表示 <=, 1 表示 >=, 2 表示 =
                 con_sense[i] = 1;
             else if (con_sense[i] === 1)
                 con_sense[i] = 0;
@@ -189,7 +189,7 @@ function standardizeModel() {
     renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_type, for_stand);
 
     for (let i = 0; i < n; i++) {
-        if (var_type[i] === 2) {
+        if (var_type[i] === 2) { // unsigned
             stand_obj_coe.splice(i + 1, 0, -obj_coe[i])
             for (let j = 0; j < num_constraint; j++) {
                 let value = -con_lhs[j][i];
