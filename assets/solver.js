@@ -68,7 +68,6 @@ function solve() {
             return vv;
         }
 
-        const arr = obj_sense;
         const s = new Module.Simplex(obj_sense,
                                      arrayToVectorDouble(obj_coe),
                                      array2DToVectorVectorDouble(con_lhs),
@@ -76,7 +75,6 @@ function solve() {
                                      arrayToVectorInt(con_sense),
                                      arrayToVectorInt(var_sign));
         console.log("Simplex instance created successfully:", s);
-        console.log(s.testWeb());
         s.standarize();
         s.solve();
         console.log(s.getOptValue());

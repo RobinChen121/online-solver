@@ -1,0 +1,53 @@
+<!--
+      author: zhen chen
+      date: 2025/10/10
+      time: 14:37
+      description:
+      
+      
+ -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>简单网页调试示例</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      text-align: center;
+      margin-top: 100px;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+<h1 id="title">你好，欢迎调试网页！</h1>
+<button onclick="changeColor()">点击我改变文字颜色</button>
+
+<script>
+  function changeColor() {
+    const colors = ["red", "green", "blue", "purple", "orange"];
+    const title = document.getElementById("title");
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    title.style.color = randomColor;
+  }
+</script>
+</body>
+</html>
