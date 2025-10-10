@@ -48,8 +48,40 @@ document
     });
 
 
-function solve(){
+function solve() {
+    simplexModule().then(Module => {
+        function arrayToVectorInt(arr) {
+            let v = new Module.VectorInt();
+            arr.forEach(x => v.push_back(x));
+            return v;
+        }
 
+        function arrayToVectorDouble(arr) {
+            let v = new Module.VectorDouble();
+            arr.forEach(x => v.push_back(x));
+            return v;
+        }
+
+        function array2DToVectorVectorDouble(arr2d) {
+            let vv = new Module.VectorVectorDouble();
+            arr2d.forEach(row => vv.push_back(arrayToVectorDouble(row)));
+            return vv;
+        }
+
+        const arr = obj_sense;
+        const s = new Module.Simplex(obj_sense,
+                                     arrayToVectorDouble(obj_coe),
+                                     array2DToVectorVectorDouble(con_lhs),
+                                     arrayToVectorDouble(con_rhs),
+                                     arrayToVectorInt(con_sense),
+                                     arrayToVectorInt(var_sign));
+        console.log("Simplex instance created successfully:", s);
+        console.log(s.testWeb());
+        s.standarize();
+        s.solve();
+        console.log(s.getOptValue());
+        console.log(s.getOptSolution());
+    });
 }
 
 function getNumVar() {
@@ -168,11 +200,10 @@ function standardizeModel() {
             if (con_sense[i] === 0) {
                 con_var_slack.push(1);
                 con_var_artificial.push(0);
-            } else if (con_sense[i] === 1){
+            } else if (con_sense[i] === 1) {
                 con_var_slack.push(-1);
                 con_var_artificial.push(1);
-            }
-            else{
+            } else {
                 con_var_slack.push(0);
                 con_var_artificial.push(1);
             }
