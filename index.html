@@ -2,13 +2,20 @@
 layout: home
 ---
 <p>
-    <label for="input_num">Number of decision variables: </label><input type="number"
-                                                                        style="width: 5%;"
-                                                                        id="input_num"
+    <label for="input_var_num">Number of decision variables: </label><input type="number"
+                                                                        style="width: 4%;"
+                                                                        id="input_var_num"
                                                                         value="2"
                                                                         min="2"
                                                                         max="20" required>
     <!--使用百分比来让输入框的宽度相对于其父容器的宽度进行调整。-->
+
+    <label for="input_con_num" style="margin-left: 3%">Number of constraints: </label><input type="number"
+                                                                        style="width: 4%;"
+                                                                        id="input_con_num"
+                                                                        value="2"
+                                                                        min="1"
+                                                                        max="50" required>
 
     <label for="select_obj_sense" style="margin-left: 3%">Objective: </label>
     <select id="select_obj_sense">
@@ -22,13 +29,12 @@ layout: home
 </p>
 
 <p>
-    <button id="button_input_obj_coe" onclick="inputObjCoefficients()">Input objective
-                                                                       coefficients
+    <button id="button_input_obj_coe" onclick="inputObjCoefficients()">Input coefficients
     </button>
     <!--<p id="ini_obj">$$x_1 + x_2$$</p>-->
     <!--<div> 是一个 HTML 元素，常用于分组和布局，不会直接显示任何内容，但可以用于包含其他 HTML 元素-->
 </p>
-<div id="objCoeContainer"></div>
+<div id="obj_coe_container"></div>
 
 <p></p>
 <p>
@@ -78,13 +84,16 @@ layout: home
     >Standardize the model
     </button>
 
-</p>
-
-<p>
-    <button id="button_solve" style="margin-top: 2%" onclick="solve()"
+    <button id="button_solve" style="margin-top: 2%; margin-left:3%" onclick="solve()"
     >Solve
     </button>
+
 </p>
+
+<div id="container_solution" style="display: none">
+    <hr style="border: 1px solid darkgray; display: block">
+    <p id="show_solution" style="margin-top: 1%"></p>
+</div>
 
 <div id="overlay"></div>
 <!-- 这两个对齐一个水平，一个垂直 -->
@@ -102,7 +111,7 @@ layout: home
                                            &x_1 + 2x_2\leq 5\\
                                            &x_1\geq 0, x_2\geq 0.
                                            \end{aligned}\]</p>
-<div id="stand_model_container" style="display: none">
+<div id="container_stand_model" style="display: none">
     <hr style="border: 1px solid darkgray;">
     <p style="margin-top: 1%">The standardized model is: </p>
     <p id="stand_latex" style="margin-top: 1%"></p>

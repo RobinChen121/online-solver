@@ -22,6 +22,10 @@ let con_var_slack = [];
 let con_var_artificial = [];
 let standardized = false;
 
+let solution_status = 3; // 3 unsolved
+let opt_value;
+let solution = [];
+
 let initial_model_latex =
     "\\[\\begin{aligned}\n" +
     "\\max\\quad &z = 2x_1 + 3x_2\\\\\n" +
@@ -62,6 +66,15 @@ function solve() {
             return v;
         }
 
+        function vectorDoubleToArray(v) {
+            const arr = [];
+            const n = v.size();
+            for (let i = 0; i < n; i++) {
+                arr.push(v.get(i));
+            }
+            return arr;
+        }
+
         function array2DToVectorVectorDouble(arr2d) {
             let vv = new Module.VectorVectorDouble();
             arr2d.forEach(row => vv.push_back(arrayToVectorDouble(row)));
@@ -69,22 +82,47 @@ function solve() {
         }
 
         const s = new Module.Simplex(obj_sense,
-                                     arrayToVectorDouble(obj_coe),
-                                     array2DToVectorVectorDouble(con_lhs),
-                                     arrayToVectorDouble(con_rhs),
-                                     arrayToVectorInt(con_sense),
-                                     arrayToVectorInt(var_sign));
+            arrayToVectorDouble(obj_coe),
+            array2DToVectorVectorDouble(con_lhs),
+            arrayToVectorDouble(con_rhs),
+            arrayToVectorInt(con_sense),
+            arrayToVectorInt(var_sign));
         console.log("Simplex instance created successfully:", s);
-        s.standarize();
+        s.standardize();
         s.solve();
-        console.log(s.getOptValue());
-        console.log(s.getOptSolution());
+        solution_status = s.getStatus();
+        if (solution_status === 0)
+            opt_value = s.getOptValue();
+        let simplex_solution = s.getOptSolution();
+        solution = vectorDoubleToArray(simplex_solution);
+        let element = document.getElementById("show_solution");
+        if (solution_status === 0) {
+            let text = "";
+            text += "The optimal value is:  " + opt_value.toString() + "\n"
+            text += "The optimal solution is: \n"
+            // 最优解向量公式
+            text += `\\(`;
+            for (let i = 0; i < solution.length; i++) {
+                text += `x_{${i + 1}} = ${solution[i]}`;
+                if (i !== solution.length - 1) text += ", ";
+            }
+            text += `\\)`;
+            element.innerText = text;
+        } else if (solution_status === 1) {
+            element.innerText = "The problem is unbounded";
+        } else if (solution_status === 2) {
+            element.innerText = "The problem is infeasible";
+        }
+        MathJax.typeset();
+        // 显示整个容器
+        document.getElementById("container_solution").style.display = "block";
+        console.log();
     });
 }
 
 function getNumVar() {
     /** @type {HTMLInputElement} */
-    const elt = document.getElementById("input_num");
+    const elt = document.getElementById("input_var_num");
     return parseInt(elt.value);
 }
 
@@ -98,7 +136,10 @@ function inputObjCoefficients() {
     }
 
     document.getElementById("button_draw_picture").disabled = true;
+    document.getElementById("button_solve").disabled = true;
     document.getElementById("button_standardize_model").disabled = true;
+    document.getElementById("container_solution").style.display = "none"
+    document.getElementById("container_stand_model").style.display = "none"
 
     num_var = getNumVar();
     obj_coe.length = num_var; // js 数组的 length 可以动态变化
@@ -108,10 +149,24 @@ function inputObjCoefficients() {
     var_sign.length = num_var;
 
     document.getElementById("model_latex").innerText = "";
-    let coeContainer = document.getElementById("objCoeContainer");
+    let coeContainer = document.getElementById("obj_coe_container");
     // 清空容器，确保每次点击按钮时重新生成输入框
     coeContainer.innerHTML = "";
+    // 创建一个 <p> 标签
+    let p1 = document.createElement("p");
+    p1.style.marginLeft = "10%";
+    p1.style.marginRight = "5%";
+    p1.style.display = "inline-block"; // 让它和 input 同行
+
+    obj_sense = document.getElementById("select_obj_sense").value;
+    if (obj_sense === '0')
+        p1.innerText = "\\(\\min\\)";
+    else
+        p1.innerText = "\\(\\max\\)";
+    coeContainer.appendChild(p1);
+
     // 根据给定数目生成输入框
+
     for (let i = 0; i < num_var; i++) {
         // 创建新的 <input> 元素
         /** @type {HTMLElement} */
@@ -119,16 +174,15 @@ function inputObjCoefficients() {
         /** @type {HTMLElement} */
         const input = document.createElement("input");
         input.type = "number"; // 设置输入框类型为文本
-        input.id = "coe_obj" + i; // 设置输入框 ID（可选）
-        input.style.width = "50px";
-        input.style.marginLeft = "0.3%";
-        label.style.marginLeft = "0.3%";
+        input.id = "obj_coe" + i; // 设置输入框 ID（可选）
+        input.style.marginLeft = "0.5%";
+        label.style.marginLeft = "0.5%";
         input.value = "0"; // 默认值
-        label.setAttribute("for", "coe_obj" + i);
+        label.setAttribute("for", "obj_coe" + i);
         // 设置 LaTeX 内容
         let latexString = "";
         if (i < num_var - 1) {
-            latexString = `x_{${i + 1}}+ `;
+            latexString = `x_{${i + 1}}+~`;
         } else latexString = `x_{${i + 1}}`;
         label.innerHTML = `\\(${latexString}\\)`;
 
@@ -136,6 +190,68 @@ function inputObjCoefficients() {
         coeContainer.appendChild(input);
         coeContainer.appendChild(label);
     }
+    let p2 = document.createElement("p");
+    p2.style.marginLeft = "10%";
+    p2.innerText = "\\(\\text{s.t.}\\)";
+    p2.style.marginBottom = "0";
+    coeContainer.appendChild(p2);
+
+    for (let j = 0; j < num_constraint; j++) {
+        for (let i = 0; i < num_var; i++) {
+            // 创建新的 <input> 元素
+            /** @type {HTMLElement} */
+            const label = document.createElement("label");
+            /** @type {HTMLElement} */
+            const input = document.createElement("input");
+            input.type = "number"; // 设置输入框类型为文本
+            input.id = "con_coe" + j.toString() + '_' + i; // 设置输入框 ID（可选）
+            if (i === 0)
+                input.style.marginLeft = "13%";
+            label.style.marginLeft = "0.5%";
+            input.value = "0"; // 默认值
+            label.setAttribute("for", "con_coe" + i);
+            // 设置 LaTeX 内容
+            let latexString = "";
+            if (i < num_var - 1) {
+                latexString = `x_{${i + 1}}+~`;
+            } else latexString = `x_{${i + 1}}`;
+            label.innerHTML = `\\(${latexString}\\)`;
+
+            // 将输入框添加到容器中
+            coeContainer.appendChild(input);
+            coeContainer.appendChild(label);
+
+            if (i === num_var - 1) {
+                const select = document.createElement("select");
+                select.style.fontSize = "20px";
+                select.id = "constraint_sense" + j.toString();
+                // 创建多个 option 元素
+                const option1 = document.createElement("option");
+                option1.value = 0;
+                option1.textContent = "≤";
+                option1.selected = true;
+                const option2 = document.createElement("option");
+                option2.value = 1;
+                option2.textContent = "≥";
+                const option3 = document.createElement("option");
+                option3.value = 2;
+                option3.textContent = "=";
+                // 将 option 元素添加到 select 元素中
+                select.appendChild(option1);
+                select.appendChild(option2);
+                select.appendChild(option3);
+
+                coeContainer.appendChild(select);
+
+                const input = document.createElement("input");
+                input.type = "number"; // 设置输入框类型为文本
+                input.id = "con_coe" + j.toString() + '_' + i; // 设置输入框 ID（可选）
+                coeContainer.appendChild(input);
+            }
+        }
+        coeContainer.appendChild(document.createElement('br')); // 强制换行
+    }
+
     // 在所有元素都添加完后，调用 MathJax 渲染所有的 LaTeX 公式
     /* global MathJax */
     MathJax.typeset();
@@ -219,7 +335,6 @@ function standardizeModel() {
         }
     }
     let for_stand = true;
-    renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_sign, for_stand);
 
     for (let i = 0; i < n; i++) {
         if (var_sign[i] === 2) { // unsigned
@@ -227,6 +342,12 @@ function standardizeModel() {
             for (let j = 0; j < num_constraint; j++) {
                 let value = -con_lhs[j][i];
                 stand_con_lhs[j].splice(i + 1, 0, value);
+            }
+        } else if (var_sign[i] === 5) { // <= continuous
+            stand_obj_coe[i] = -stand_obj_coe[i];
+            for (let j = 0; j < num_constraint; j++) {
+                stand_con_lhs[j][i] = -stand_con_lhs[j][i];
+                con_lhs[j][i] = -con_lhs[j][i];
             }
         }
     }
@@ -253,6 +374,7 @@ function standardizeModel() {
         }
     }
 
+    renderLatexModel(obj_sense, obj_coe, con_lhs, con_sense, con_rhs, var_sign, for_stand);
     standardized = true;
     // console.log(stand_obj_coe);
     // console.log("test");
@@ -261,15 +383,15 @@ function standardizeModel() {
 
 function inputObj() {
     // 让决策变量数量输入框实效
-    document.getElementById("input_num").disabled = true;
+    document.getElementById("input_var_num").disabled = true;
     document.getElementById("select_obj_sense").disabled = true;
     num_constraint = 0;
-    let {value: n} = document.getElementById("input_num"); // 获取 id 为 input_num 的标签中的 value 值
+    let {value: n} = document.getElementById("input_var_num"); // 获取 id 为 input_var_num 的标签中的 value 值
     n = Math.max(1, parseInt(n)); // parseInt() 是 JavaScript 用于将字符串转换为整数的内置函数
 
     // 得到输入框的系数
     for (let i = 0; i < n; i++) {
-        let input_id = "coe_obj" + i;
+        let input_id = "obj_coe" + i;
         /**@type {HTMLInputElement} */
         let input = document.getElementById(input_id);
         obj_coe[i] = Number(input.value);
@@ -283,6 +405,9 @@ function inputObj() {
 /**
  *
  * @param arr{number[]}
+ * @param for_stand
+ * @param for_obj
+ * @param constraint_index
  * @returns {string}
  */
 function formulaToLatex(arr, for_stand = false, for_obj = false, constraint_index = 0) {
@@ -357,6 +482,8 @@ function formulaToLatex(arr, for_stand = false, for_obj = false, constraint_inde
  * @param arr{number[]}: left hand side coefficients of the constraint
  * @param sense{number}
  * @param rhs{number}
+ * @param for_stand
+ * @param constraint_index
  * @returns {string}
  */
 function constraintToLatex(arr, sense, rhs, for_stand = false, constraint_index = 0) {
@@ -383,6 +510,8 @@ function varTypeToLatex(for_stand = false) {
             var_type_latex += `x_{${i + 1}}\\in \\{0,1\\},`;
         } else if (value === 4) {
             var_type_latex += `x_{${i + 1}}\\in \\mathbb\\{Z\\},`;
+        } else if (value === 5) {
+            var_type_latex += `x_{${i + 1}}\\leq 0,`;
         }
         // if (value !== 1) {
         //     if (i < n - 1) {
@@ -431,7 +560,7 @@ function varTypeToLatex(for_stand = false) {
 function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_rhs = [], var_sign = [], for_stand = false) {
     let latexModel = "";
     let obj_sense_str = obj_sense === 1 ? "\\max" : "\\min";
-    let for_obj = for_stand === true ? true : false;
+    let for_obj = for_stand === true;
     let obj_str = formulaToLatex(obj_coe, for_stand, for_obj);
     if (con_lhs.every(row => row.length === 0)) {
         // 反单引号可以创建模板字符串，即字符串里包含变量或表达式
@@ -476,7 +605,7 @@ function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_
         document.getElementById("model_latex").innerHTML = latexModel;
     } else {
         /**@type {HTMLInputElement} */
-        let element = document.getElementById("stand_model_container");
+        let element = document.getElementById("container_stand_model");
         element.style.display = "block";
         document.getElementById("stand_latex").innerHTML = latexModel;
     }
@@ -487,7 +616,7 @@ function renderLatexModel(obj_sense, obj_coe, con_lhs = [], con_sense = [], con_
 function inputConstraint() {
     num_var = getNumVar();
     document.getElementById("button_input_obj_coe").disabled = true;
-    document.getElementById("button_generate_obj").disabled = true;
+    // document.getElementById("button_generate_obj").disabled = true;
 
     let coeContainer = document.getElementById("constr_input_container");
     coeContainer.innerHTML = "";
@@ -501,7 +630,6 @@ function inputConstraint() {
         const input = document.createElement("input");
         input.type = "number"; // 设置输入框类型为文本
         input.id = "constraint_coe" + i; // 设置输入框 ID（可选）
-        input.style.width = "50px";
         input.style.marginLeft = "0.3%";
         label.style.marginLeft = "0.3%";
         input.value = "0"; // 默认值
@@ -521,9 +649,8 @@ function inputConstraint() {
     // 创建 select 元素
     /**@type {HTMLElement} */
     const select = document.createElement("select");
+    select.style.fontSize = "20px";
     select.id = "constraint_sense";
-
-    select.style.marginLeft = "0.5%";
 
     // 创建多个 option 元素
     const option1 = document.createElement("option");
@@ -603,6 +730,7 @@ function selectVariableType() {
     document.getElementById("button_input_constr").disabled = true;
 
     document.getElementById("button_generate_full_model").disabled = false;
+    document.getElementById("button_solve").disabled = false;
     let type_container = document.getElementById("var_type_container");
     type_container.innerHTML = "";
     for (let i = 0; i < num_var; i++) {
@@ -633,11 +761,15 @@ function selectVariableType() {
         let option4 = document.createElement("option");
         option4.textContent = "integer";
         option4.value = "4";
+        let option5 = document.createElement("option");
+        option5.textContent = "≤ 0 continuous";
+        option5.value = "5";
 
         select.appendChild(option1);
         select.appendChild(option2);
         select.appendChild(option3);
         select.appendChild(option4);
+        select.appendChild(option5);
 
         type_container.appendChild(label);
         type_container.appendChild(select);
@@ -670,11 +802,12 @@ function generateFullModel() {
 }
 
 function reset() {
-    document.getElementById("input_num").disabled = false; // 让按钮恢复可点击
-    document.getElementById("input_num").value = "2";
+    document.getElementById("input_var_num").disabled = false; // 让按钮恢复可点击
+    document.getElementById("input_var_num").value = "2";
     document.getElementById("select_obj_sense").disabled = false;
     document.getElementById("button_input_obj_coe").disabled = false;
     document.getElementById("button_draw_picture").disabled = false;
+    document.getElementById("button_solve").disabled = false;
     document.getElementById("button_generate_obj").disabled = true;
     document.getElementById("button_input_constr").disabled = true;
     document.getElementById("button_add_constr").disabled = true;
@@ -682,17 +815,19 @@ function reset() {
     document.getElementById("button_select_variable_type").disabled = true;
     document.getElementById("button_generate_full_model").disabled = true;
     document.getElementById("button_standardize_model").disabled = false;
-    document.getElementById("stand_model_container")["style"].display = "none";
+    document.getElementById("container_stand_model")["style"].display = "none";
+    document.getElementById("container_solution")["style"].display = "none";
 
     // con_latex_str = [];
     // obj_latex_str = "";
     // var_type_latex_str = "";
     document.getElementById("constr_input_container").innerHTML = "";
     document.getElementById("var_type_container").innerHTML = "";
-    document.getElementById("objCoeContainer").innerHTML = "";
+    document.getElementById("obj_coe_container").innerHTML = "";
     /**@type {HTMLInputElement} */
     let element = document.getElementById("picture_border_line");
     element.style.display = "none";
+    document.getElementById("container_solution").style.display = "none";
 
     obj_coe = [2, 3];
     obj_sense = 1;
@@ -819,9 +954,9 @@ function drawPicture() {
     latex_feasible += ") \\leq 0";
     // **填充可行域（仅交集部分）**
     calculator.setExpression({
-                                 id: "feasible_region",
-                                 latex: latex_feasible,
-                             });
+        id: "feasible_region",
+        latex: latex_feasible,
+    });
 
     // **目标函数等值线**
     let latex_sign = obj_coe[1] >= 0 ? "+" : "";
@@ -829,13 +964,13 @@ function drawPicture() {
         String(obj_coe[0]) + "x" + latex_sign + String(obj_coe[1]) + "y=c";
 
     calculator.setExpression({
-                                 id: "objective",
-                                 latex: latex_obj,
-                                 lineStyle: Desmos.Styles.DASHED,
-                             });
+        id: "objective",
+        latex: latex_obj,
+        lineStyle: Desmos.Styles.DASHED,
+    });
     // 设置变量 c 的初始值为 0（生成 slider）
     calculator.setExpression({
-                                 id: "slider-c",
-                                 latex: "c = 0",
-                             });
+        id: "slider-c",
+        latex: "c = 0",
+    });
 }
