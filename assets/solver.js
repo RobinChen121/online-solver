@@ -17,6 +17,7 @@ let constraint_num = con_lhs.length;
 let var_num = obj_coe.length;
 let var_slack_num = 0;
 let var_artificial_num = 0;
+let unsigned_index = [] // 记录无符号变量的下标
 
 let con_var_slack = [];
 let con_var_artificial = [];
@@ -25,6 +26,9 @@ let standardized = false;
 let solution_status = 3; // 3 unsolved
 let opt_value;
 let solution = [];
+
+let recorded_tableau = [];
+let recorded_pivot = [];
 
 let initial_model_latex =
     "\\[\\begin{aligned}\n" +
@@ -53,6 +57,8 @@ elt.style.display = "none";
 
 
 function solve() {
+    recorded_tableau = [];
+    recorded_pivot = [];
     simplexModule().then(Module => {
         function arrayToVectorInt(arr) {
             let v = new Module.VectorInt();
@@ -74,6 +80,7 @@ function solve() {
             }
             return arr;
         }
+
 
         function array2DToVectorVectorDouble(arr2d) {
             let vv = new Module.VectorVectorDouble();
@@ -109,6 +116,26 @@ function solve() {
             }
             text += `\\)`;
             element.innerText = text;
+
+            let tableaux = s.getRecordedTableau();
+            let pivot = s.getPivotIndex();
+            let N = tableaux.size();
+            for (let i = 0; i < N; i++) {
+                let tableau = tableaux.get(i);
+                let K = tableau.size();
+                let arr = [];
+                for (let j = 0; j < K; j++) {
+                    let row = tableau.get(j);
+                    arr.push(vectorDoubleToArray(row));
+                }
+                recorded_tableau.push(arr);
+            }
+            N = pivot.size();
+            for (let i = 0; i < N; i++) {
+                let cell = pivot.get(i);
+                recorded_pivot.push(vectorDoubleToArray(cell));
+            }
+
         } else if (solution_status === 1) {
             element.innerText = "The problem is unbounded";
         } else if (solution_status === 2) {
@@ -119,7 +146,93 @@ function solve() {
         document.getElementById("container_solution").style.display = "block";
         console.log();
     });
+    document.getElementById("show_iteration").innerHTML = "";
 }
+
+function solve_detail() {
+    renderMultipleTableaux(recorded_tableau);
+}
+
+// 渲染多个单纯形
+function renderMultipleTableaux(allTableaux) {
+    const container = document.getElementById("show_iteration");
+    container.style.display = "block";
+    container.innerHTML = "";
+    // document.getElementById("show_iteration").style.display = "block";
+
+    // const element = document.getElementById("show_iteration");
+
+
+    allTableaux.forEach((tableau, index) => {
+        renderSingleTableau(tableau, container, index);
+    });
+}
+
+function renderSingleTableau(tableau, container, index) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "simplex-container";
+
+    // 标题
+    const title = document.createElement("div");
+    title.className = "simplex-title";
+    title.textContent = `Iteration ${index + 1}`;
+    wrapper.appendChild(title);
+
+    // 表格
+    const table = document.createElement("table");
+
+    // 表头
+    // tr: table row
+    // th: table header
+    // td: table data in a cell
+
+    const headerRow = document.createElement("tr");
+    headerRow.appendChild(document.createElement("th")); // 左上角空白
+    for (let j = 0; j < tableau[0].length - 1; j++) {
+        const th = document.createElement("th");
+        if (j < var_num)
+            th.textContent = `\\(x_{${j + 1}}\\)`;
+        else if (j < var_num + var_slack_num)
+            th.textContent = `\\(s_{${j + 1 - var_num}}\\)`;
+        else if (j < var_num + var_slack_num + var_slack_num)
+            th.textContent = `\\(s_{${j + 1 - var_num - var_slack_num}}\\)`;
+        headerRow.appendChild(th);
+    }
+    const th = document.createElement("th");
+    th.textContent = "RHS";
+    headerRow.appendChild(th);
+    table.appendChild(headerRow);
+
+    // 数据行
+    for (let i = 0; i < tableau.length; i++) {
+        const row = document.createElement("tr");
+
+        // 行标签
+        const rowHeader = document.createElement("th");
+        rowHeader.textContent = (i === 0) ? "\\(Z\\)" : ``;
+        row.appendChild(rowHeader);
+
+        for (let j = 0; j < tableau[i].length; j++) {
+            const td = document.createElement("td");
+            td.textContent = tableau[i][j].toFixed(2);
+
+            // 根据条件给单元格填充颜色
+            if (index < recorded_tableau.length - 1) {           // 这里的条件你可以改成任意逻辑
+                if (i === recorded_pivot[index][0] && j === recorded_pivot[index][1]) {
+                    td.style.backgroundColor = "#7fc9e8";
+                }
+            }
+            row.appendChild(td);
+        }
+
+        table.appendChild(row);
+    }
+    wrapper.appendChild(table);
+    container.appendChild(wrapper);
+    MathJax.typeset();
+    document.getElementById("container_tableaux").style.display = "block";
+}
+
 
 function getNumVar() {
     /** @type {HTMLInputElement} */
@@ -359,6 +472,8 @@ function closeAlert() {
 }
 
 function standardizeModel() {
+    document.getElementById("button_solve_detail").disabled = false;
+
     const n = var_sign.length;
     for (let i = 0; i < n; i++) {
         if (var_sign[i] === 3 || var_sign[i] === 4) {
@@ -448,6 +563,7 @@ function standardizeModel() {
                 let value = -con_lhs[j][i];
                 stand_con_lhs[j].splice(i + 1, 0, value);
             }
+            unsigned_index.push(i);
         } else if (var_sign[i] === 1) { // <= continuous
             stand_obj_coe[i] = -stand_obj_coe[i];
             for (let j = 0; j < constraint_num; j++) {
@@ -965,6 +1081,7 @@ function reset() {
     document.getElementById("button_draw_picture").disabled = false;
     document.getElementById("button_solve").disabled = false;
     document.getElementById("button_generate_model").disabled = true;
+    document.getElementById("button_solve_detail").disabled = true;
     // document.getElementById("button_generate_obj").disabled = true;
     // document.getElementById("button_input_constr").disabled = true;
     // document.getElementById("button_add_constr").disabled = true;
@@ -974,7 +1091,7 @@ function reset() {
     document.getElementById("button_standardize_model").disabled = false;
     document.getElementById("container_stand_model")["style"].display = "none";
     document.getElementById("container_solution")["style"].display = "none";
-
+    document.getElementById("container_tableaux")["style"].display = "none";
     // con_latex_str = [];
     // obj_latex_str = "";
     // var_type_latex_str = "";
@@ -983,7 +1100,9 @@ function reset() {
     // document.getElementById("container_model").innerHTML = "";
     var_slack_num = 0;
     var_artificial_num = 0;
+    unsigned_index = [];
     document.getElementById("container_model").innerHTML = "";
+
     /**@type {HTMLInputElement} */
     let element = document.getElementById("picture_border_line");
     element.style.display = "none";

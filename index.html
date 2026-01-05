@@ -91,7 +91,11 @@ layout: home
     </button>
 
     <button id="button_solve" style="margin-top: 2%; margin-left:3%" onclick="solve()"
-    >Solve
+    >Solve by Simplex
+    </button>
+
+    <button id="button_solve_detail" style="margin-top: 2%; margin-left:3%" onclick="solve_detail()" disabled
+    >Show Simplex details
     </button>
 
 </p>
@@ -101,10 +105,16 @@ layout: home
     <p id="show_solution" style="margin-top: 1%"></p>
 </div>
 
+
 <div id="container_stand_model" style="display: none">
     <hr style="border: 1px solid darkgray;">
     <p style="margin-top: 1%">The standardized model is: </p>
     <p id="stand_latex" style="margin-top: 1%"></p>
+</div>
+
+<div id="container_tableaux" style="display: none">
+    <hr style="border: 1px solid darkgray; display: block">
+    <div id="show_iteration" style="margin-top: 1%;"></div>
 </div>
 
 <div id="overlay"></div>

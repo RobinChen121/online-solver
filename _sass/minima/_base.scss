@@ -234,6 +234,9 @@ pre {
 /**
  * Tables
  */
+// tr: table row
+// th: table row/column header
+// td: table data in a cell
 table {
   margin-bottom: $spacing-unit;
   width: 100%;
@@ -241,21 +244,53 @@ table {
   color: color.adjust($text-color, $lightness: 18%);
   border-collapse: collapse;
   border: 1px solid $grey-color-light;
-  tr {
-    &:nth-child(even) {
-      background-color: color.adjust($grey-color-light, $lightness: 6%);
+  td {
+    border: 1px solid #0a0a0a;
+  }
+  //tr {
+  //  &:nth-child(even) { // 偶数行染色
+  //    background-color: color.adjust($grey-color-light, $lightness: 6%);
+  //  }
+  //}
+  tr:first-child {
+    th,
+    td {
+      text-align: center;
+    }
+  }
+  /* 第 1、2 行 */
+  tr:nth-child(-n + 2) {
+    th,
+    td {
+      border-top: 2px solid #000;    // 各自行的上边界
+      border-bottom: 2px solid #000; // 各自行的下边界
+    }
+  }
+  /* 最后一行：下边界黑线 */
+  tr:last-child {
+    td,th {
+      border-bottom: 2px solid #000;
     }
   }
   th,
   td {
     padding: ($spacing-unit * 0.3333333333) ($spacing-unit * 0.5);
+    background-color: color.adjust($grey-color-light, $lightness: 10%);
   }
   th {
     background-color: color.adjust($grey-color-light, $lightness: 3%);
     border: 1px solid color.adjust($grey-color-light, $lightness: -4%);
     border-bottom-color: color.adjust($grey-color-light, $lightness: -12%);
   }
-  td {
-    border: 1px solid $grey-color-light;
-  }
+  //td {
+  //  border: 1px solid $grey-color-light;
+  //}
+}
+
+.simplex-container {
+  margin-bottom: 40px;
+}
+.simplex-title {
+  font-weight: bold;
+  margin-bottom: 4px;
 }
