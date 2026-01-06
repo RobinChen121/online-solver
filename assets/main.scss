@@ -192,8 +192,8 @@ a:hover {
 /* margin :0 auto左右自动分配空间，相当于居中， padding-bottom 让下面不覆盖 footer */
 #calculator {
   width: 100%;
-  //max-width: 800px;
-  height: 600px;
+  max-width: 900px;
+  height: 700px;
   padding-bottom: 120px;
   margin: 0 auto 0px; /* 上，左右，下间距 */
   /* 确保calculator容器中的文本颜色不受深色主题影响 */
