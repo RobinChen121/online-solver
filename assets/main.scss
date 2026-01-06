@@ -43,7 +43,7 @@ body {
 
 /* 修改页面主内容宽度 */
 .wrapper {
-  max-width: 900px; /* 改成你想要的宽度 */
+  max-width: 1000px; /* 改成你想要的宽度 */
   padding: 0 20px;
   width: 70%; /* 容器占父容器的百分比 */
   margin: 0 auto; /* 自动水平居中 */
@@ -192,7 +192,7 @@ a:hover {
 /* margin :0 auto左右自动分配空间，相当于居中， padding-bottom 让下面不覆盖 footer */
 #calculator {
   width: 100%;
-  max-width: 800px;
+  //max-width: 800px;
   height: 600px;
   padding-bottom: 120px;
   margin: 0 auto 0px; /* 上，左右，下间距 */
@@ -771,7 +771,7 @@ tr:last-child {
 
   /* 悬停高亮 */
   .tableau td.special:hover {
-    background-color: #3f5159;
+    background-color: #adb2b4;
   }
 
   tr:nth-child(-n + 2) th,

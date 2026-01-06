@@ -1194,8 +1194,8 @@ function drawPicture() {
     MathJax.typeset();
     elt.style.display = "block";
     /**@type {HTMLInputElement} */
-    let element = document.getElementById("picture_border_line");
-    element.style.display = "block";
+    // let element = document.getElementById("picture_border_line");
+    // element.style.display = "block";
 
     // 添加约束边界线
     for (let i = 0; i < constraint_num; i++) {
