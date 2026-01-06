@@ -310,9 +310,11 @@ function inputCoefficients() {
 
     document.getElementById("button_draw_picture").disabled = true;
     document.getElementById("button_solve").disabled = true;
+    document.getElementById("button_solve_detail").disabled = true;
     document.getElementById("button_standardize_model").disabled = true;
     document.getElementById("container_solution").style.display = "none"
     document.getElementById("container_stand_model").style.display = "none"
+    document.getElementById("container_tableaux").style.display = "none"
 
     var_num = getNumVar();
     obj_coe.length = var_num; // js 数组的 length 可以动态变化
