@@ -104,6 +104,7 @@ function solve() {
         solution = vectorDoubleToArray(simplex_solution);
         let element = document.getElementById("show_solution");
         if (solution_status === 0) {
+            document.getElementById("button_solve_detail").disabled = false;
             let text = "";
             text += "The optimal value is:  " + opt_value.toString() + "\n"
             text += "The optimal solution is: \n"
@@ -212,6 +213,7 @@ function renderSingleTableau(tableau, container, index, bool_two_stage, two_stag
 
     // 表格
     const table = document.createElement("table");
+    table.className = "tableau";
     if (index >= two_stage_start) {
         table.style.width = "80%";
     }
@@ -258,17 +260,17 @@ function renderSingleTableau(tableau, container, index, bool_two_stage, two_stag
             if (!bool_two_stage) {
                 if (index < recorded_tableau.length - 1) {           // 这里的条件你可以改成任意逻辑
                     if (i === recorded_pivot[index][0] && j === recorded_pivot[index][1]) {
-                        td.style.backgroundColor = "#7fc9e8";
+                        td.className = "special";
                     }
                 }
             } else {
                 if (index < two_stage_start - 1) {           // 这里的条件你可以改成任意逻辑
                     if (i === recorded_pivot[index][0] && j === recorded_pivot[index][1]) {
-                        td.style.backgroundColor = "#7fc9e8";
+                        td.className = "special";
                     }
                 } else if (index >= two_stage_start && index < recorded_tableau.length - 1)
                     if (i === recorded_pivot[index - 1][0] && j === recorded_pivot[index - 1][1]) {
-                        td.style.backgroundColor = "#7fc9e8";
+                        td.className = "special";
                     }
             }
             row.appendChild(td);
@@ -521,8 +523,6 @@ function closeAlert() {
 }
 
 function standardizeModel() {
-    document.getElementById("button_solve_detail").disabled = false;
-
     const var_original_num = var_sign.length;
     for (let i = 0; i < var_original_num; i++) {
         if (var_sign[i] === 3 || var_sign[i] === 4) {

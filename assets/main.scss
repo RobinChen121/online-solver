@@ -4,11 +4,11 @@
 
 /*当你创建一个 SCSS 文件，前面加 _，比如 _base.scss，表示这是一个 partial（局部文件）*/
 /* Sass 规定，引入 partial 时可以省略前面的 _ 和 .scss 后缀 */
+
 @use "minima/variables";
 @use "minima/base";
 @use "minima/layout";
 @use "minima/syntax-highlighting";
-
 
 /*
 css中不同的类别：
@@ -191,7 +191,7 @@ a:hover {
 /* 画图容器的设置 */
 /* margin :0 auto左右自动分配空间，相当于居中， padding-bottom 让下面不覆盖 footer */
 #calculator {
-  width: 80%;
+  width: 100%;
   max-width: 800px;
   height: 600px;
   padding-bottom: 120px;
@@ -670,11 +670,11 @@ select:disabled:hover {
     height: 560px !important;
     max-width: 95vw;
   }
-  
+
   #mobile-controls {
     width: 280px !important;
   }
-  
+
   #mobile-controls button {
     padding: 8px 12px !important;
     font-size: 0.9em !important;
@@ -682,60 +682,117 @@ select:disabled:hover {
   }
 }
 
-/**
- * Tables
- */
-// tr: table row
-// th: table row/column header
-// td: table data in a cell
-table {
-  margin-bottom: $spacing-unit;
-  width: 100%;
-  text-align: $table-text-align;
-  color: color.adjust($text-color, $lightness: 18%);
+/* simplex-table.scss */
+// th: table head: row head or column head
+.tableau {
   border-collapse: collapse;
-  border: 1px solid $grey-color-light;
-  td {
-    border: 1px solid #0a0a0a;
-  }
-  //tr {
-  //  &:nth-child(even) { // 偶数行染色
-  //    background-color: color.adjust($grey-color-light, $lightness: 6%);
-  //  }
-  //}
-  tr:first-child {
-    th,
-    td {
-      text-align: center;
-    }
-  }
-  /* 第 1、2 行 */
-  tr:nth-child(-n + 2) {
-    th,
-    td {
-      border-top: 2px solid #000;    // 各自行的上边界
-      border-bottom: 2px solid #000; // 各自行的下边界
-    }
-  }
-  /* 最后一行：下边界黑线 */
-  tr:last-child {
-    td,th {
-      border-bottom: 2px solid #000;
-    }
-  }
+  width: 100%;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+.tableau th,
+.tableau td {
+  border: 1px solid #555;
+  padding: 8px 12px;
+}
+
+/* 表头 */
+.tableau th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: #222;
+}
+
+/* 表格单元格 */
+.tableau td {
+  background-color: #fff;
+  color: #222;
+}
+
+.tableau td.special {
+  background-color: #7fc9e8;
+  color: #222;
+}
+
+/* 悬停高亮 */
+.tableau td.special:hover {
+  background-color: #4fbcea;
+}
+
+/* 悬停高亮 */
+.tableau td:hover {
+  background-color: #e0f7fa;
+}
+
+
+
+/* 第1、2行边框加粗 */
+tr:nth-child(-n + 2) {
   th,
   td {
-    padding: ($spacing-unit * 0.3333333333) ($spacing-unit * 0.5);
-    background-color: color.adjust($grey-color-light, $lightness: 10%);
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
   }
-  th {
-    background-color: color.adjust($grey-color-light, $lightness: 3%);
-    border: 1px solid color.adjust($grey-color-light, $lightness: -4%);
-    border-bottom-color: color.adjust($grey-color-light, $lightness: -12%);
+}
+
+/* 最后一行下边框加粗 */
+tr:last-child {
+  th,
+  td {
+    border-bottom: 2px solid #000;
   }
-  //td {
-  //  border: 1px solid $grey-color-light;
-  //}
+}
+
+/* ------------------------ */
+/* 暗黑模式样式 */
+[data-theme="dark"] {
+  .tableau th {
+    background-color: #333;
+    color: #eee;
+    border-color: #555;
+  }
+
+  .tableau td {
+    background-color: #222;
+    color: #ddd;
+    border-color: #555;
+  }
+
+  .tableau td:hover {
+    background-color: #444; /* 暗模式下的悬停高亮 */
+  }
+
+  .tableau td.special {
+    background-color: #83989f;
+    color: #ddd;
+  }
+
+  /* 悬停高亮 */
+  .tableau td.special:hover {
+    background-color: #3f5159;
+  }
+
+  tr:nth-child(-n + 2) th,
+  tr:nth-child(-n + 2) td {
+    border-top: 2px solid #eee;
+    border-bottom: 2px solid #eee;
+  }
+
+  tr:last-child th,
+  tr:last-child td {
+    border-bottom: 2px solid #eee;
+  }
+}
+
+
+/* 表格 caption 样式 */
+.tableau caption {
+  caption-side: top;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
 }
 
 .simplex-container {
