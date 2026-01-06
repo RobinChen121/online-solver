@@ -105,6 +105,18 @@ layout: home
     <p id="show_solution" style="margin-top: 1%"></p>
 </div>
 
+<!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
+<hr style="border: 1px solid darkgray;">
+<p id="model_latex" style="margin-top: 1%">\[\begin{aligned}
+                                           \max\quad &z = 2x_1 + 3x_2\\
+                                           \text{s.t.}\quad&\\
+                                           &2x_1 + x_2\leq 4\\
+                                           &x_1 + 2x_2\leq 5\\
+                                           &x_1\geq 0, x_2\geq 0.
+                                           \end{aligned}\]</p>
+
+
+<hr id="picture_border_line" style="border: 1px solid darkgray; display: none">
 
 <div id="container_stand_model" style="display: none">
     <hr style="border: 1px solid darkgray;">
@@ -124,18 +136,7 @@ layout: home
     <button onclick="closeAlert()">OK</button>
 </div>
 
-<!-- <hr> 默认是一个边框式的水平线，需要使用 border 或 background 才能控制颜色和透明度。-->
-<hr style="border: 1px solid darkgray;">
-<p id="model_latex" style="margin-top: 1%">\[\begin{aligned}
-                                           \max\quad &z = 2x_1 + 3x_2\\
-                                           \text{s.t.}\quad&\\
-                                           &2x_1 + x_2\leq 4\\
-                                           &x_1 + 2x_2\leq 5\\
-                                           &x_1\geq 0, x_2\geq 0.
-                                           \end{aligned}\]</p>
 
-
-<hr id="picture_border_line" style="border: 1px solid darkgray; display: none">
 
 <div id="calculator">
     <ul>

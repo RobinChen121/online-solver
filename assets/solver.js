@@ -150,36 +150,71 @@ function solve() {
 }
 
 function solve_detail() {
-    renderMultipleTableaux(recorded_tableau);
+    if (solution_status !== 0)
+        return;
+    renderMultipleTableaux();
 }
 
 // 渲染多个单纯形
-function renderMultipleTableaux(allTableaux) {
+function renderMultipleTableaux() {
     const container = document.getElementById("show_iteration");
     container.style.display = "block";
     container.innerHTML = "";
     // document.getElementById("show_iteration").style.display = "block";
-
     // const element = document.getElementById("show_iteration");
 
-
-    allTableaux.forEach((tableau, index) => {
-        renderSingleTableau(tableau, container, index);
+    let bool_two_stage = recorded_tableau[0][0].length !== recorded_tableau[recorded_tableau.length - 1][0].length;
+    let two_stage_start = recorded_tableau.length;
+    if (bool_two_stage) {
+        for (let i = 0; i < recorded_tableau.length; i++) {
+            if (recorded_tableau[i + 1][0].length < recorded_tableau[i][0].length) {
+                two_stage_start = i + 1;
+                break;
+            }
+        }
+    }
+    recorded_tableau.forEach((tableau, index) => {
+        renderSingleTableau(tableau, container, index, bool_two_stage, two_stage_start);
     });
 }
 
-function renderSingleTableau(tableau, container, index) {
+function getVariablesExpression() {
+    let result = []
+    for (let j = 0; j < var_num; j++) {
+        if (!unsigned_index.includes(j))
+            result.push(['', j + 1]);
+        else {
+            result.push(['+', j + 1]);
+            result.push(['-', j + 1]);
+        }
+    }
+    return result;
+}
+
+function renderSingleTableau(tableau, container, index, bool_two_stage, two_stage_start) {
     const wrapper = document.createElement("div");
     wrapper.className = "simplex-container";
 
     // 标题
     const title = document.createElement("div");
     title.className = "simplex-title";
-    title.textContent = `Iteration ${index + 1}`;
+    let stage_text = '';
+    if (bool_two_stage) {
+        stage_text = 'Stage '
+        if (index >= two_stage_start) {
+            stage_text += '2<br>';
+        } else
+            stage_text += '1<br>';
+    }
+
+    title.innerHTML = stage_text + `Iteration ${index + 1}`;
     wrapper.appendChild(title);
 
     // 表格
     const table = document.createElement("table");
+    if (index >= two_stage_start) {
+        table.style.width = "80%";
+    }
 
     // 表头
     // tr: table row
@@ -188,14 +223,17 @@ function renderSingleTableau(tableau, container, index) {
 
     const headerRow = document.createElement("tr");
     headerRow.appendChild(document.createElement("th")); // 左上角空白
+    let unsigned_num = unsigned_index.length;
+    let x_expressions = getVariablesExpression();
     for (let j = 0; j < tableau[0].length - 1; j++) {
         const th = document.createElement("th");
-        if (j < var_num)
-            th.textContent = `\\(x_{${j + 1}}\\)`;
-        else if (j < var_num + var_slack_num)
-            th.textContent = `\\(s_{${j + 1 - var_num}}\\)`;
-        else if (j < var_num + var_slack_num + var_slack_num)
-            th.textContent = `\\(s_{${j + 1 - var_num - var_slack_num}}\\)`;
+        if (j < var_num + unsigned_num) {
+            th.textContent = `\\(x^{${x_expressions[j][0]}}_{${x_expressions[j][1]}}\\)`;
+        } else if (j < var_num + var_slack_num + unsigned_num)
+            th.textContent = `\\(s_{${j + 1 - var_num - unsigned_num}}\\)`;
+        else if (!bool_two_stage || index < two_stage_start + unsigned_num)
+            th.textContent = `\\(a_{${j + 1 - var_num - var_slack_num - unsigned_num}}\\)`;
+
         headerRow.appendChild(th);
     }
     const th = document.createElement("th");
@@ -217,10 +255,21 @@ function renderSingleTableau(tableau, container, index) {
             td.textContent = tableau[i][j].toFixed(2);
 
             // 根据条件给单元格填充颜色
-            if (index < recorded_tableau.length - 1) {           // 这里的条件你可以改成任意逻辑
-                if (i === recorded_pivot[index][0] && j === recorded_pivot[index][1]) {
-                    td.style.backgroundColor = "#7fc9e8";
+            if (!bool_two_stage) {
+                if (index < recorded_tableau.length - 1) {           // 这里的条件你可以改成任意逻辑
+                    if (i === recorded_pivot[index][0] && j === recorded_pivot[index][1]) {
+                        td.style.backgroundColor = "#7fc9e8";
+                    }
                 }
+            } else {
+                if (index < two_stage_start - 1) {           // 这里的条件你可以改成任意逻辑
+                    if (i === recorded_pivot[index][0] && j === recorded_pivot[index][1]) {
+                        td.style.backgroundColor = "#7fc9e8";
+                    }
+                } else if (index >= two_stage_start && index < recorded_tableau.length - 1)
+                    if (i === recorded_pivot[index - 1][0] && j === recorded_pivot[index - 1][1]) {
+                        td.style.backgroundColor = "#7fc9e8";
+                    }
             }
             row.appendChild(td);
         }
@@ -474,8 +523,8 @@ function closeAlert() {
 function standardizeModel() {
     document.getElementById("button_solve_detail").disabled = false;
 
-    const n = var_sign.length;
-    for (let i = 0; i < n; i++) {
+    const var_original_num = var_sign.length;
+    for (let i = 0; i < var_original_num; i++) {
         if (var_sign[i] === 3 || var_sign[i] === 4) {
             showAlert();
             return;
@@ -484,6 +533,7 @@ function standardizeModel() {
 
     var_slack_num = 0;
     var_artificial_num = 0;
+    unsigned_index = [];
     let element = document.getElementById("stand_latex");
     element.innerHTML = "";
     document.getElementById("container_solution").style.display = "none";
@@ -555,7 +605,7 @@ function standardizeModel() {
     }
 
     let for_stand = true;
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < var_original_num; i++) {
         if (var_sign[i] === 2) { // unsigned
             stand_obj_coe.splice(i + 1, 0, -obj_coe[i])
             stand_var_sign.splice(i + 1, 0, 0)
@@ -1033,7 +1083,9 @@ function generateFullModel() {
     // document.getElementById("button_select_variable_type").disabled = true;
     document.getElementById("button_input_coe").disabled = true;
     document.getElementById("button_standardize_model").disabled = false;
+    document.getElementById("button_solve_detail").disabled = true;
     document.getElementById("container_stand_model").style.display = "none";
+    document.getElementById("show_iteration").innerHTML = "";
     // let var_num = getNumVar();
     if (var_num === 2) {
         document.getElementById("button_draw_picture").disabled = false;
