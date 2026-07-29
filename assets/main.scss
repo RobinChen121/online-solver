@@ -77,17 +77,47 @@ body {
   transition: background-color 0.3s ease; /* 切换主题时更平滑 */
 }
 
-/* 修改页面主内容宽度 */
-.wrapper {
-  max-width: 1000px; /* 改成你想要的宽度 */
-  padding: 0 20px;
-  width: 70%; /* 容器占父容器的百分比 */
-  margin: 0 auto; /* 自动水平居中 */
+///* 修改页面主内容宽度 */
+//.wrapper {
+//  max-width: 1200px; /* 改成你想要的宽度 */
+//  padding: 0 5px;
+//  width: 75%; /* 容器占父容器的百分比 */
+//  margin: 0 auto; /* 自动水平居中 */
+//}
+
+/* 统一 Markdown 页面与 Home 主页的左侧边距 */
+.main-body.wrapper,
+.simplex-main-container {
+  /* 1. 确保盒模型计算规则一致 */
+  box-sizing: border-box;
+
+  /* 2. 统一距离左侧边栏的间距（如果觉得依然小，可以一起调大到 32px 或 40px） */
+  //margin-left: 5px !important;
+  padding-left: 0 !important;
+  margin: 0 auto;
 }
 
 .page-content {
   padding: 0; // 减少主内容与上下左右的间距
   flex: 1;
+}
+
+/* 减小 Markdown 页面中标题（h1）的大小 */
+.main-body {
+  h1 {
+    font-size: 1.5rem;    /* 默认 h1 通常在 2rem - 2.5rem 左右，调整为 1.5rem 变小 */
+    margin-top: 1.5rem;   /* 缩减标题上边距 */
+    margin-bottom: 0.8rem;/* 缩减标题下边距 */
+    font-weight: 600;     /* 适中字重 */
+  }
+
+  /* 如果后续希望 h2 / h3 按比例缩小，也可以顺便控制： */
+  h2 {
+    font-size: 1.25rem;
+  }
+  h3 {
+    font-size: 1.1rem;
+  }
 }
 
 .site-header {
@@ -1228,3 +1258,128 @@ div#container_tableaux { // 这个#是针对id，点 . 是针对 class 的
   color: black; // demos inverted color 会转化为白色
 }
 
+
+
+/***********************************/
+/* 外层全屏容器 */
+.layout-full-width {
+  display: flex;
+  width: 100%;
+  align-items: flex-start; /* 👈 1. 核心关键！阻止 sidebar 被拉伸与右侧同高，sticky 即可生效 */
+  gap: 0;               /* 👈 2. 用 gap 统一且精准地控制边栏与主内容的紧凑间距 */
+  padding-left: 0px; /* 边栏距离屏幕最左侧的边距，可按需修改，比如 0 或 10px */
+  box-sizing: border-box;
+}
+
+/* 左侧边栏 */
+.site-sidebar {
+  width: 145px; /* 侧边栏宽度 */
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px; // 滚动时保持与上面的间距
+  margin-top: 20px;
+}
+
+/* 右侧内容区域 */
+.main-body {
+  flex: 1;
+  min-width: 0;
+  /* 关键修改 1：取消自动居中（auto 会强行拉开间距） */
+  margin: 0;
+
+  /* 关键修改 2：显式指定与边栏的紧凑间距 */
+  margin-left: 0; /* 👈 这里控制间距，想要更近可以改小（如 5px） */
+
+  /* 如果样式被默认的 .wrapper 覆盖，可以加上 max-width 限制防止右侧无限拉伸 */
+  max-width: 1000px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .layout-full-width {
+    flex-direction: column;
+    padding-left: 0;
+  }
+  .site-sidebar {
+    width: 100%;
+    position: static;
+  }
+}
+
+/* 边栏整体容器 */
+.sidebar-nav-container {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* 菜单项之间的间距 */
+
+  .nav-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    color: #4a5568; /* 优雅的深灰字体 */
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px; /* 圆角矩形风格 */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    .nav-text {
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    /* 悬停 (Hover) 效果 */
+    &:hover {
+      color: #2b6cb0; /* 主题蓝色 */
+      background-color: #edf2f7; /* 浅灰底色 */
+
+      .nav-icon {
+        stroke: #2b6cb0;
+        transform: translateX(2px); /* 图标微动效果 */
+      }
+    }
+
+    /* 当前选中项 (Active) 效果 */
+    &.active {
+      color: #2b6cb0;
+      background-color: #ebf8ff; /* 浅蓝背景 */
+      font-weight: 600;
+
+      .nav-icon {
+        stroke: #2b6cb0;
+      }
+
+      /* 左侧添加一条亮色指示条 */
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 15%;
+        height: 70%;
+        width: 3.5px;
+        background-color: #3182ce;
+        border-radius: 0 4px 4px 0;
+      }
+    }
+
+    /* 点击按下的视觉反馈 */
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

@@ -7,6 +7,12 @@ permalink: /about/
 More information about me is in <a href="https://robinchen121.github.io" target="_blank" rel="noopener">my personal
 website</a>.
 
+# Textbook solver
+
+This is a linear programming solver based on classical methods in some text books (e.g., Bertsimas, D. and Tsitsiklis, J.N., 1997. Introduction to linear optimization. Belmont, MA: Athena scientific.), without the advanced optimization and acceleration techniques found in commercial/industrial solvers.
+
+# Milestones
+
 Milestones for this online solver:
 
 - 2025/04/03: set up all the inputs of the objective and constraints for a model, and

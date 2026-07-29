@@ -33,7 +33,20 @@
 {%- include header.html -%}
 
 <main class="page-content" aria-label="Content">
-  <div class="wrapper">{{ content }}</div>
+    <!-- 移除了外层的 wrapper，改为全屏通栏的 flex 容器 -->
+    <div class="layout-full-width">
+
+        <!-- 1. 左侧边栏 -->
+        <aside class="site-sidebar">
+            {%- include sidebar.html -%}
+        </aside>
+
+        <!-- 2. 右侧主体内容：将 wrapper 加在这里 -->
+        <article class="main-body wrapper">
+            {{ content }}
+        </article>
+
+    </div>
 </main>
 
 {%- include footer.html -%}
