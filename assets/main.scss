@@ -1265,11 +1265,11 @@ div#container_tableaux { // 这个#是针对id，点 . 是针对 class 的
 .layout-full-width {
   display: flex;
   width: 100%;
-  max-width: 1400px; /*  可根据设计稿调整（例如：145px边栏 + 20px间距 + 1000px主内容 + 边框 = ~1200px） */
+  max-width: 1300px; /*  可根据设计稿调整（例如：145px边栏 + 20px间距 + 1000px主内容 + 边框 = ~1200px） */
   margin-left: auto;  /* 👈 控制在大屏上居中 */
   margin-right: auto; /* 👈 控制在大屏上居中 */
   align-items: flex-start; /* 👈 1. 核心关键！阻止 sidebar 被拉伸与右侧同高，sticky 即可生效 */
-  gap: 20px;               /* 👈 2. 用 gap 统一且精准地控制边栏与主内容的紧凑间距 */
+  gap: 0px;               /* 👈 2. 用 gap 统一且精准地控制边栏与主内容的紧凑间距 */
   padding-left: 0px; /* 边栏距离屏幕最左侧的边距，可按需修改，比如 0 或 10px */
   box-sizing: border-box;
 }
