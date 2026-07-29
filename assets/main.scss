@@ -77,13 +77,13 @@ body {
   transition: background-color 0.3s ease; /* 切换主题时更平滑 */
 }
 
-///* 修改页面主内容宽度 */
-//.wrapper {
-//  max-width: 1200px; /* 改成你想要的宽度 */
-//  padding: 0 5px;
-//  width: 75%; /* 容器占父容器的百分比 */
-//  margin: 0 auto; /* 自动水平居中 */
-//}
+/* 修改页面主内容宽度 */
+.wrapper {
+  max-width: 1200px; /* 改成你想要的宽度 */
+  padding: 0 5px;
+  width: 75%; /* 容器占父容器的百分比 */
+  margin: 0 auto; /* 自动水平居中 */
+}
 
 /* 统一 Markdown 页面与 Home 主页的左侧边距 */
 .main-body.wrapper,
