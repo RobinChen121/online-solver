@@ -43,8 +43,8 @@ The detailed steps are:
 > - Begin with an initial tableau associated with a basis matrix $\mathbf{B}$.
 > 
 >2. Optimality Check & Pivot Column Selection
->- Examine the reduced costs in Row 0 of the tableau: 
->    - Termination: If all reduced costs are non-negative ($\bar{c} \ge 0$), the current solution $\mathbf{c_B B^{-1}b}$ is optimal and terminate the algorithm.
+>- Examine the reduced costs ($\bar c_j=c_j-\mathbf{c_B'B^{-1}A}_j$, where $\mathbf{u} = \mathbf{B}^{-1}\mathbf{A}_j$  is the $j\text{th}$ column of the tableau) in Row 0 of the tableau: 
+>    - Termination: If all reduced costs  are non-negative, the current solution $\mathbf{c_B B^{-1}b}$ is optimal and terminate the algorithm.
 >    - Pivot column selection: Otherwise, select an entering column $j$ for which $\bar{c}_j < 0$ following a specific rule:
 >      - Dantzig's rule (choose the column which has the most negative reduced cost)
 >      - Bland's rule (choose the smallest index from those columns with negative reduced cost)
@@ -57,7 +57,7 @@ The detailed steps are:
 > 4. Pivot Row Selection
 >- For each $i$ where $u_i > 0$, compute the ratio $x_{B(i)}/u_i$:
 >   - Identify the row index $\ell$ following some rule:
->         - Damtzog'rule (choose the one that yields the minimum ratio)
+>         - Dantzig'rule (choose the one that yields the minimum ratio)
 >         - Bland's rule (choose the smallest index from those rows with tied minimum ratio)
 >         - Lexicographic rule (for each row $i$ with $u_i>0$, divide it by $u_i$, choose the lexicographically smallest row)
 >   - Column $\mathbf{A}_{B(\ell)}$ exits the basis, and column $\mathbf{A}_j$ enters the basis.
