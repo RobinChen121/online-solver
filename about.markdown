@@ -32,9 +32,18 @@ $$
 ## Tableau implementation
 In textbooks, the simplex algorithm is usually in tableau implementation as the following structure.
 
-| $-\mathbf{c_B B^{-1}b}$ | $\mathbf{c'-c'_{B}B^{-1}A}$ |
+| $-\mathbf{c'_B B^{-1}b}$ | $\mathbf{c'-c'_{B}B^{-1}A}$ |
 | :---: | :---: |
 | $\mathbf{B^{-1}b}$ | $\mathbf{B^{-1}A}$ |
+
+or in more detail,
+
+| $-\mathbf{c'_B x_B}$ |      $\bar c_1$      | $\dots$ |       $\bar c_n$       |
+|:--------------------:|:--------------------:|:-------:|:----------------------:|
+|      $x_{B(1)}$      |          \|          |         |           \|           |
+|       $\vdots$       | $\mathbf{B^{-1}A_1}$ | $\dots$ |  $\mathbf{B^{-1}A_n}$  |
+|      $x_{B(m)}$      |          \|          |         |           \|           |
+
 
 
 The detailed steps are:
