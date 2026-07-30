@@ -22,11 +22,11 @@ This is a linear programming solver based on classical methods in some text book
 The standard form of a linear programming problem is shown below. Any linear program must first be converted into this form before applying the simplex algorithm:
 
 $$
-\begin{align}
+\begin{aligned}
 \text{min}\quad &\mathbf{c'x}\\
 \text{s.t.}\quad & \mathbf{Ax=b}\\
 & \mathbf{x\ge 0.}
-\end{align}
+\end{aligned}
 $$
 
 ## Tableau implementation
@@ -46,17 +46,20 @@ The detailed steps are:
 >- Examine the reduced costs in Row 0 of the tableau: 
 >    - Termination: If all reduced costs are non-negative ($\bar{c} \ge 0$), the current solution $\mathbf{c_B B^{-1}b}$ is optimal and terminate the algorithm.
 >    - Pivot column selection: Otherwise, select an entering column $j$ for which $\bar{c}_j < 0$ following a specific rule:
->      - Most negative rule (Dantzig' rule)
->      - Bland's rule
->      - Lexicographic rule
+>      - Dantzig's rule (choose the column which has the most negative reduced cost)
+>      - Bland's rule (choose the smallest index from those columns with negative reduced cost)
+>      - Lexicographic rule (choose arbitrarily from those columns with negative reduced cost)
 >      
 > 3. Unboundedness Test
 >    - Compute the pivot column vector $\mathbf{u} = \mathbf{B}^{-1}\mathbf{A}_j$ ($j\text{th}$ column of the tableau):
 >      - Termination: If no component of $\mathbf{u}$ is positive ($\mathbf{u} \le 0$), the problem is unbounded (optimal cost is $-\infty$); terminate the algorithm.
 > 
-> 4. Minimum Ratio Test (Pivot Row Selection)
+> 4. Pivot Row Selection
 >- For each $i$ where $u_i > 0$, compute the ratio $x_{B(i)}/u_i$:
->   - Identify the row index $\ell$ that yields the minimum ratio.
+>   - Identify the row index $\ell$ following some rule:
+>         - Damtzog'rule (choose the one that yields the minimum ratio)
+>         - Bland's rule (choose the smallest index from those rows with tied minimum ratio)
+>         - Lexicographic rule (for each row $i$ with $u_i>0$, divide it by $u_i$, choose the lexicographically smallest row)
 >   - Column $\mathbf{A}_{B(\ell)}$ exits the basis, and column $\mathbf{A}_j$ enters the basis.
 >   
 > 5. Tableau Update (Pivoting)
