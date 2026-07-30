@@ -43,7 +43,7 @@ The detailed steps are:
 > - Begin with an initial tableau associated with a basis matrix $\mathbf{B}$.
 > 
 >2. Optimality Check & Pivot Column Selection
->- Examine the reduced costs ($\bar c_j=c_j-\mathbf{c_B'B^{-1}A}_j$, where $\mathbf{u} = \mathbf{B}^{-1}\mathbf{A}_j$  is the $j\text{th}$ column of the tableau) in Row 0 of the tableau: 
+>- Examine the reduced costs ($\bar c_j=c_j-\mathbf{c_B' u}$, where $\mathbf{u} = \mathbf{B}^{-1}\mathbf{A}_j$  is the $j\text{th}$ column of the tableau) in Row 0 of the tableau: 
 >    - Termination: If all reduced costs  are non-negative, the current solution $\mathbf{c_B B^{-1}b}$ is optimal and terminate the algorithm.
 >    - Pivot column selection: Otherwise, select an entering column $j$ for which $\bar{c}_j < 0$ following a specific rule:
 >      - Dantzig's rule (choose the column which has the most negative reduced cost)
