@@ -40,7 +40,8 @@ header_pages:
 # 强制指定和 GitHub Pages 一致的引擎版本
 markdown: kramdown
 highlighter: rouge
-
+kramdown:
+  math_engine: mathjax # or katex
 
 
 # Exclude from processing.

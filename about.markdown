@@ -31,7 +31,10 @@ $$
 In textbooks, the simplex algorithm is usually in tableau implementation. The detailed steps are:
 
 > 1. Starts with the tableau associated with a basis matrix $\mathbf{B}$ and the corresponding basic feasible solution $\mathbf{x}$.  
-> 2. Examine the reduced costs in the zeroth row of the tableau. If they are all non-negative, the current basic feasible solution is optimal, and the algorithm terminates; else, choose some $j$ for which the reduced cost $\bar{c}_j < 0$.  
+> 2. Examine the reduced costs in the zeroth row of the tableau. If they are all non-negative, the current basic feasible solution is optimal, and the algorithm terminates; else, choose some $j$ for which the reduced cost $\bar{c}_j < 0$ following some rule:
+>    - Most negative rule
+>    - Bland rule
+>    - Lexicography rule
 > 3. Consider the vector $\mathbf{u} = \mathbf{B}^{-1}\mathbf{A}_j$, which is the $j\text{th}$ column (the pivot column) of the tableau. If no component of $\mathbf{u}$ is positive, the optimal cost is $-\infty$, and the algorithm terminates.
 > 4. For each $i$ for which $u_i$ is positive, compute the ratio $x_{B(i)}/u_i$. Let $\ell$ be the index of a row that corresponds to the smallest ratio. The column $\mathbf{A}_{B(\ell)}$ exits the basis and the column $\mathbf{A}_j$ enters the basis.
 > 5. Add to each row of the tableau a constant multiple of the $\ell\text{th}$ row (the pivot row) so that $u_\ell$ (the pivot element) becomes one and all other entries of the pivot column become zero.
