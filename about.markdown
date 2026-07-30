@@ -10,6 +10,7 @@ website</a>.
 
 **Table of Contents**
 - [Textbook solver](#textbook-solver)
+  - [Tableau implementation](#tableau-implementation)
 - [Milestones](#milestones)
 
 ---
@@ -21,37 +22,29 @@ This is a linear programming solver based on classical methods in some text book
 The standard form of a linear programming problem is shown below. Any linear program must first be converted into this form before applying the simplex algorithm:
 
 $$
-\begin{align*}
+\begin{align}
 \text{min}\quad &\mathbf{c'x}\\
 \text{s.t.}\quad & \mathbf{Ax=b}\\
 & \mathbf{x\ge 0.}
-\end{align*}
+\end{align}
 $$
 
+## Tableau implementation
 In textbooks, the simplex algorithm is usually in tableau implementation as the following structure.
 
-<table>
-    <tbody>
-      <tr>
-        <td>$-\mathbf{c}_B \mathbf{B}^{-1}\mathbf{b}$</td>
-        <td>$\mathbf{c}' - \mathbf{c}'_B \mathbf{B}^{-1}\mathbf{A}$</td>
-      </tr>
-      <tr>
-        <td>$\mathbf{B}^{-1}\mathbf{b}$</td>
-        <td>$\mathbf{B}^{-1}\mathbf{A}$</td>
-      </tr>
-    </tbody>
-  </table>
+| $-\mathbf{c_B B^{-1}b}$ | $\mathbf{c'-c'_{B}B^{-1}A}$ |
+| :---: | :---: |
+| $\mathbf{B^{-1}b}$ | $\mathbf{B^{-1}A}$ |
 
 
 The detailed steps are:
 
 >1. Initialization
-> - Begin with an initial tableau associated with a basis matrix $\mathbf{B}$ and the corresponding basic feasible solution.
+> - Begin with an initial tableau associated with a basis matrix $\mathbf{B}$.
 > 
 >2. Optimality Check & Pivot Column Selection
 >- Examine the reduced costs in Row 0 of the tableau: 
->    - Termination: If all reduced costs are non-negative ($\bar{c} \ge 0$), the current solution is optimal; terminate the algorithm.
+>    - Termination: If all reduced costs are non-negative ($\bar{c} \ge 0$), the current solution $\mathbf{c_B B^{-1}b}$ is optimal and terminate the algorithm.
 >    - Pivot column selection: Otherwise, select an entering column $j$ for which $\bar{c}_j < 0$ following a specific rule:
 >      - Most negative rule (Dantzig' rule)
 >      - Bland's rule
@@ -87,6 +80,7 @@ Milestones for this online solver:
 - 2026/04/02: provide 3 pivoting rules and define the CSS for the component Radio.
 - 2026/04/24: provide some linear programming examples for users to select and define the CSS for Modal and Alert.
 - 2026/04/25: revise the memory leakage issue when using WASM from C++.
+- 2026/07/30: add a sidebar for switching between different solvers in the future.
 
 
 

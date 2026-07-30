@@ -114,6 +114,7 @@ body {
   /* 如果后续希望 h2 / h3 按比例缩小，也可以顺便控制： */
   h2 {
     font-size: 1.25rem;
+    font-weight: 500;
   }
   h3 {
     font-size: 1.1rem;
@@ -1403,12 +1404,25 @@ blockquote {
 
 }
 
-/* 2. 针对 标准 Markdown 表格的表头底边线 */
-table.table thead th {
-  border-bottom: 2px solid #afa2b6 !important;
-  text-align: center !important;
-}
-
 table {
-  margin-bottom: 1em;
+  /* 居中与边距 */
+  margin: 1.5rem auto !important;
+  display: table; /* 确保 margin auto 生效 */
+
+  /* 边框重叠模式：实现干净的单实线边框 */
+  border-collapse: collapse !important;
+
+  /* 表格整体背景与外边框 */
+  //background-color: var(--card-bg, #1e293b);
+  //color: var(--text-main, #f1f5f9);
+  border: 2px solid var(--text-muted);
+  border-radius: 6px;
+
+  /* 2. 单元格样式：强制全边框 & 内容水平垂直居中 */
+  th, td {
+    padding: 12px 20px;
+    text-align: center !important;      /* 强制内容水平居中 */
+    vertical-align: middle !important;  /* 强制内容垂直居中 */
+    border: 2px solid var(--text-muted) !important; /* 显示单元格网格线 */
+  }
 }

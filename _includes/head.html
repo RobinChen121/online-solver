@@ -21,12 +21,18 @@
   <script>
     MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [
+          ['$$', '$$'],
+          ['\\[', '\\]'],
+        ],
       },
-      displayMath: [
-        ['$$', '$$'],
-        ['\\[', '\\]'],
-      ],
+      chtml: {
+        scale: 0.92 /* 🌟 将默认 100% 缩小到 92%，让行内公式与周围文字完美契合 */
+      },
+      svg: {
+        scale: 0.92 /* 如果你使用的是 SVG 模式，也加上这一行 */
+      }
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
