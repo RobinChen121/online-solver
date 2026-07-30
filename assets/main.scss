@@ -1386,3 +1386,29 @@ div#container_tableaux { // 这个#是针对id，点 . 是针对 class 的
     }
   }
 }
+
+// markdown 引用格式
+blockquote {
+  padding: 10px 15px;
+  font-style: normal; // 非斜体
+  font-size: 1.2em;
+  //background: var(--card-bg);
+
+  /* 使用你的边框变量或强调色 */
+  border-left: 4px solid var(--border-color);
+  border-radius: 0 8px 8px 0;
+
+  padding: 5px 15px;
+  margin: 1.5em 2em;
+
+}
+
+/* 2. 针对 标准 Markdown 表格的表头底边线 */
+table.table thead th {
+  border-bottom: 2px solid #afa2b6 !important;
+  text-align: center !important;
+}
+
+table {
+  margin-bottom: 1em;
+}
